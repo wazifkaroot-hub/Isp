@@ -2,36 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ISP Billing System</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISP Dealer Billing</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 body{
-    background:#f1f5f9;
-    font-family:Arial,sans-serif
+  background:#f1f5f9;
+  font-family:Arial,sans-serif;
 }
 .card{
-    background:#fff;
-    border-radius:18px;
-    padding:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,.07)
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
 }
 input,select{
-    width:100%;
-    padding:11px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    outline:none
-}
-input:focus,select:focus{
-    border-color:#2563eb
+  width:100%;
+  padding:11px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
 }
 button{
-    border-radius:10px;
-    padding:10px 15px;
-    font-weight:600
+  border-radius:10px;
+  padding:11px 16px;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -39,64 +34,60 @@ button{
 <body>
 
 <!-- LOGIN -->
-
 <div id="loginPage"
 class="min-h-screen flex items-center justify-center p-5">
 
-<div class="card w-full max-w-md text-center">
+  <div class="card w-full max-w-md text-center">
 
-<h1 class="text-3xl font-bold mb-2">
-ISP Billing
-</h1>
+    <div class="text-5xl mb-4">🌐</div>
 
-<p class="text-gray-500 mb-6">
-Internet Provider Management System
-</p>
+    <h1 class="text-3xl font-bold">
+      ISP Billing
+    </h1>
 
-<button
-id="googleLogin"
-class="w-full bg-black text-white">
+    <p class="text-gray-500 mt-2 mb-6">
+      Internet Provider Management System
+    </p>
 
-Continue with Google
+    <button
+      id="googleLogin"
+      class="w-full bg-black text-white">
+      Continue with Google
+    </button>
 
-</button>
+    <p
+      id="loginError"
+      class="text-red-500 text-sm mt-4">
+    </p>
 
-<p
-id="loginError"
-class="text-red-500 text-sm mt-4">
-</p>
-
+  </div>
 </div>
-</div>
 
 
-<!-- APP -->
-
+<!-- DEALER APP -->
 <div id="app" class="hidden">
 
-<header
-class="bg-white border-b p-4 flex justify-between items-center">
+<header class="bg-white border-b p-4">
 
-<div>
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
 
-<h1 class="text-xl font-bold">
-ISP Billing System
-</h1>
+    <div>
+      <h1 class="text-xl font-bold">
+        ISP Dealer Panel
+      </h1>
 
-<p
-id="userEmail"
-class="text-sm text-gray-500">
-</p>
+      <p id="userEmail"
+      class="text-sm text-gray-500">
+      </p>
+    </div>
 
-</div>
+    <button
+      id="logout"
+      class="bg-red-500 text-white">
+      Logout
+    </button>
 
-<button
-id="logout"
-class="bg-red-500 text-white">
-
-Logout
-
-</button>
+  </div>
 
 </header>
 
@@ -104,409 +95,275 @@ Logout
 <main class="max-w-7xl mx-auto p-4">
 
 
-<!-- ADMIN -->
-
-<div
-id="adminPanel"
-class="hidden card mb-5">
-
-<h2 class="text-xl font-bold mb-3">
-👑 Super Admin
-</h2>
-
-<div id="dealerList">
-Loading dealers...
-</div>
-
-</div>
-
-
 <!-- DEALER INFO -->
-
-<div
-id="dealerInfo"
+<div id="dealerInfo"
 class="card mb-5">
-
-Loading...
-
+  Loading dealer...
 </div>
 
 
 <!-- DASHBOARD -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-5">
 
-<div
-class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-5">
+  <div class="card">
+    <p class="text-gray-500">Customers</p>
+    <h2 id="totalCustomers"
+    class="text-2xl font-bold">0</h2>
+  </div>
 
-<div class="card">
-<p class="text-gray-500">
-Customers
-</p>
-<h2
-id="totalCustomers"
-class="text-2xl font-bold">
-0
-</h2>
-</div>
+  <div class="card">
+    <p class="text-gray-500">Active</p>
+    <h2 id="activeCustomers"
+    class="text-2xl font-bold">0</h2>
+  </div>
 
-<div class="card">
-<p class="text-gray-500">
-Active
-</p>
-<h2
-id="activeCustomers"
-class="text-2xl font-bold">
-0
-</h2>
-</div>
+  <div class="card">
+    <p class="text-gray-500">Expired</p>
+    <h2 id="expiredCustomers"
+    class="text-2xl font-bold">0</h2>
+  </div>
 
-<div class="card">
-<p class="text-gray-500">
-Expired
-</p>
-<h2
-id="expiredCustomers"
-class="text-2xl font-bold">
-0
-</h2>
-</div>
+  <div class="card">
+    <p class="text-gray-500">Unpaid</p>
+    <h2 id="unpaidBills"
+    class="text-2xl font-bold">0</h2>
+  </div>
 
-<div class="card">
-<p class="text-gray-500">
-Unpaid
-</p>
-<h2
-id="unpaidBills"
-class="text-2xl font-bold">
-0
-</h2>
-</div>
-
-<div class="card">
-<p class="text-gray-500">
-Paid
-</p>
-<h2
-id="paidAmount"
-class="text-2xl font-bold">
-Rs 0
-</h2>
-</div>
+  <div class="card">
+    <p class="text-gray-500">Paid</p>
+    <h2 id="paidAmount"
+    class="text-2xl font-bold">Rs 0</h2>
+  </div>
 
 </div>
 
 
-<!-- ALERTS -->
-
+<!-- EXPIRY ALERT -->
 <div class="card mb-5">
 
-<div
-class="flex justify-between items-center mb-4">
+  <div class="flex justify-between items-center">
 
-<h2 class="text-xl font-bold">
-🔔 Expiry Alerts
-</h2>
+    <h2 class="text-xl font-bold">
+      🔔 Expiry Alerts
+    </h2>
 
-<span
-id="alertCount"
-class="bg-red-500 text-white px-3 py-1 rounded-full">
-0
-</span>
+    <span id="alertCount"
+    class="bg-red-500 text-white px-3 py-1 rounded-full">
+      0
+    </span>
 
-</div>
+  </div>
 
-<div id="alerts">
-No alerts.
-</div>
+  <div id="alerts" class="mt-4">
+    No alerts.
+  </div>
 
 </div>
 
 
 <!-- ADD CUSTOMER -->
-
 <div class="card mb-5">
 
-<h2 class="text-xl font-bold mb-4">
-👤 Add Customer
-</h2>
+  <h2 class="text-xl font-bold mb-4">
+    👤 Add Customer
+  </h2>
 
-<div class="grid md:grid-cols-3 gap-3">
+  <div class="grid md:grid-cols-3 gap-3">
 
-<input
-id="customerName"
-placeholder="Customer Name">
+    <input id="cName"
+    placeholder="Customer Name">
 
-<input
-id="customerPhone"
-placeholder="Phone">
+    <input id="cPhone"
+    placeholder="Phone">
 
-<input
-id="customerAddress"
-placeholder="Address">
+    <input id="cAddress"
+    placeholder="Address">
 
-<input
-id="customerUsername"
-placeholder="ISP Username">
+    <input id="cUsername"
+    placeholder="ISP Username">
 
-<input
-id="customerPackage"
-placeholder="Package">
+    <input id="cPackage"
+    placeholder="Package">
 
-<input
-id="customerFee"
-type="number"
-placeholder="Monthly Fee">
+    <input id="cFee"
+    type="number"
+    placeholder="Monthly Fee">
 
-<input
-id="customerStart"
-type="date">
+    <input id="cStart"
+    type="date">
 
-<input
-id="customerExpiry"
-type="date">
+    <input id="cExpiry"
+    type="date">
 
-<select id="customerStatus">
+    <select id="cStatus">
+      <option value="active">Active</option>
+      <option value="suspended">Suspended</option>
+    </select>
 
-<option value="active">
-Active
-</option>
+  </div>
 
-<option value="suspended">
-Suspended
-</option>
-
-</select>
-
-</div>
-
-<button
-id="addCustomer"
-class="bg-blue-600 text-white mt-4">
-
-+ Add Customer
-
-</button>
+  <button
+    id="addCustomer"
+    class="bg-blue-600 text-white mt-4">
+    + Add Customer
+  </button>
 
 </div>
 
 
-<!-- CUSTOMERS -->
-
+<!-- CUSTOMER LIST -->
 <div class="card mb-5">
 
-<div
-class="flex justify-between items-center mb-4">
+  <div class="flex justify-between items-center mb-4">
 
-<h2 class="text-xl font-bold">
-👥 Customers
-</h2>
+    <h2 class="text-xl font-bold">
+      👥 Customers
+    </h2>
 
-<input
-id="searchCustomer"
-class="max-w-xs"
-placeholder="Search customer">
+    <input
+      id="search"
+      class="max-w-xs"
+      placeholder="Search Customer">
 
-</div>
+  </div>
 
-<div class="overflow-x-auto">
+  <div class="overflow-x-auto">
 
-<table class="w-full text-sm">
+    <table class="w-full text-sm">
 
-<thead>
+      <thead>
 
-<tr class="border-b">
+        <tr class="border-b">
 
-<th class="p-2 text-left">
-ID
-</th>
+          <th class="p-2 text-left">Name</th>
+          <th class="p-2 text-left">Phone</th>
+          <th class="p-2 text-left">Package</th>
+          <th class="p-2 text-left">Fee</th>
+          <th class="p-2 text-left">Expiry</th>
+          <th class="p-2 text-left">Status</th>
+          <th class="p-2">Action</th>
 
-<th class="p-2 text-left">
-Name
-</th>
+        </tr>
 
-<th class="p-2 text-left">
-Phone
-</th>
+      </thead>
 
-<th class="p-2 text-left">
-Package
-</th>
+      <tbody id="customerTable"></tbody>
 
-<th class="p-2 text-left">
-Fee
-</th>
+    </table>
 
-<th class="p-2 text-left">
-Expiry
-</th>
-
-<th class="p-2 text-left">
-Status
-</th>
-
-<th class="p-2 text-left">
-Action
-</th>
-
-</tr>
-
-</thead>
-
-<tbody id="customerTable">
-</tbody>
-
-</table>
-
-</div>
+  </div>
 
 </div>
 
 
 <!-- PACKAGES -->
-
 <div class="card mb-5">
 
-<h2 class="text-xl font-bold mb-4">
-📦 Packages
-</h2>
+  <h2 class="text-xl font-bold mb-4">
+    📦 Packages
+  </h2>
 
-<div class="grid md:grid-cols-4 gap-3">
+  <div class="grid md:grid-cols-4 gap-3">
 
-<input
-id="packageName"
-placeholder="Package Name">
+    <input id="pName"
+    placeholder="Package Name">
 
-<input
-id="packageSpeed"
-placeholder="Speed">
+    <input id="pSpeed"
+    placeholder="Speed e.g. 20 Mbps">
 
-<input
-id="packagePrice"
-type="number"
-placeholder="Monthly Price">
+    <input id="pPrice"
+    type="number"
+    placeholder="Monthly Price">
 
-<button
-id="addPackage"
-class="bg-green-600 text-white">
+    <button
+      id="addPackage"
+      class="bg-green-600 text-white">
+      + Add Package
+    </button>
 
-+ Add Package
+  </div>
 
-</button>
-
-</div>
-
-<div
-id="packageList"
-class="grid md:grid-cols-3 gap-3 mt-5">
-</div>
+  <div
+    id="packageList"
+    class="grid md:grid-cols-3 gap-3 mt-5">
+  </div>
 
 </div>
 
 
 <!-- BILLS -->
-
 <div class="card mb-5">
 
-<h2 class="text-xl font-bold mb-4">
-🧾 Create Bill
-</h2>
+  <h2 class="text-xl font-bold mb-4">
+    🧾 Create Bill
+  </h2>
 
-<div class="grid md:grid-cols-3 gap-3">
+  <div class="grid md:grid-cols-3 gap-3">
 
-<select id="billCustomer">
+    <select id="billCustomer">
+      <option value="">Select Customer</option>
+    </select>
 
-<option value="">
-Select Customer
-</option>
+    <input
+      id="billAmount"
+      type="number"
+      placeholder="Bill Amount">
 
-</select>
+    <input
+      id="billDue"
+      type="date">
 
-<input
-id="billAmount"
-type="number"
-placeholder="Bill Amount">
+  </div>
 
-<input
-id="billDue"
-type="date">
+  <button
+    id="createBill"
+    class="bg-purple-600 text-white mt-4">
+    Create Bill
+  </button>
 
-</div>
-
-<button
-id="createBill"
-class="bg-purple-600 text-white mt-4">
-
-Create Bill
-
-</button>
-
-<div
-id="billList"
-class="mt-5">
-</div>
+  <div id="billList" class="mt-5"></div>
 
 </div>
 
 
 <!-- PAYMENTS -->
-
 <div class="card">
 
-<h2 class="text-xl font-bold mb-4">
-💰 Add Payment
-</h2>
+  <h2 class="text-xl font-bold mb-4">
+    💰 Add Payment
+  </h2>
 
-<div class="grid md:grid-cols-3 gap-3">
+  <div class="grid md:grid-cols-3 gap-3">
 
-<select id="paymentCustomer">
+    <select id="payCustomer">
+      <option value="">Select Customer</option>
+    </select>
 
-<option value="">
-Select Customer
-</option>
+    <input
+      id="payAmount"
+      type="number"
+      placeholder="Payment Amount">
 
-</select>
+    <select id="payMethod">
 
-<input
-id="paymentAmount"
-type="number"
-placeholder="Payment Amount">
+      <option value="Cash">Cash</option>
+      <option value="Bank">Bank</option>
+      <option value="JazzCash">JazzCash</option>
+      <option value="Easypaisa">Easypaisa</option>
 
-<select id="paymentMethod">
+    </select>
 
-<option value="cash">
-Cash
-</option>
+  </div>
 
-<option value="bank">
-Bank
-</option>
+  <button
+    id="addPayment"
+    class="bg-emerald-600 text-white mt-4">
+    Add Payment
+  </button>
 
-<option value="jazzcash">
-JazzCash
-</option>
-
-<option value="easypaisa">
-Easypaisa
-</option>
-
-</select>
+  <div id="paymentList" class="mt-5"></div>
 
 </div>
-
-<button
-id="addPayment"
-class="bg-emerald-600 text-white mt-4">
-
-Add Payment
-
-</button>
-
-<div
-id="paymentList"
-class="mt-5">
-</div>
-
-</div>
-
 
 </main>
 </div>
@@ -517,85 +374,79 @@ class="mt-5">
 /* FIREBASE */
 
 import {
-initializeApp
+  initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
-getAuth,
-GoogleAuthProvider,
-signInWithRedirect,
-getRedirectResult,
-onAuthStateChanged,
-signOut
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
-getDatabase,
-ref,
-get,
-set
+  getDatabase,
+  ref,
+  get,
+  set
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-/* YOUR EXACT FIREBASE CONFIG */
+/* FIREBASE CONFIG */
 
 const firebaseConfig = {
 
-apiKey:
-"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
+  apiKey:
+  "AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
 
-authDomain:
-"isp-billing-system-27cf8.firebaseapp.com",
+  authDomain:
+  "isp-billing-system-27cf8.firebaseapp.com",
 
-databaseURL:
-"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
+  databaseURL:
+  "https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
 
-projectId:
-"isp-billing-system-27cf8",
+  projectId:
+  "isp-billing-system-27cf8",
 
-storageBucket:
-"isp-billing-system-27cf8.firebasestorage.app",
+  storageBucket:
+  "isp-billing-system-27cf8.firebasestorage.app",
 
-messagingSenderId:
-"643339508063",
+  messagingSenderId:
+  "643339508063",
 
-appId:
-"1:643339508063:web:232e6769f7128b6e323eea",
+  appId:
+  "1:643339508063:web:232e6769f7128b6e323eea",
 
-measurementId:
-"G-J0QK9KKPC6"
+  measurementId:
+  "G-J0QK9KKPC6"
 
 };
 
 
-/* INITIALIZE */
-
-const firebaseApp =
+const app =
 initializeApp(firebaseConfig);
 
 const auth =
-getAuth(firebaseApp);
+getAuth(app);
 
 const db =
-getDatabase(firebaseApp);
+getDatabase(app);
 
+const googleProvider =
+new GoogleAuthProvider();
 
-/*
-IMPORTANT
-
-Your Super Admin email
-*/
-
-const SUPER_ADMIN =
-"wazifkaroot@gmail.com";
+googleProvider.setCustomParameters({
+  prompt:"select_account"
+});
 
 
 let dealerId = null;
@@ -609,413 +460,239 @@ let bills = {};
 let payments = {};
 
 
-/* SHORTCUT */
-
-const $ = id =>
-document.getElementById(id);
-
-
 /* GOOGLE LOGIN */
 
-$("googleLogin")
-.addEventListener(
-"click",
-async()=>{
+document
+.getElementById("googleLogin")
+.onclick = async () => {
 
-try{
+  const button =
+  document.getElementById("googleLogin");
 
-const provider =
-new GoogleAuthProvider();
+  const error =
+  document.getElementById("loginError");
 
-provider.setCustomParameters({
-prompt:"select_account"
-});
+  error.innerText = "";
 
-await signInWithRedirect(
-auth,
-provider
+  button.disabled = true;
+
+  button.innerText =
+  "Signing in...";
+
+  try {
+
+    await signInWithPopup(
+      auth,
+      googleProvider
+    );
+
+  } catch(errorObject) {
+
+    console.error(errorObject);
+
+    error.innerText =
+      errorObject.code +
+      " : " +
+      errorObject.message;
+
+    button.disabled = false;
+
+    button.innerText =
+      "Continue with Google";
+
+  }
+
+};
+
+
+/* AUTH */
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    if(!user){
+
+      document
+      .getElementById("loginPage")
+      .classList
+      .remove("hidden");
+
+      document
+      .getElementById("app")
+      .classList
+      .add("hidden");
+
+      return;
+
+    }
+
+
+    document
+    .getElementById("loginPage")
+    .classList
+    .add("hidden");
+
+    document
+    .getElementById("app")
+    .classList
+    .remove("hidden");
+
+
+    document
+    .getElementById("userEmail")
+    .innerText =
+    user.email;
+
+
+    await loadDealer(user.uid);
+
+  }
 );
-
-}catch(error){
-
-console.error(error);
-
-$("loginError")
-.innerText =
-error.message;
-
-}
-
-});
-
-
-/* REDIRECT RESULT */
-
-getRedirectResult(auth)
-.then(result=>{
-
-if(result){
-
-console.log(
-"Google login successful"
-);
-
-}
-
-})
-.catch(error=>{
-
-console.error(error);
-
-$("loginError")
-.innerText =
-error.message;
-
-});
 
 
 /* LOGOUT */
 
-$("logout")
-.addEventListener(
-"click",
-async()=>{
+document
+.getElementById("logout")
+.onclick = async () => {
 
-await signOut(auth);
+  await signOut(auth);
 
-});
+};
 
 
-/* AUTH STATE */
-
-onAuthStateChanged(
-auth,
-async user=>{
-
-if(!user){
-
-$("loginPage")
-.classList
-.remove("hidden");
-
-$("app")
-.classList
-.add("hidden");
-
-return;
-
-}
-
-
-$("loginPage")
-.classList
-.add("hidden");
-
-$("app")
-.classList
-.remove("hidden");
-
-
-$("userEmail")
-.innerText =
-user.email;
-
-
-if(
-user.email &&
-user.email.toLowerCase()
-===
-SUPER_ADMIN.toLowerCase()
-){
-
-await loadAdmin();
-
-}else{
-
-await loadDealer(
-user.uid
-);
-
-}
-
-});
-
-
-/* ADMIN */
-
-async function loadAdmin(){
-
-$("adminPanel")
-.classList
-.remove("hidden");
-
-
-$("dealerInfo")
-.innerHTML = `
-
-<h2 class="text-xl font-bold">
-👑 Super Admin
-</h2>
-
-<p class="text-green-600 mt-2">
-Full Administrator Access
-</p>
-
-`;
-
-
-try{
-
-const snapshot =
-await get(
-ref(db,"dealers")
-);
-
-
-if(!snapshot.exists()){
-
-$("dealerList")
-.innerHTML =
-"No dealers found.";
-
-return;
-
-}
-
-
-const data =
-snapshot.val();
-
-
-let html = "";
-
-
-Object
-.entries(data)
-.forEach(
-([id,d])=>{
-
-html += `
-
-<div
-class="border rounded-xl p-4 mb-3">
-
-<h3 class="font-bold">
-${d.name || id}
-</h3>
-
-<p>
-Email:
-${d.email || "-"}
-</p>
-
-<p>
-UID:
-${d.uid || "-"}
-</p>
-
-<p>
-License:
-${d.licenseKey || "-"}
-</p>
-
-<p>
-Expiry:
-${d.licenseExpiry || "-"}
-</p>
-
-<p>
-Status:
-${d.status || "-"}
-</p>
-
-</div>
-
-`;
-
-});
-
-
-$("dealerList")
-.innerHTML =
-html;
-
-}catch(error){
-
-$("dealerList")
-.innerHTML =
-`<p class="text-red-500">
-${error.message}
-</p>`;
-
-}
-
-}
-
-
-/* DEALER */
+/* LOAD DEALER */
 
 async function loadDealer(uid){
 
-try{
+  try {
 
-const snapshot =
-await get(
-ref(db,"dealers")
-);
-
-
-if(!snapshot.exists()){
-
-$("dealerInfo")
-.innerHTML = `
-
-<p class="text-red-500">
-Dealer records not found.
-</p>
-
-`;
-
-return;
-
-}
+    const snapshot =
+    await get(
+      ref(db,"dealers")
+    );
 
 
-const data =
-snapshot.val();
+    if(!snapshot.exists()){
+
+      showDealerError(
+        "No dealer records found."
+      );
+
+      return;
+
+    }
 
 
-const found =
-Object
-.entries(data)
-.find(
-([id,d])=>
-d.uid === uid
-);
+    const dealers =
+    snapshot.val();
 
 
-if(!found){
-
-$("dealerInfo")
-.innerHTML = `
-
-<p class="text-red-500 font-bold">
-This Google account is not linked to a dealer.
-</p>
-
-<p class="text-gray-500 mt-2">
-Google UID:
-${uid}
-</p>
-
-`;
-
-return;
-
-}
+    const found =
+    Object
+    .entries(dealers)
+    .find(
+      ([id,dealer]) =>
+      dealer.uid === uid
+    );
 
 
-dealerId =
-found[0];
+    if(!found){
+
+      showDealerError(
+        "This Google account is not registered as a dealer."
+      );
+
+      return;
+
+    }
 
 
-const dealer =
-found[1];
+    dealerId =
+    found[0];
 
 
-if(
-dealer.status !==
-"active"
-){
-
-$("dealerInfo")
-.innerHTML = `
-
-<p class="text-red-500 font-bold">
-Dealer account is inactive.
-</p>
-
-`;
-
-return;
-
-}
+    const dealer =
+    found[1];
 
 
-let licenseStatus =
-"✅ Active";
+    if(
+      dealer.status &&
+      dealer.status !== "active"
+    ){
+
+      showDealerError(
+        "Dealer account is inactive."
+      );
+
+      return;
+
+    }
 
 
-if(
-dealer.licenseExpiry
-){
+    document
+    .getElementById("dealerInfo")
+    .innerHTML = `
 
-const expiry =
-new Date(
-dealer.licenseExpiry
-);
+      <h2 class="text-xl font-bold">
+        👨‍💼 ${escapeHTML(dealer.name || "Dealer")}
+      </h2>
 
+      <p class="text-gray-500 mt-1">
+        ${escapeHTML(dealer.email || "")}
+      </p>
 
-if(
-expiry < new Date()
-){
+      <div class="mt-3 grid md:grid-cols-3 gap-3">
 
-licenseStatus =
-"❌ Expired";
+        <div>
+          <b>License</b>
+          <p>${escapeHTML(dealer.licenseKey || "-")}</p>
+        </div>
 
-}
+        <div>
+          <b>Expiry</b>
+          <p>${escapeHTML(dealer.licenseExpiry || "-")}</p>
+        </div>
 
-}
+        <div>
+          <b>Status</b>
+          <p class="text-green-600">
+            ● Active
+          </p>
+        </div>
 
-
-$("dealerInfo")
-.innerHTML = `
-
-<h2 class="text-xl font-bold">
-👨‍💼 ${dealer.name || "Dealer"}
-</h2>
-
-<p>
-${dealer.email || ""}
-</p>
-
-<p class="mt-2">
-🔑 License:
-<b>
-${dealer.licenseKey || "-"}
-</b>
-</p>
-
-<p>
-📅 Expiry:
-<b>
-${dealer.licenseExpiry || "-"}
-</b>
-</p>
-
-<p class="mt-2">
-${licenseStatus}
-</p>
-
-`;
+      </div>
+    `;
 
 
-await loadData();
+    await loadData();
 
-}catch(error){
+  }
+  catch(error){
 
-console.error(error);
+    console.error(error);
 
-$("dealerInfo")
-.innerHTML = `
+    showDealerError(
+      error.message
+    );
 
-<p class="text-red-500">
-${error.message}
-</p>
-
-`;
+  }
 
 }
+
+
+function showDealerError(message){
+
+  document
+  .getElementById("dealerInfo")
+  .innerHTML = `
+
+    <div class="text-red-500 font-bold">
+      ${escapeHTML(message)}
+    </div>
+
+  `;
 
 }
 
@@ -1024,434 +701,390 @@ ${error.message}
 
 async function loadData(){
 
-if(!dealerId)
-return;
+  if(!dealerId) return;
 
 
-const base =
-"dealers/" +
-dealerId;
+  const base =
+  "dealers/" + dealerId;
 
 
-try{
-
-const customerSnap =
-await get(
-ref(
-db,
-base +
-"/customers"
-)
-);
+  const customerSnapshot =
+  await get(
+    ref(
+      db,
+      base + "/customers"
+    )
+  );
 
 
-const packageSnap =
-await get(
-ref(
-db,
-base +
-"/packages"
-)
-);
+  const packageSnapshot =
+  await get(
+    ref(
+      db,
+      base + "/packages"
+    )
+  );
 
 
-const billSnap =
-await get(
-ref(
-db,
-base +
-"/bills"
-)
-);
+  const billSnapshot =
+  await get(
+    ref(
+      db,
+      base + "/bills"
+    )
+  );
 
 
-const paymentSnap =
-await get(
-ref(
-db,
-base +
-"/payments"
-)
-);
+  const paymentSnapshot =
+  await get(
+    ref(
+      db,
+      base + "/payments"
+    )
+  );
 
 
-customers =
-customerSnap.exists()
-?
-customerSnap.val()
-:
-{};
+  customers =
+  customerSnapshot.exists()
+  ? customerSnapshot.val()
+  : {};
 
 
-packages =
-packageSnap.exists()
-?
-packageSnap.val()
-:
-{};
+  packages =
+  packageSnapshot.exists()
+  ? packageSnapshot.val()
+  : {};
 
 
-bills =
-billSnap.exists()
-?
-billSnap.val()
-:
-{};
+  bills =
+  billSnapshot.exists()
+  ? billSnapshot.val()
+  : {};
 
 
-payments =
-paymentSnap.exists()
-?
-paymentSnap.val()
-:
-{};
+  payments =
+  paymentSnapshot.exists()
+  ? paymentSnapshot.val()
+  : {};
 
 
-renderCustomers();
+  renderCustomers();
 
-renderPackages();
+  renderPackages();
 
-renderBills();
+  renderBills();
 
-renderPayments();
+  renderPayments();
 
-updateDashboard();
+  updateDashboard();
 
-showAlerts();
-
-}catch(error){
-
-console.error(error);
-
-alert(
-"Database Error: " +
-error.message
-);
-
-}
+  showAlerts();
 
 }
 
 
 /* ADD CUSTOMER */
 
-$("addCustomer")
-.addEventListener(
-"click",
-async()=>{
+document
+.getElementById("addCustomer")
+.onclick = async () => {
 
-if(!dealerId){
+  if(!dealerId){
 
-alert(
-"Dealer login required."
-);
+    alert("Dealer login required.");
 
-return;
+    return;
 
-}
+  }
 
 
-const name =
-$("customerName").value.trim();
+  const name =
+  document
+  .getElementById("cName")
+  .value
+  .trim();
 
 
-if(!name){
+  if(!name){
 
-alert(
-"Customer name required."
-);
+    alert("Customer name required.");
 
-return;
+    return;
 
-}
+  }
 
 
-const id =
-"CUST-" +
-Date.now();
+  const id =
+  "CUST-" + Date.now();
 
 
-const customer = {
+  const customer = {
 
-id:id,
+    id,
 
-name:name,
+    name,
 
-phone:
-$("customerPhone")
-.value
-.trim(),
+    phone:
+    document
+    .getElementById("cPhone")
+    .value
+    .trim(),
 
-address:
-$("customerAddress")
-.value
-.trim(),
+    address:
+    document
+    .getElementById("cAddress")
+    .value
+    .trim(),
 
-username:
-$("customerUsername")
-.value
-.trim(),
+    username:
+    document
+    .getElementById("cUsername")
+    .value
+    .trim(),
 
-package:
-$("customerPackage")
-.value
-.trim(),
+    package:
+    document
+    .getElementById("cPackage")
+    .value
+    .trim(),
 
-monthlyFee:
-Number(
-$("customerFee")
-.value
-|| 0
-),
+    monthlyFee:
+    Number(
+      document
+      .getElementById("cFee")
+      .value || 0
+    ),
 
-startDate:
-$("customerStart")
-.value,
+    startDate:
+    document
+    .getElementById("cStart")
+    .value,
 
-expiryDate:
-$("customerExpiry")
-.value,
+    expiryDate:
+    document
+    .getElementById("cExpiry")
+    .value,
 
-status:
-$("customerStatus")
-.value,
+    status:
+    document
+    .getElementById("cStatus")
+    .value,
 
-createdAt:
-new Date()
-.toISOString()
+    createdAt:
+    new Date().toISOString()
+
+  };
+
+
+  await set(
+
+    ref(
+      db,
+      "dealers/" +
+      dealerId +
+      "/customers/" +
+      id
+    ),
+
+    customer
+
+  );
+
+
+  alert("✅ Customer added");
+
+  clearCustomerForm();
+
+  await loadData();
 
 };
 
 
-await set(
-
-ref(
-db,
-"dealers/" +
-dealerId +
-"/customers/" +
-id
-),
-
-customer
-
-);
-
-
-alert(
-"✅ Customer added."
-);
-
-
-clearCustomerForm();
-
-await loadData();
-
-});
-
-
 function clearCustomerForm(){
 
-[
-"customerName",
-"customerPhone",
-"customerAddress",
-"customerUsername",
-"customerPackage",
-"customerFee",
-"customerStart",
-"customerExpiry"
-]
-.forEach(
-id=>{
-$(id).value="";
-});
+  [
+    "cName",
+    "cPhone",
+    "cAddress",
+    "cUsername",
+    "cPackage",
+    "cFee",
+    "cStart",
+    "cExpiry"
+  ]
+  .forEach(
+    id =>
+    document
+    .getElementById(id)
+    .value = ""
+  );
 
 }
 
 
-/* RENDER CUSTOMERS */
+/* CUSTOMERS */
 
 function renderCustomers(){
 
-const search =
-$("searchCustomer")
-.value
-.toLowerCase();
+  const search =
+  document
+  .getElementById("search")
+  .value
+  .toLowerCase();
 
 
-let html = "";
+  let html = "";
 
-let options = `
-
-<option value="">
-Select Customer
-</option>
-
-`;
+  let options =
+  `<option value="">
+  Select Customer
+  </option>`;
 
 
-Object
-.entries(customers)
-.forEach(
-([id,c])=>{
+  Object
+  .entries(customers)
+  .forEach(
+    ([id,c]) => {
 
-const searchable =
-`${c.name || ""}
-${c.phone || ""}
-${c.username || ""}
-${c.package || ""}`
-.toLowerCase();
-
-
-if(
-!searchable.includes(search)
-)
-return;
+      const text =
+      (
+        (c.name || "") +
+        (c.phone || "") +
+        (c.username || "") +
+        (c.package || "")
+      )
+      .toLowerCase();
 
 
-html += `
-
-<tr class="border-b">
-
-<td class="p-2">
-${id}
-</td>
-
-<td class="p-2">
-${c.name || ""}
-</td>
-
-<td class="p-2">
-${c.phone || ""}
-</td>
-
-<td class="p-2">
-${c.package || ""}
-</td>
-
-<td class="p-2">
-Rs ${c.monthlyFee || 0}
-</td>
-
-<td class="p-2">
-${c.expiryDate || ""}
-</td>
-
-<td class="p-2">
-${c.status || ""}
-</td>
-
-<td class="p-2">
-
-<button
-class="bg-green-600 text-white"
-onclick="sendWhatsApp('${id}')">
-
-WhatsApp
-
-</button>
-
-</td>
-
-</tr>
-
-`;
+      if(
+        !text.includes(search)
+      ) return;
 
 
-options += `
+      html += `
 
-<option value="${id}">
-${c.name || id}
-</option>
+        <tr class="border-b">
 
-`;
+          <td class="p-2">
+            ${escapeHTML(c.name || "")}
+          </td>
 
-});
+          <td class="p-2">
+            ${escapeHTML(c.phone || "")}
+          </td>
+
+          <td class="p-2">
+            ${escapeHTML(c.package || "")}
+          </td>
+
+          <td class="p-2">
+            Rs ${Number(c.monthlyFee || 0)}
+          </td>
+
+          <td class="p-2">
+            ${escapeHTML(c.expiryDate || "")}
+          </td>
+
+          <td class="p-2">
+            ${escapeHTML(c.status || "")}
+          </td>
+
+          <td class="p-2">
+
+            <button
+            class="bg-green-600 text-white"
+            onclick="sendWhatsApp('${id}')">
+
+              WhatsApp
+
+            </button>
+
+          </td>
+
+        </tr>
+      `;
 
 
-$("customerTable")
-.innerHTML =
-html;
+      options += `
+
+        <option value="${id}">
+          ${escapeHTML(c.name || id)}
+        </option>
+
+      `;
+
+    }
+  );
 
 
-$("billCustomer")
-.innerHTML =
-options;
+  document
+  .getElementById("customerTable")
+  .innerHTML = html;
 
 
-$("paymentCustomer")
-.innerHTML =
-options;
+  document
+  .getElementById("billCustomer")
+  .innerHTML = options;
+
+
+  document
+  .getElementById("payCustomer")
+  .innerHTML = options;
 
 }
 
 
-/* SEARCH */
-
-$("searchCustomer")
-.addEventListener(
-"input",
-renderCustomers
-);
+document
+.getElementById("search")
+.oninput =
+renderCustomers;
 
 
 /* WHATSAPP */
 
 window.sendWhatsApp =
-async function(id){
+function(id){
 
-const c =
-customers[id];
-
-
-if(!c)
-return;
+  const customer =
+  customers[id];
 
 
-const phone =
-(c.phone || "")
-.replace(
-/\D/g,
-""
-);
+  if(!customer) return;
 
 
-if(!phone){
-
-alert(
-"Phone number missing."
-);
-
-return;
-
-}
+  const phone =
+  (customer.phone || "")
+  .replace(/\D/g,"");
 
 
-const message =
+  if(!phone){
 
-`Assalam-o-Alaikum ${c.name},
+    alert(
+      "Customer phone number missing."
+    );
 
-Aapka internet package ${c.expiryDate} ko expire ho raha hai.
+    return;
+
+  }
+
+
+  const message =
+`Assalam-o-Alaikum ${customer.name},
+
+Aapka internet package ${customer.expiryDate || "soon"} ko expire ho raha hai.
 
 Kindly package renew kar dein.
 
 Shukriya.`;
 
 
-const url =
-"https://wa.me/" +
-phone +
-"?text=" +
-encodeURIComponent(
-message
-);
-
-
-window.open(
-url,
-"_blank"
-);
+  window.open(
+    "https://wa.me/" +
+    phone +
+    "?text=" +
+    encodeURIComponent(message),
+    "_blank"
+  );
 
 };
 
@@ -1460,597 +1093,532 @@ url,
 
 function showAlerts(){
 
-const now =
-new Date();
+  const now =
+  new Date();
+
+  let html = "";
+
+  let count = 0;
 
 
-let html = "";
+  Object
+  .entries(customers)
+  .forEach(
+    ([id,c]) => {
 
-let count = 0;
-
-
-Object
-.entries(customers)
-.forEach(
-([id,c])=>{
-
-if(!c.expiryDate)
-return;
+      if(!c.expiryDate)
+      return;
 
 
-const expiry =
-new Date(
-c.expiryDate
-);
+      const expiry =
+      new Date(c.expiryDate);
 
 
-const days =
-Math.ceil(
-(
-expiry -
-now
-) /
-86400000
-);
+      const days =
+      Math.ceil(
+        (expiry - now) /
+        86400000
+      );
 
 
-if(days <= 7){
+      if(days <= 7){
 
-count++;
-
-
-let status;
+        count++;
 
 
-if(days < 0){
-
-status =
-"🔴 EXPIRED";
-
-}else if(days === 0){
-
-status =
-"🟠 EXPIRES TODAY";
-
-}else{
-
-status =
-"🟡 " +
-days +
-" DAYS LEFT";
-
-}
+        let statusText;
 
 
-html += `
+        if(days < 0){
 
-<div
-class="border rounded-xl p-4 mb-3">
+          statusText =
+          "🔴 EXPIRED";
 
-<b>
-${c.name}
-</b>
+        }
+        else if(days === 0){
 
-<p>
-${status}
-</p>
+          statusText =
+          "🟠 EXPIRES TODAY";
 
-<p class="text-gray-500">
-Expiry:
-${c.expiryDate}
-</p>
+        }
+        else{
 
-<button
-class="bg-green-600 text-white mt-2"
-onclick="sendWhatsApp('${id}')">
+          statusText =
+          "🟡 " +
+          days +
+          " DAYS LEFT";
 
-Send WhatsApp
-
-</button>
-
-</div>
-
-`;
-
-}
-
-});
+        }
 
 
-$("alerts")
-.innerHTML =
-html ||
-"No expiry alerts.";
+        html += `
+
+          <div
+          class="border rounded-xl p-4 mb-3">
+
+            <b>
+              ${escapeHTML(c.name || "")}
+            </b>
+
+            <p>
+              ${statusText}
+            </p>
+
+            <p class="text-gray-500">
+              Expiry:
+              ${escapeHTML(c.expiryDate)}
+            </p>
+
+            <button
+            class="bg-green-600 text-white mt-2"
+            onclick="sendWhatsApp('${id}')">
+
+              WhatsApp
+
+            </button>
+
+          </div>
+
+        `;
+
+      }
+
+    }
+  );
 
 
-$("alertCount")
-.innerText =
-count;
+  document
+  .getElementById("alerts")
+  .innerHTML =
+  html || "No expiry alerts.";
+
+
+  document
+  .getElementById("alertCount")
+  .innerText =
+  count;
 
 }
 
 
 /* ADD PACKAGE */
 
-$("addPackage")
-.addEventListener(
-"click",
-async()=>{
+document
+.getElementById("addPackage")
+.onclick = async () => {
 
-if(!dealerId)
-return;
+  if(!dealerId) return;
 
 
-const name =
-$("packageName")
-.value
-.trim();
+  const name =
+  document
+  .getElementById("pName")
+  .value
+  .trim();
 
 
-if(!name){
+  if(!name){
 
-alert(
-"Package name required."
-);
+    alert("Package name required.");
 
-return;
+    return;
 
-}
+  }
 
 
-const id =
-"PKG-" +
-Date.now();
+  const id =
+  "PKG-" + Date.now();
 
 
-const packageData = {
+  await set(
 
-id:id,
+    ref(
+      db,
+      "dealers/" +
+      dealerId +
+      "/packages/" +
+      id
+    ),
 
-name:name,
+    {
 
-speed:
-$("packageSpeed")
-.value
-.trim(),
+      id,
 
-price:
-Number(
-$("packagePrice")
-.value
-|| 0
-),
+      name,
 
-status:
-"active",
+      speed:
+      document
+      .getElementById("pSpeed")
+      .value
+      .trim(),
 
-createdAt:
-new Date()
-.toISOString()
+      price:
+      Number(
+        document
+        .getElementById("pPrice")
+        .value || 0
+      ),
+
+      status:"active",
+
+      createdAt:
+      new Date().toISOString()
+
+    }
+
+  );
+
+
+  document.getElementById("pName").value="";
+  document.getElementById("pSpeed").value="";
+  document.getElementById("pPrice").value="";
+
+
+  alert("✅ Package added");
+
+  await loadData();
 
 };
-
-
-await set(
-
-ref(
-db,
-"dealers/" +
-dealerId +
-"/packages/" +
-id
-),
-
-packageData
-
-);
-
-
-$("packageName").value="";
-$("packageSpeed").value="";
-$("packagePrice").value="";
-
-
-await loadData();
-
-});
 
 
 /* PACKAGES */
 
 function renderPackages(){
 
-let html = "";
+  let html = "";
 
 
-Object
-.values(packages)
-.forEach(
-p=>{
+  Object
+  .values(packages)
+  .forEach(
+    p => {
 
-html += `
+      html += `
 
-<div
-class="border rounded-xl p-4">
+        <div
+        class="border rounded-xl p-4">
 
-<h3 class="font-bold">
-${p.name}
-</h3>
+          <h3 class="font-bold">
+            ${escapeHTML(p.name || "")}
+          </h3>
 
-<p>
-Speed:
-${p.speed}
-</p>
+          <p>
+            Speed:
+            ${escapeHTML(p.speed || "")}
+          </p>
 
-<p>
-Price:
-Rs ${p.price}
-</p>
+          <p>
+            Price:
+            Rs ${Number(p.price || 0)}
+          </p>
 
-<p class="text-green-600">
-● ${p.status}
-</p>
+          <p class="text-green-600">
+            ● Active
+          </p>
 
-</div>
+        </div>
 
-`;
+      `;
 
-});
+    }
+  );
 
 
-$("packageList")
-.innerHTML =
-html ||
-"No packages.";
+  document
+  .getElementById("packageList")
+  .innerHTML =
+  html || "No packages.";
 
 }
 
 
 /* CREATE BILL */
 
-$("createBill")
-.addEventListener(
-"click",
-async()=>{
+document
+.getElementById("createBill")
+.onclick = async () => {
 
-if(!dealerId)
-return;
+  if(!dealerId) return;
 
 
-const customerId =
-$("billCustomer")
-.value;
+  const customerId =
+  document
+  .getElementById("billCustomer")
+  .value;
 
 
-if(!customerId){
-
-alert(
-"Select customer."
-);
-
-return;
-
-}
+  const amount =
+  Number(
+    document
+    .getElementById("billAmount")
+    .value || 0
+  );
 
 
-const amount =
-Number(
-$("billAmount")
-.value
-|| 0
-);
+  if(
+    !customerId ||
+    amount <= 0
+  ){
+
+    alert(
+      "Select customer and enter amount."
+    );
+
+    return;
+
+  }
 
 
-if(amount <= 0){
-
-alert(
-"Enter valid amount."
-);
-
-return;
-
-}
+  const id =
+  "BILL-" + Date.now();
 
 
-const id =
-"BILL-" +
-Date.now();
+  await set(
+
+    ref(
+      db,
+      "dealers/" +
+      dealerId +
+      "/bills/" +
+      id
+    ),
+
+    {
+
+      id,
+
+      customerId,
+
+      amount,
+
+      dueDate:
+      document
+      .getElementById("billDue")
+      .value,
+
+      status:"unpaid",
+
+      createdAt:
+      new Date().toISOString()
+
+    }
+
+  );
 
 
-const bill = {
+  document
+  .getElementById("billAmount")
+  .value = "";
 
-id:id,
 
-customerId:
-customerId,
+  alert("✅ Bill created");
 
-amount:
-amount,
-
-dueDate:
-$("billDue")
-.value,
-
-month:
-new Date()
-.toISOString()
-.slice(
-0,
-7
-),
-
-status:
-"unpaid",
-
-createdAt:
-new Date()
-.toISOString()
+  await loadData();
 
 };
-
-
-await set(
-
-ref(
-db,
-"dealers/" +
-dealerId +
-"/bills/" +
-id
-),
-
-bill
-
-);
-
-
-$("billAmount")
-.value="";
-
-
-alert(
-"✅ Bill created."
-);
-
-
-await loadData();
-
-});
 
 
 /* BILLS */
 
 function renderBills(){
 
-let html = "";
+  let html = "";
 
 
-Object
-.values(bills)
-.forEach(
-b=>{
+  Object
+  .values(bills)
+  .forEach(
+    b => {
 
-html += `
-
-<div
-class="border rounded-xl p-4 mb-3">
-
-<b>
-${b.id}
-</b>
-
-<p>
-Customer:
-${b.customerId}
-</p>
-
-<p>
-Amount:
-Rs ${b.amount}
-</p>
-
-<p>
-Due:
-${b.dueDate}
-</p>
-
-<p>
-Status:
-<b>
-${b.status}
-</b>
-</p>
-
-</div>
-
-`;
-
-});
+      const customer =
+      customers[b.customerId];
 
 
-$("billList")
-.innerHTML =
-html ||
-"No bills.";
+      html += `
 
-}
+        <div
+        class="border rounded-xl p-4 mb-3">
+
+          <b>
+            ${escapeHTML(
+              customer?.name ||
+              b.customerId
+            )}
+          </b>
+
+          <p>
+            Bill:
+            Rs ${Number(b.amount || 0)}
+          </p>
+
+          <p>
+            Due:
+            ${escapeHTML(b.dueDate || "")}
+          </p>
+
+          <p>
+            Status:
+            <b>
+              ${escapeHTML(b.status || "")}
+            </b>
+          </p>
+
+        </div>
+
+      `;
+
+    }
+  );
 
 
-/* ADD PAYMENT */
-
-$("addPayment")
-.addEventListener(
-"click",
-async()=>{
-
-if(!dealerId)
-return;
-
-
-const customerId =
-$("paymentCustomer")
-.value;
-
-
-const amount =
-Number(
-$("paymentAmount")
-.value
-|| 0
-);
-
-
-if(!customerId){
-
-alert(
-"Select customer."
-);
-
-return;
+  document
+  .getElementById("billList")
+  .innerHTML =
+  html || "No bills.";
 
 }
 
 
-if(amount <= 0){
+/* PAYMENT */
 
-alert(
-"Enter valid payment."
-);
+document
+.getElementById("addPayment")
+.onclick = async () => {
 
-return;
-
-}
+  if(!dealerId) return;
 
 
-const id =
-"PAY-" +
-Date.now();
+  const customerId =
+  document
+  .getElementById("payCustomer")
+  .value;
 
 
-const payment = {
+  const amount =
+  Number(
+    document
+    .getElementById("payAmount")
+    .value || 0
+  );
 
-id:id,
 
-customerId:
-customerId,
+  if(
+    !customerId ||
+    amount <= 0
+  ){
 
-amount:
-amount,
+    alert(
+      "Select customer and enter amount."
+    );
 
-method:
-$("paymentMethod")
-.value,
+    return;
 
-date:
-new Date()
-.toISOString(),
+  }
 
-status:
-"paid"
+
+  const id =
+  "PAY-" + Date.now();
+
+
+  await set(
+
+    ref(
+      db,
+      "dealers/" +
+      dealerId +
+      "/payments/" +
+      id
+    ),
+
+    {
+
+      id,
+
+      customerId,
+
+      amount,
+
+      method:
+      document
+      .getElementById("payMethod")
+      .value,
+
+      status:"paid",
+
+      date:
+      new Date().toISOString()
+
+    }
+
+  );
+
+
+  document
+  .getElementById("payAmount")
+  .value = "";
+
+
+  alert("✅ Payment added");
+
+  await loadData();
 
 };
-
-
-await set(
-
-ref(
-db,
-"dealers/" +
-dealerId +
-"/payments/" +
-id
-),
-
-payment
-
-);
-
-
-/* UPDATE CUSTOMER LAST PAYMENT */
-
-await set(
-
-ref(
-db,
-"dealers/" +
-dealerId +
-"/customers/" +
-customerId +
-"/lastPayment"
-),
-
-amount
-
-);
-
-
-$("paymentAmount")
-.value="";
-
-
-alert(
-"✅ Payment added."
-);
-
-
-await loadData();
-
-});
 
 
 /* PAYMENTS */
 
 function renderPayments(){
 
-let html = "";
+  let html = "";
 
 
-Object
-.values(payments)
-.slice(-20)
-.reverse()
-.forEach(
-p=>{
+  Object
+  .values(payments)
+  .slice(-20)
+  .reverse()
+  .forEach(
+    p => {
 
-html += `
-
-<div
-class="border rounded-xl p-3 mb-2">
-
-<b>
-${p.id}
-</b>
-
-<p>
-Customer:
-${p.customerId}
-</p>
-
-<p>
-Amount:
-Rs ${p.amount}
-</p>
-
-<p>
-Method:
-${p.method}
-</p>
-
-<p class="text-green-600">
-${p.status}
-</p>
-
-</div>
-
-`;
-
-});
+      const customer =
+      customers[p.customerId];
 
 
-$("paymentList")
-.innerHTML =
-html ||
-"No payments yet.";
+      html += `
+
+        <div
+        class="border rounded-xl p-3 mb-2">
+
+          <b>
+            ${escapeHTML(
+              customer?.name ||
+              p.customerId
+            )}
+          </b>
+
+          <p>
+            Rs ${Number(p.amount || 0)}
+          </p>
+
+          <p>
+            ${escapeHTML(p.method || "")}
+          </p>
+
+          <p class="text-green-600">
+            ● Paid
+          </p>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  document
+  .getElementById("paymentList")
+  .innerHTML =
+  html || "No payments.";
 
 }
 
@@ -2059,79 +1627,77 @@ html ||
 
 function updateDashboard(){
 
-const list =
-Object
-.values(customers);
+  const list =
+  Object.values(customers);
+
+  const billList =
+  Object.values(bills);
+
+  const paymentList =
+  Object.values(payments);
+
+  const today =
+  new Date();
 
 
-const billList =
-Object
-.values(bills);
+  document
+  .getElementById("totalCustomers")
+  .innerText =
+  list.length;
 
 
-const paymentList =
-Object
-.values(payments);
+  document
+  .getElementById("activeCustomers")
+  .innerText =
+  list.filter(
+    c => c.status === "active"
+  ).length;
 
 
-const today =
-new Date();
+  document
+  .getElementById("expiredCustomers")
+  .innerText =
+  list.filter(
+    c =>
+    c.expiryDate &&
+    new Date(c.expiryDate) < today
+  ).length;
 
 
-$("totalCustomers")
-.innerText =
-list.length;
+  document
+  .getElementById("unpaidBills")
+  .innerText =
+  billList.filter(
+    b => b.status === "unpaid"
+  ).length;
 
 
-$("activeCustomers")
-.innerText =
-list.filter(
-c =>
-c.status ===
-"active"
-)
-.length;
+  const total =
+  paymentList.reduce(
+    (sum,p) =>
+    sum + Number(p.amount || 0),
+    0
+  );
 
 
-$("expiredCustomers")
-.innerText =
-list.filter(
-c =>
-c.expiryDate &&
-new Date(
-c.expiryDate
-) < today
-)
-.length;
+  document
+  .getElementById("paidAmount")
+  .innerText =
+  "Rs " + total;
+
+}
 
 
-$("unpaidBills")
-.innerText =
-billList.filter(
-b =>
-b.status ===
-"unpaid"
-)
-.length;
+/* SECURITY */
 
+function escapeHTML(value){
 
-const totalPaid =
-paymentList
-.reduce(
-(sum,p)=>
-sum +
-Number(
-p.amount ||
-0
-),
-0
-);
-
-
-$("paidAmount")
-.innerText =
-"Rs " +
-totalPaid;
+  return String(value)
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 
 }
 
