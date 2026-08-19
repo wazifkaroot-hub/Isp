@@ -3,158 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ISP Billing • Dealer Panel</title>
+<title>ISP Pro • Dealer Panel</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:Inter,Arial,sans-serif;
-  background:#080b14;
-  color:#e5e7eb;
+margin:0;
+font-family:Inter,Arial,sans-serif;
+background:#060913;
+color:#f8fafc;
 }
 .glass{
-  background:rgba(17,24,39,.78);
-  border:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(18px);
-  box-shadow:0 20px 60px rgba(0,0,0,.28);
+background:rgba(15,23,42,.78);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(20px);
+box-shadow:0 20px 60px rgba(0,0,0,.25);
 }
 .gradient{
-  background:linear-gradient(135deg,#6366f1,#8b5cf6,#06b6d4);
+background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);
+}
+.gradientText{
+background:linear-gradient(90deg,#818cf8,#c084fc,#22d3ee);
+-webkit-background-clip:text;
+color:transparent;
 }
 input,select{
-  width:100%;
-  background:#0f172a;
-  color:#fff;
-  border:1px solid #263244;
-  padding:12px 14px;
-  border-radius:12px;
-  outline:none;
+width:100%;
+background:#0b1220;
+color:white;
+border:1px solid #263246;
+padding:13px 14px;
+border-radius:13px;
+outline:none;
 }
 input:focus,select:focus{
-  border-color:#6366f1;
-  box-shadow:0 0 0 3px #6366f122;
+border-color:#6366f1;
+box-shadow:0 0 0 3px #6366f122;
 }
 button{
-  transition:.2s;
+transition:.18s;
 }
 button:hover{
-  transform:translateY(-1px);
+transform:translateY(-1px);
 }
 .sidebar{
-  background:#0b0f1a;
-  border-right:1px solid #ffffff0d;
+background:#080c16;
+border-right:1px solid #ffffff0b;
 }
 .nav{
-  padding:12px 14px;
-  border-radius:12px;
-  color:#94a3b8;
-  cursor:pointer;
+padding:12px 14px;
+border-radius:12px;
+color:#94a3b8;
+cursor:pointer;
+margin-bottom:5px;
 }
 .nav:hover,.nav.active{
-  background:#6366f122;
-  color:#fff;
+background:#6366f120;
+color:white;
 }
-.stat{
-  position:relative;
-  overflow:hidden;
+.card{
+background:rgba(15,23,42,.75);
+border:1px solid #ffffff0a;
+border-radius:22px;
 }
-.stat:after{
-  content:"";
-  position:absolute;
-  width:90px;
-  height:90px;
-  right:-35px;
-  top:-35px;
-  border-radius:50%;
-  background:#6366f133;
+.pulse{
+animation:pulse 2s infinite;
 }
-::-webkit-scrollbar{width:7px}
+@keyframes pulse{
+0%,100%{opacity:1}
+50%{opacity:.55}
+}
+::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-thumb{
-  background:#334155;
-  border-radius:20px;
+background:#334155;
+border-radius:20px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+<!-- ================= LOGIN ================= -->
 
-<div id="loginPage"
+<div id="loginScreen"
 class="min-h-screen flex items-center justify-center p-5">
 
-<div class="glass rounded-3xl p-8 w-full max-w-md text-center">
+<div class="glass rounded-[30px] p-8 w-full max-w-md text-center">
 
-<div class="w-20 h-20 gradient rounded-3xl mx-auto
-flex items-center justify-center text-4xl mb-5">
+<div class="w-20 h-20 gradient rounded-3xl
+mx-auto flex items-center justify-center
+text-4xl shadow-2xl">
 🌐
 </div>
 
-<h1 class="text-3xl font-black">
-ISP Billing
+<h1 class="text-3xl font-black mt-6">
+ISP <span class="gradientText">PRO</span>
 </h1>
 
 <p class="text-slate-400 mt-2">
-Premium Dealer Management System
+Dealer Management System
 </p>
 
-<button id="googleLogin"
-class="w-full mt-7 bg-white text-black
-font-bold py-3 rounded-xl">
+<button
+id="googleBtn"
+class="w-full bg-white text-black
+font-bold py-3.5 rounded-xl mt-7">
 
 🇬 Continue with Google
 
 </button>
 
-<p id="loginError"
-class="text-red-400 text-sm mt-4"></p>
+<div id="loginError"
+class="text-red-400 text-xs mt-4">
+</div>
 
 </div>
 </div>
 
 
-<!-- LICENSE -->
+<!-- ================= LICENSE ================= -->
 
-<div id="licensePage"
+<div id="licenseScreen"
 class="hidden min-h-screen flex items-center justify-center p-5">
 
-<div class="glass rounded-3xl p-8 w-full max-w-md text-center">
+<div class="glass rounded-[30px] p-8 w-full max-w-md text-center">
 
-<div class="text-5xl mb-4">
+<div class="w-20 h-20 bg-indigo-500/10
+border border-indigo-400/20 rounded-3xl
+mx-auto flex items-center justify-center
+text-4xl">
 🔐
 </div>
 
-<h1 class="text-2xl font-black">
+<h1 class="text-2xl font-black mt-6">
 License Verification
 </h1>
 
-<p class="text-slate-400 mt-2">
-Enter your dealer license key to continue
+<p class="text-slate-400 text-sm mt-2">
+Enter the license key provided by your Super Admin.
 </p>
+
+<div class="text-left mt-6">
+
+<label class="text-xs text-slate-400">
+LICENSE KEY
+</label>
 
 <input
 id="licenseInput"
-class="mt-6 uppercase"
+class="mt-2 uppercase"
+autocomplete="off"
 placeholder="ISP-XXXX-XXXX-XXXX">
 
+</div>
+
 <button
-id="verifyLicense"
-class="w-full gradient text-white font-bold
-py-3 rounded-xl mt-4">
+id="licenseBtn"
+class="w-full gradient text-white
+font-bold py-3.5 rounded-xl mt-4">
 
 Verify License
 
 </button>
 
-<p id="licenseMessage"
-class="text-sm mt-4"></p>
+<div
+id="licenseStatus"
+class="text-sm mt-4 min-h-[20px]">
+</div>
+
+<div
+id="licenseInfo"
+class="hidden mt-5 text-left
+bg-black/20 rounded-2xl p-4 text-sm">
+</div>
 
 <button
 id="licenseLogout"
-class="w-full bg-slate-800 py-3 rounded-xl mt-4">
+class="w-full bg-slate-800
+py-3 rounded-xl mt-4">
 
 Logout
 
@@ -164,17 +192,15 @@ Logout
 </div>
 
 
-<!-- APP -->
+<!-- ================= APP ================= -->
 
-<div id="app"
-class="hidden min-h-screen">
+<div id="appScreen" class="hidden">
 
 <div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
 
-<aside
-class="sidebar w-64 p-5 hidden lg:block">
+<aside class="sidebar w-64 p-5 hidden lg:block">
 
 <div class="flex items-center gap-3 mb-8">
 
@@ -184,68 +210,77 @@ flex items-center justify-center text-xl">
 </div>
 
 <div>
-<h2 class="font-black">ISP Billing</h2>
-<p class="text-xs text-slate-500">DEALER</p>
+<h2 class="font-black">ISP PRO</h2>
+<p class="text-[10px] text-slate-500">
+DEALER PANEL
+</p>
 </div>
 
 </div>
 
-<div class="space-y-2">
+<div>
 
 <div class="nav active"
-onclick="showSection('dashboard',this)">
+data-page="dashboard">
 📊 Dashboard
 </div>
 
 <div class="nav"
-onclick="showSection('customers',this)">
+data-page="customers">
 👥 Customers
 </div>
 
 <div class="nav"
-onclick="showSection('packages',this)">
+data-page="packages">
 📦 Packages
 </div>
 
 <div class="nav"
-onclick="showSection('bills',this)">
-🧾 Bills
+data-page="billing">
+🧾 Billing
 </div>
 
 <div class="nav"
-onclick="showSection('payments',this)">
+data-page="payments">
 💰 Payments
 </div>
 
 <div class="nav"
-onclick="showSection('alerts',this)">
+data-page="speed">
+⚡ Speed Test
+</div>
+
+<div class="nav"
+data-page="alerts">
 🔔 Alerts
 </div>
 
 </div>
 
-<div class="mt-10 glass rounded-2xl p-4">
+<div class="glass rounded-2xl p-4 mt-8">
 
-<p class="text-xs text-slate-500">
+<p class="text-[10px] text-slate-500">
 LICENSE
 </p>
 
-<p id="sideLicense"
-class="font-bold text-sm mt-1">
+<p
+id="sideLicense"
+class="font-bold text-xs mt-1 break-all">
 -
 </p>
 
-<p id="sideExpiry"
-class="text-xs text-green-400 mt-1">
+<p
+id="sideExpiry"
+class="text-xs text-green-400 mt-2">
 -
 </p>
 
 </div>
 
 <button
-id="logout"
-class="w-full bg-red-500/10 text-red-400
-py-3 rounded-xl mt-5">
+id="sideLogout"
+class="w-full bg-red-500/10
+text-red-400 py-3 rounded-xl mt-5">
 
 Logout
 
@@ -258,18 +293,18 @@ Logout
 
 <main class="flex-1 min-w-0">
 
-<!-- TOP -->
-
 <header
-class="sticky top-0 z-20 bg-[#080b14]/90
-backdrop-blur-xl border-b border-white/5">
+class="sticky top-0 z-30
+bg-[#060913]/90 backdrop-blur-xl
+border-b border-white/5">
 
-<div class="p-4 lg:p-5 flex justify-between items-center">
+<div class="p-4 lg:p-5
+flex justify-between items-center">
 
 <div>
 
-<p class="text-xs text-slate-500">
-DEALER PANEL
+<p class="text-[10px] text-slate-500">
+ISP PRO / DEALER
 </p>
 
 <h1
@@ -284,25 +319,58 @@ Dashboard
 
 <div class="text-right hidden sm:block">
 
-<p id="dealerName"
-class="font-bold">
+<p
+id="topName"
+class="font-bold text-sm">
 Dealer
 </p>
 
-<p id="dealerEmail"
-class="text-xs text-slate-500">
+<p
+id="topEmail"
+class="text-[10px] text-slate-500">
 -
 </p>
 
 </div>
 
-<div
-class="w-11 h-11 gradient rounded-full
-flex items-center justify-center font-bold">
+<div class="w-11 h-11 gradient
+rounded-full flex items-center
+justify-center font-black">
 D
 </div>
 
 </div>
+
+</div>
+
+<!-- MOBILE NAV -->
+
+<div class="lg:hidden flex gap-2 overflow-x-auto px-4 pb-3">
+
+<button data-page="dashboard"
+class="mobileNav bg-indigo-500/20 px-4 py-2 rounded-xl text-sm">
+Dashboard
+</button>
+
+<button data-page="customers"
+class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
+Customers
+</button>
+
+<button data-page="billing"
+class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
+Billing
+</button>
+
+<button data-page="payments"
+class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
+Payments
+</button>
+
+<button data-page="speed"
+class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
+Speed
+</button>
 
 </div>
 
@@ -314,16 +382,16 @@ D
 
 <!-- DASHBOARD -->
 
-<section id="dashboard">
+<section id="page-dashboard">
 
-<div class="glass rounded-3xl p-6 mb-6">
+<div class="card p-6 mb-6">
 
 <div class="flex flex-col md:flex-row
 justify-between gap-5">
 
 <div>
 
-<p class="text-slate-400">
+<p class="text-slate-500 text-sm">
 Welcome back 👋
 </p>
 
@@ -334,16 +402,15 @@ Dealer
 </h2>
 
 <p class="text-slate-500 mt-2">
-Manage your ISP customers, billing and payments.
+Your ISP business at a glance.
 </p>
 
 </div>
 
-<div
-class="gradient rounded-2xl p-5 min-w-[230px]">
+<div class="gradient rounded-2xl p-5">
 
-<p class="text-white/70 text-sm">
-License Status
+<p class="text-white/70 text-xs">
+LICENSE STATUS
 </p>
 
 <h3 class="text-2xl font-black mt-1">
@@ -352,7 +419,7 @@ License Status
 
 <p
 id="heroExpiry"
-class="text-sm text-white/80 mt-2">
+class="text-white/70 text-xs mt-2">
 -
 </p>
 
@@ -363,94 +430,87 @@ class="text-sm text-white/80 mt-2">
 </div>
 
 
-<div class="grid grid-cols-2 xl:grid-cols-5 gap-4">
+<div class="grid grid-cols-2
+md:grid-cols-3 xl:grid-cols-5 gap-4">
 
-<div class="glass stat rounded-2xl p-5">
-
-<p class="text-slate-500 text-sm">
+<div class="card p-5">
+<p class="text-xs text-slate-500">
 Customers
 </p>
-
-<h2 id="statCustomers"
+<h2 id="sCustomers"
 class="text-3xl font-black mt-2">
 0
 </h2>
-
 </div>
 
-<div class="glass stat rounded-2xl p-5">
-
-<p class="text-slate-500 text-sm">
+<div class="card p-5">
+<p class="text-xs text-slate-500">
 Active
 </p>
-
-<h2 id="statActive"
-class="text-3xl font-black text-green-400 mt-2">
+<h2 id="sActive"
+class="text-3xl font-black
+text-green-400 mt-2">
 0
 </h2>
-
 </div>
 
-<div class="glass stat rounded-2xl p-5">
-
-<p class="text-slate-500 text-sm">
+<div class="card p-5">
+<p class="text-xs text-slate-500">
 Expired
 </p>
-
-<h2 id="statExpired"
-class="text-3xl font-black text-red-400 mt-2">
+<h2 id="sExpired"
+class="text-3xl font-black
+text-red-400 mt-2">
 0
 </h2>
-
 </div>
 
-<div class="glass stat rounded-2xl p-5">
-
-<p class="text-slate-500 text-sm">
-Unpaid
+<div class="card p-5">
+<p class="text-xs text-slate-500">
+Unpaid Bills
 </p>
-
-<h2 id="statUnpaid"
-class="text-3xl font-black text-yellow-400 mt-2">
+<h2 id="sUnpaid"
+class="text-3xl font-black
+text-yellow-400 mt-2">
 0
 </h2>
-
 </div>
 
-<div class="glass stat rounded-2xl p-5">
-
-<p class="text-slate-500 text-sm">
+<div class="card p-5">
+<p class="text-xs text-slate-500">
 Collected
 </p>
-
-<h2 id="statPaid"
-class="text-2xl font-black text-cyan-400 mt-2">
+<h2 id="sCollected"
+class="text-xl font-black
+text-cyan-400 mt-3">
 Rs 0
 </h2>
-
 </div>
 
 </div>
 
 
-<div class="glass rounded-3xl p-6 mt-6">
+<div class="card p-6 mt-6">
 
-<div class="flex justify-between">
+<div class="flex justify-between items-center">
 
 <div>
-<h2 class="text-xl font-bold">
+
+<h2 class="font-black text-xl">
 🔔 Expiry Alerts
 </h2>
 
-<p class="text-slate-500 text-sm">
-Customers expiring within 7 days
+<p class="text-xs text-slate-500 mt-1">
+Customers expiring soon
 </p>
+
 </div>
 
 <span
-id="alertBadge"
-class="bg-red-500/20 text-red-400
-px-3 py-1 rounded-full h-fit">
+id="alertCount"
+class="bg-red-500/15
+text-red-400 px-3 py-1
+rounded-full text-xs">
 0
 </span>
 
@@ -467,38 +527,35 @@ class="mt-5">
 
 <!-- CUSTOMERS -->
 
-<section id="customers"
+<section id="page-customers"
 class="hidden">
 
-<div class="glass rounded-3xl p-6">
+<div class="card p-6">
 
-<div class="flex flex-col md:flex-row
-justify-between gap-4 mb-6">
+<div class="flex flex-col
+md:flex-row justify-between gap-4">
 
 <div>
-
 <h2 class="text-2xl font-black">
 👥 Customers
 </h2>
-
-<p class="text-slate-500">
-Manage your internet customers
+<p class="text-slate-500 text-sm">
+Manage ISP customers
 </p>
-
 </div>
 
 <input
-id="customerSearch"
+id="searchCustomer"
 class="md:w-72"
 placeholder="Search customer...">
 
 </div>
 
 
-<div class="grid md:grid-cols-3 gap-3">
+<div class="grid md:grid-cols-3 gap-3 mt-6">
 
 <input id="cName"
-placeholder="Customer Name">
+placeholder="Customer name">
 
 <input id="cPhone"
 placeholder="Phone">
@@ -511,7 +568,7 @@ placeholder="Package">
 
 <input id="cFee"
 type="number"
-placeholder="Monthly Fee">
+placeholder="Monthly fee">
 
 <input id="cExpiry"
 type="date">
@@ -520,8 +577,8 @@ type="date">
 
 <button
 id="addCustomer"
-class="gradient text-white font-bold
-px-6 py-3 rounded-xl mt-4">
+class="gradient px-6 py-3
+rounded-xl font-bold mt-4">
 
 + Add Customer
 
@@ -533,19 +590,17 @@ px-6 py-3 rounded-xl mt-4">
 <table class="w-full text-sm">
 
 <thead>
-
 <tr class="border-b border-white/10">
 
-<th class="text-left p-3">Customer</th>
-<th class="text-left p-3">Phone</th>
-<th class="text-left p-3">Package</th>
-<th class="text-left p-3">Fee</th>
-<th class="text-left p-3">Expiry</th>
-<th class="text-left p-3">Status</th>
+<th class="p-3 text-left">Customer</th>
+<th class="p-3 text-left">Phone</th>
+<th class="p-3 text-left">Package</th>
+<th class="p-3 text-left">Fee</th>
+<th class="p-3 text-left">Expiry</th>
+<th class="p-3 text-left">Status</th>
 <th class="p-3">Action</th>
 
 </tr>
-
 </thead>
 
 <tbody id="customerTable"></tbody>
@@ -561,32 +616,33 @@ px-6 py-3 rounded-xl mt-4">
 
 <!-- PACKAGES -->
 
-<section id="packages" class="hidden">
+<section id="page-packages"
+class="hidden">
 
-<div class="glass rounded-3xl p-6">
+<div class="card p-6">
 
 <h2 class="text-2xl font-black">
-📦 Internet Packages
+📦 Packages
 </h2>
 
 <div class="grid md:grid-cols-3 gap-3 mt-6">
 
 <input id="pName"
-placeholder="Package Name">
+placeholder="Package name">
 
 <input id="pSpeed"
 placeholder="Speed e.g. 20 Mbps">
 
 <input id="pPrice"
 type="number"
-placeholder="Price">
+placeholder="Monthly price">
 
 </div>
 
 <button
 id="addPackage"
-class="gradient text-white
-font-bold px-6 py-3 rounded-xl mt-4">
+class="gradient px-6 py-3
+rounded-xl font-bold mt-4">
 
 + Add Package
 
@@ -602,11 +658,12 @@ class="grid md:grid-cols-3 gap-4 mt-7">
 </section>
 
 
-<!-- BILLS -->
+<!-- BILLING -->
 
-<section id="bills" class="hidden">
+<section id="page-billing"
+class="hidden">
 
-<div class="glass rounded-3xl p-6">
+<div class="card p-6">
 
 <h2 class="text-2xl font-black">
 🧾 Billing
@@ -633,8 +690,8 @@ type="date">
 
 <button
 id="createBill"
-class="gradient text-white
-font-bold px-6 py-3 rounded-xl mt-4">
+class="gradient px-6 py-3
+rounded-xl font-bold mt-4">
 
 Create Bill
 
@@ -649,9 +706,10 @@ Create Bill
 
 <!-- PAYMENTS -->
 
-<section id="payments" class="hidden">
+<section id="page-payments"
+class="hidden">
 
-<div class="glass rounded-3xl p-6">
+<div class="card p-6">
 
 <h2 class="text-2xl font-black">
 💰 Payments
@@ -668,7 +726,7 @@ Select Customer
 <input
 id="payAmount"
 type="number"
-placeholder="Payment Amount">
+placeholder="Payment amount">
 
 <select id="payMethod">
 
@@ -683,8 +741,8 @@ placeholder="Payment Amount">
 
 <button
 id="addPayment"
-class="gradient text-white
-font-bold px-6 py-3 rounded-xl mt-4">
+class="gradient px-6 py-3
+rounded-xl font-bold mt-4">
 
 + Add Payment
 
@@ -697,18 +755,106 @@ font-bold px-6 py-3 rounded-xl mt-4">
 </section>
 
 
+<!-- SPEED -->
+
+<section id="page-speed"
+class="hidden">
+
+<div class="card p-7 text-center">
+
+<div class="text-6xl">
+⚡
+</div>
+
+<h2 class="text-3xl font-black mt-4">
+Internet Speed Test
+</h2>
+
+<p class="text-slate-500 mt-2">
+Run a real browser download test.
+</p>
+
+<div class="grid md:grid-cols-3 gap-4 mt-8">
+
+<div class="card p-5">
+
+<p class="text-slate-500 text-sm">
+DOWNLOAD
+</p>
+
+<h2
+id="downloadSpeed"
+class="text-3xl font-black
+text-cyan-400 mt-2">
+-- Mbps
+</h2>
+
+</div>
+
+<div class="card p-5">
+
+<p class="text-slate-500 text-sm">
+UPLOAD
+</p>
+
+<h2
+id="uploadSpeed"
+class="text-3xl font-black
+text-purple-400 mt-2">
+-- Mbps
+</h2>
+
+</div>
+
+<div class="card p-5">
+
+<p class="text-slate-500 text-sm">
+LATENCY
+</p>
+
+<h2
+id="latency"
+class="text-3xl font-black
+text-green-400 mt-2">
+-- ms
+</h2>
+
+</div>
+
+</div>
+
+<button
+id="speedBtn"
+class="gradient px-10 py-4
+rounded-2xl font-black mt-8">
+
+⚡ START SPEED TEST
+
+</button>
+
+<p
+id="speedStatus"
+class="text-xs text-slate-500 mt-4">
+Ready
+</p>
+
+</div>
+
+</section>
+
+
 <!-- ALERTS -->
 
-<section id="alerts" class="hidden">
+<section id="page-alerts"
+class="hidden">
 
-<div class="glass rounded-3xl p-6">
+<div class="card p-6">
 
 <h2 class="text-2xl font-black">
 🔔 Expiry Alerts
 </h2>
 
-<div id="fullAlerts"
-class="mt-6">
+<div id="allAlerts" class="mt-6">
 </div>
 
 </div>
@@ -718,7 +864,6 @@ class="mt-6">
 </div>
 
 </main>
-
 </div>
 </div>
 
@@ -752,6 +897,8 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
+/* FIREBASE */
+
 const firebaseConfig={
 
 apiKey:
@@ -782,7 +929,9 @@ measurementId:
 
 
 const app=initializeApp(firebaseConfig);
+
 const auth=getAuth(app);
+
 const db=getDatabase(app);
 
 const provider=new GoogleAuthProvider();
@@ -800,136 +949,310 @@ let bills={};
 let payments={};
 
 
-/* GOOGLE */
+/* ================= UI ================= */
 
-document.getElementById("googleLogin")
+function hideScreens(){
+
+document.getElementById("loginScreen")
+.classList.add("hidden");
+
+document.getElementById("licenseScreen")
+.classList.add("hidden");
+
+document.getElementById("appScreen")
+.classList.add("hidden");
+
+}
+
+
+function loginUI(){
+
+hideScreens();
+
+document.getElementById("loginScreen")
+.classList.remove("hidden");
+
+}
+
+
+function licenseUI(msg=""){
+
+hideScreens();
+
+document.getElementById("licenseScreen")
+.classList.remove("hidden");
+
+document.getElementById("licenseStatus")
+innerText=msg;
+
+}
+
+
+function appUI(){
+
+hideScreens();
+
+document.getElementById("appScreen")
+.classList.remove("hidden");
+
+}
+
+
+/* ================= GOOGLE ================= */
+
+document.getElementById("googleBtn")
 .onclick=async()=>{
+
+const btn=document.getElementById("googleBtn");
+
+const error=document.getElementById("loginError");
+
+btn.disabled=true;
+btn.innerText="Connecting...";
+
+error.innerText="";
 
 try{
 
-await signInWithPopup(auth,provider);
+await signInWithPopup(
+auth,
+provider
+);
 
 }catch(e){
 
-document.getElementById("loginError")
-.innerText=e.code+" : "+e.message;
+console.error(e);
+
+error.innerText=
+e.code+" : "+e.message;
+
+btn.disabled=false;
+btn.innerText="🇬 Continue with Google";
 
 }
 
 };
 
 
-/* AUTH */
+/* ================= AUTH ================= */
 
-onAuthStateChanged(auth,async user=>{
+onAuthStateChanged(
+auth,
+async user=>{
 
 if(!user){
 
-show("loginPage");
+loginUI();
 
 return;
 
 }
 
-document.getElementById("dealerEmail")
-.innerText=user.email;
+document.getElementById("topEmail")
+.innerText=user.email||"";
 
-await findDealer(user);
+await locateDealer(user);
 
 });
 
 
-async function findDealer(user){
+/* ================= DEALER FIND ================= */
 
-const snap=await get(ref(db,"dealers"));
+async function locateDealer(user){
+
+try{
+
+const snap=
+await get(ref(db,"dealers"));
 
 if(!snap.exists()){
 
-showLicense(
-"No dealer account found."
+licenseUI(
+"No dealer records found. Contact Super Admin."
 );
 
 return;
 
 }
 
+
 const all=snap.val();
 
 
-let found=Object.entries(all)
-.find(([id,d])=>
+/*
+FIRST:
+Find by UID
+*/
+
+let found=
+Object.entries(all).find(
+([id,d])=>
+d.uid &&
+d.uid===user.uid
+);
+
+
+/*
+SECOND:
+Find by Gmail
+*/
+
+if(!found){
+
+found=
+Object.entries(all).find(
+([id,d])=>
 d.email &&
 d.email.toLowerCase()===
 user.email.toLowerCase()
 );
 
-
-if(!found){
-
-showLicense(
-"Enter the License Key issued by Super Admin."
-);
-
-return;
-
 }
 
+
+/*
+Dealer found
+*/
+
+if(found){
 
 dealerId=found[0];
 dealer=found[1];
 
 
-// Already verified by email + license
-await verifyDealer(dealer);
+/*
+Existing dealer:
+automatically verify
+*/
+
+if(validLicense(dealer)){
+
+openDealer();
+
+}else{
+
+licenseUI(
+"Your license needs verification."
+);
 
 }
-
-
-/* LICENSE */
-
-function showLicense(message){
-
-hideAll();
-
-document
-.getElementById("licensePage")
-.classList.remove("hidden");
-
-document
-.getElementById("licenseMessage")
-innerText=message;
-
-}
-
-
-document.getElementById("verifyLicense")
-.onclick=async()=>{
-
-const key=
-document.getElementById("licenseInput")
-.value.trim().toUpperCase();
-
-if(!key){
-
-document.getElementById("licenseMessage")
-.innerText="Please enter License Key.";
 
 return;
 
 }
 
 
-const snap=await get(ref(db,"dealers"));
+/*
+Dealer not connected:
+License required
+*/
 
-if(!snap.exists())return;
+licenseUI(
+"Enter the License Key issued by Super Admin."
+);
+
+}catch(e){
+
+console.error(e);
+
+licenseUI(
+"Firebase error: "+e.message
+);
+
+}
+
+}
+
+
+/* ================= LICENSE ================= */
+
+function validLicense(d){
+
+if(!d)return false;
+
+if(d.status!=="active")
+return false;
+
+if(
+d.licenseExpiry &&
+new Date(d.licenseExpiry)<new Date()
+)
+return false;
+
+return true;
+
+}
+
+
+document.getElementById("licenseBtn")
+.onclick=async()=>{
+
+const btn=
+document.getElementById("licenseBtn");
+
+const status=
+document.getElementById("licenseStatus");
+
+const key=
+document.getElementById("licenseInput")
+.value
+.trim()
+.toUpperCase();
+
+const user=auth.currentUser;
+
+
+if(!user){
+
+status.innerText=
+"Please sign in with Google first.";
+
+return;
+
+}
+
+if(!key){
+
+status.innerText=
+"Enter License Key.";
+
+return;
+
+}
+
+
+btn.disabled=true;
+btn.innerText="Verifying...";
+status.className=
+"text-sm mt-4 text-yellow-400";
+status.innerText=
+"Checking license...";
+
+
+try{
+
+const snap=
+await get(ref(db,"dealers"));
+
+if(!snap.exists()){
+
+status.innerText=
+"No dealers found.";
+
+btn.disabled=false;
+btn.innerText="Verify License";
+
+return;
+
+}
 
 
 const all=snap.val();
 
 
 const found=
-Object.entries(all)
-.find(([id,d])=>
+Object.entries(all).find(
+([id,d])=>
 d.licenseKey &&
 d.licenseKey.toUpperCase()===key
 );
@@ -937,48 +1260,57 @@ d.licenseKey.toUpperCase()===key
 
 if(!found){
 
-document.getElementById("licenseMessage")
-innerText="❌ Invalid License Key.";
+status.className=
+"text-sm mt-4 text-red-400";
+
+status.innerText=
+"❌ Invalid License Key.";
+
+btn.disabled=false;
+btn.innerText="Verify License";
 
 return;
 
 }
 
 
-dealerId=found[0];
-dealer=found[1];
-
-
-const user=auth.currentUser;
+const [id,d]=found;
 
 
 /*
-IMPORTANT:
-Connect Google account to dealer
+License belongs to this email
 */
 
-await update(
-ref(db,"dealers/"+dealerId),
-{
-uid:user.uid,
-email:user.email
+if(
+d.email &&
+d.email.toLowerCase() !==
+user.email.toLowerCase()
+){
+
+status.className=
+"text-sm mt-4 text-red-400";
+
+status.innerText=
+"❌ This license belongs to another Gmail.";
+
+btn.disabled=false;
+btn.innerText="Verify License";
+
+return;
+
 }
-);
 
-
-await verifyDealer(dealer);
-
-
-};
-
-
-async function verifyDealer(d){
 
 if(d.status!=="active"){
 
-showLicense(
-"🔴 Your dealer account is suspended."
-);
+status.className=
+"text-sm mt-4 text-red-400";
+
+status.innerText=
+"🔴 Dealer account suspended.";
+
+btn.disabled=false;
+btn.innerText="Verify License";
 
 return;
 
@@ -990,8 +1322,94 @@ d.licenseExpiry &&
 new Date(d.licenseExpiry)<new Date()
 ){
 
-showLicense(
-"⏰ Your License has expired."
+status.className=
+"text-sm mt-4 text-red-400";
+
+status.innerText=
+"⏰ License expired.";
+
+btn.disabled=false;
+btn.innerText="Verify License";
+
+return;
+
+}
+
+
+/*
+LINK GOOGLE UID
+*/
+
+await update(
+ref(db,"dealers/"+id),
+{
+uid:user.uid,
+email:user.email,
+licenseVerified:true,
+licenseVerifiedAt:
+new Date().toISOString()
+}
+);
+
+
+dealerId=id;
+
+dealer={
+...d,
+uid:user.uid,
+email:user.email,
+licenseVerified:true
+};
+
+
+status.className=
+"text-sm mt-4 text-green-400";
+
+status.innerText=
+"✅ License verified!";
+
+
+/*
+DO NOT SIGN OUT.
+DO NOT REDIRECT TO GOOGLE.
+OPEN APP DIRECTLY.
+*/
+
+setTimeout(()=>{
+
+openDealer();
+
+},500);
+
+
+}catch(e){
+
+console.error(e);
+
+status.className=
+"text-sm mt-4 text-red-400";
+
+status.innerText=
+"Firebase error: "+e.message;
+
+btn.disabled=false;
+btn.innerText="Verify License";
+
+}
+
+};
+
+
+/* ================= OPEN DEALER ================= */
+
+function openDealer(){
+
+if(!dealer)return;
+
+if(!validLicense(dealer)){
+
+licenseUI(
+"License inactive or expired."
 );
 
 return;
@@ -999,183 +1417,168 @@ return;
 }
 
 
-showApp();
-
-await loadData();
-
-}
+appUI();
 
 
-/* APP */
+document.getElementById("topName")
+.innerText=dealer.name||"Dealer";
 
-function showApp(){
+document.getElementById("welcomeName")
+.innerText=dealer.name||"Dealer";
 
-hideAll();
-
-document
-.getElementById("app")
-.classList.remove("hidden");
-
-document
-.getElementById("dealerName")
-.innerText=
-dealer.name||"Dealer";
-
-document
-.getElementById("welcomeName")
-.innerText=
-dealer.name||"Dealer";
-
-document
-.getElementById("sideLicense")
+document.getElementById("sideLicense")
 .innerText=
 dealer.licenseKey||"-";
 
-document
-.getElementById("sideExpiry")
-.innerText=
+document.getElementById("sideExpiry")
+innerText=
 "Expiry: "+
 (dealer.licenseExpiry||"Unlimited");
 
-document
-.getElementById("heroExpiry")
-.innerText=
+document.getElementById("heroExpiry")
+innerText=
 "Expires: "+
 (dealer.licenseExpiry||"Unlimited");
+
+
+loadData();
 
 }
 
 
-function hideAll(){
+/* ================= LOAD DATA ================= */
 
-[
-"loginPage",
-"licensePage",
-"app"
-].forEach(id=>{
+async function loadData(){
+
+if(!dealerId)return;
+
+const base=
+"dealers/"+dealerId;
+
+
+const [c,p,b,pay]=
+await Promise.all([
+
+get(ref(db,base+"/customers")),
+
+get(ref(db,base+"/packages")),
+
+get(ref(db,base+"/bills")),
+
+get(ref(db,base+"/payments"))
+
+]);
+
+
+customers=
+c.exists()?c.val():{};
+
+packages=
+p.exists()?p.val():{};
+
+bills=
+b.exists()?b.val():{};
+
+payments=
+pay.exists()?pay.val():{};
+
+
+renderCustomers();
+
+renderPackages();
+
+renderBills();
+
+renderPayments();
+
+dashboard();
+
+alerts();
+
+}
+
+
+/* ================= NAV ================= */
+
+const pageNames={
+
+dashboard:"Dashboard",
+customers:"Customers",
+packages:"Packages",
+billing:"Billing",
+payments:"Payments",
+speed:"Speed Test",
+alerts:"Alerts"
+
+};
+
+
+function goPage(page){
 
 document
-.getElementById(id)
-.classList.add("hidden");
+.querySelectorAll('[id^="page-"]')
+.forEach(x=>x.classList.add("hidden"));
+
+document
+.getElementById("page-"+page)
+.classList.remove("hidden");
+
+document.getElementById("pageTitle")
+.innerText=pageNames[page];
+
+
+document.querySelectorAll(".nav")
+.forEach(x=>{
+
+x.classList.toggle(
+"active",
+x.dataset.page===page
+);
 
 });
 
 }
 
 
-function show(id){
-
-hideAll();
-
-document
-.getElementById(id)
-.classList.remove("hidden");
-
-}
-
-
-/* LOAD */
-
-async function loadData(){
-
-const base=
-"dealers/"+dealerId;
-
-
-const cs=await get(
-ref(db,base+"/customers")
-);
-
-const ps=await get(
-ref(db,base+"/packages")
-);
-
-const bs=await get(
-ref(db,base+"/bills")
-);
-
-const pays=await get(
-ref(db,base+"/payments")
+document.querySelectorAll(".nav")
+.forEach(x=>
+x.onclick=()=>
+goPage(x.dataset.page)
 );
 
 
-customers=cs.exists()?cs.val():{};
-packages=ps.exists()?ps.val():{};
-bills=bs.exists()?bs.val():{};
-payments=pays.exists()?pays.val():{};
-
-
-renderCustomers();
-renderPackages();
-renderBills();
-renderPayments();
-updateDashboard();
-showAlerts();
-
-}
-
-
-/* NAV */
-
-window.showSection=function(id,el){
-
-[
-"dashboard",
-"customers",
-"packages",
-"bills",
-"payments",
-"alerts"
-].forEach(x=>
-document.getElementById(x)
-.classList.add("hidden")
+document.querySelectorAll(".mobileNav")
+.forEach(x=>
+x.onclick=()=>
+goPage(x.dataset.page)
 );
 
-document.getElementById(id)
-.classList.remove("hidden");
 
-document
-.querySelectorAll(".nav")
-.forEach(x=>x.classList.remove("active"));
-
-if(el)el.classList.add("active");
-
-const titles={
-dashboard:"Dashboard",
-customers:"Customers",
-packages:"Packages",
-bills:"Bills",
-payments:"Payments",
-alerts:"Expiry Alerts"
-};
-
-document.getElementById("pageTitle")
-.innerText=titles[id];
-
-};
-
-
-/* CUSTOMER */
+/* ================= CUSTOMERS ================= */
 
 document.getElementById("addCustomer")
 .onclick=async()=>{
 
 const name=
-document.getElementById("cName").value.trim();
+document.getElementById("cName")
+.value.trim();
 
 if(!name){
 
 alert("Customer name required.");
+
 return;
 
 }
 
 
-const limit=Number(
-dealer.customerLimit||999999
-);
+const limit=
+Number(dealer.customerLimit||999999);
 
-if(Object.keys(customers).length>=limit){
+
+if(
+Object.keys(customers).length>=limit
+){
 
 alert(
 "Customer limit reached: "+limit
@@ -1186,12 +1589,14 @@ return;
 }
 
 
-const id="CUST-"+Date.now();
+const id=
+"CUST-"+Date.now();
 
 
-const data={
+const customer={
 
 id,
+
 name,
 
 phone:
@@ -1213,15 +1618,19 @@ document.getElementById("cExpiry").value,
 
 status:"active",
 
-createdAt:new Date().toISOString()
+createdAt:
+new Date().toISOString()
 
 };
 
 
 await set(
-ref(db,
-"dealers/"+dealerId+"/customers/"+id),
-data
+ref(
+db,
+"dealers/"+dealerId+
+"/customers/"+id
+),
+customer
 );
 
 
@@ -1237,38 +1646,44 @@ document.getElementById(id).value=""
 );
 
 
-alert("✅ Customer added");
-
 await loadData();
+
+alert("✅ Customer added");
 
 };
 
 
-/* CUSTOMER LIST */
+document.getElementById("searchCustomer")
+.oninput=renderCustomers;
+
 
 function renderCustomers(){
 
 const search=
-document.getElementById("customerSearch")
+document.getElementById("searchCustomer")
 .value.toLowerCase();
 
 let html="";
+
 let options=
-'<option value="">Select Customer</option>';
+`<option value="">
+Select Customer
+</option>`;
 
 
-Object.entries(customers).forEach(([id,c])=>{
+Object.entries(customers)
+.forEach(([id,c])=>{
 
-const text=
+const txt=
 (
-c.name+
-" "+
-(c.phone||"")+
-(c.username||"")+
+c.name+" "+
+(c.phone||"")+" "+
+(c.username||"")+" "+
 (c.package||"")
 ).toLowerCase();
 
-if(!text.includes(search))return;
+
+if(!txt.includes(search))return;
 
 
 html+=`
@@ -1276,11 +1691,13 @@ html+=`
 <tr class="border-b border-white/5">
 
 <td class="p-3">
+
 <b>${esc(c.name)}</b>
-<br>
-<span class="text-xs text-slate-500">
+
+<div class="text-[10px] text-slate-500">
 ${esc(c.username||"")}
-</span>
+</div>
+
 </td>
 
 <td class="p-3">
@@ -1292,7 +1709,7 @@ ${esc(c.package||"-")}
 </td>
 
 <td class="p-3">
-Rs ${Number(c.monthlyFee||0)}
+Rs ${Number(c.monthlyFee||0).toLocaleString()}
 </td>
 
 <td class="p-3">
@@ -1300,6 +1717,7 @@ ${esc(c.expiryDate||"-")}
 </td>
 
 <td class="p-3">
+
 <span class="${
 c.status==="active"
 ?"text-green-400"
@@ -1307,14 +1725,16 @@ c.status==="active"
 }">
 ● ${esc(c.status||"")}
 </span>
+
 </td>
 
 <td class="p-3">
 
 <button
-class="bg-green-500/15 text-green-400
-px-3 py-2 rounded-lg"
-onclick="whatsapp('${id}')">
+onclick="wa('${id}')"
+class="bg-green-500/10
+text-green-400 px-3 py-2
+rounded-lg text-xs">
 
 WhatsApp
 
@@ -1323,27 +1743,31 @@ WhatsApp
 </td>
 
 </tr>
+
 `;
 
 
 options+=`
+
 <option value="${id}">
 ${esc(c.name)}
 </option>
+
 `;
 
 });
 
 
 document.getElementById("customerTable")
-.innerHTML=html||`
-<tr>
+.innerHTML=
+html||
+`<tr>
 <td colspan="7"
-class="p-5 text-center text-slate-500">
+class="text-center p-6
+text-slate-500">
 No customers found.
 </td>
-</tr>
-`;
+</tr>`;
 
 
 document.getElementById("billCustomer")
@@ -1355,36 +1779,38 @@ document.getElementById("payCustomer")
 }
 
 
-document.getElementById("customerSearch")
-.oninput=renderCustomers;
+/* ================= WHATSAPP ================= */
 
-
-/* WHATSAPP */
-
-window.whatsapp=function(id){
+window.wa=function(id){
 
 const c=customers[id];
 
 if(!c||!c.phone){
 
-alert("Phone number not available.");
+alert("Phone number missing.");
+
 return;
 
 }
 
-let phone=c.phone.replace(/\D/g,"");
+
+let phone=
+c.phone.replace(/\D/g,"");
+
 
 if(phone.startsWith("0"))
 phone="92"+phone.substring(1);
 
+
 const msg=
 `Assalam-o-Alaikum ${c.name},
 
-Your ISP package is expiring on ${c.expiryDate||"soon"}.
+Your ISP package expiry date is ${c.expiryDate||"soon"}.
 
-Please renew your internet package.
+Please renew your internet service.
 
 Thank you.`;
+
 
 window.open(
 "https://wa.me/"+
@@ -1397,13 +1823,14 @@ encodeURIComponent(msg),
 };
 
 
-/* PACKAGES */
+/* ================= PACKAGES ================= */
 
 document.getElementById("addPackage")
 .onclick=async()=>{
 
 const name=
-document.getElementById("pName").value.trim();
+document.getElementById("pName")
+.value.trim();
 
 if(!name)return;
 
@@ -1412,19 +1839,25 @@ const id="PKG-"+Date.now();
 
 
 await set(
-ref(db,
-"dealers/"+dealerId+"/packages/"+id),
+ref(
+db,
+"dealers/"+dealerId+
+"/packages/"+id
+),
 {
 
 id,
+
 name,
 
 speed:
-document.getElementById("pSpeed").value.trim(),
+document.getElementById("pSpeed")
+.value.trim(),
 
 price:
 Number(
-document.getElementById("pPrice").value||0
+document.getElementById("pPrice")
+.value||0
 ),
 
 createdAt:
@@ -1443,8 +1876,6 @@ document.getElementById(id).value=""
 );
 
 
-alert("✅ Package added");
-
 await loadData();
 
 };
@@ -1454,11 +1885,13 @@ function renderPackages(){
 
 let html="";
 
-Object.values(packages).forEach(p=>{
+
+Object.values(packages)
+.forEach(p=>{
 
 html+=`
 
-<div class="glass rounded-2xl p-5">
+<div class="card p-5">
 
 <div class="text-3xl">
 ⚡
@@ -1473,7 +1906,7 @@ ${esc(p.speed||"")}
 </p>
 
 <p class="text-2xl font-black mt-3">
-Rs ${Number(p.price||0)}
+Rs ${Number(p.price||0).toLocaleString()}
 </p>
 
 <p class="text-xs text-slate-500">
@@ -1481,37 +1914,41 @@ Monthly
 </p>
 
 </div>
+
 `;
 
 });
 
 
 document.getElementById("packageList")
-.innerHTML=html||`
-<p class="text-slate-500">
+.innerHTML=
+html||
+`<p class="text-slate-500">
 No packages yet.
-</p>
-`;
+</p>`;
 
 }
 
 
-/* BILL */
+/* ================= BILL ================= */
 
 document.getElementById("createBill")
 .onclick=async()=>{
 
 const customerId=
-document.getElementById("billCustomer").value;
+document.getElementById("billCustomer")
+.value;
 
 const amount=
 Number(
-document.getElementById("billAmount").value||0
+document.getElementById("billAmount")
+.value||0
 );
 
 if(!customerId||amount<=0){
 
 alert("Select customer and amount.");
+
 return;
 
 }
@@ -1521,16 +1958,22 @@ const id="BILL-"+Date.now();
 
 
 await set(
-ref(db,
-"dealers/"+dealerId+"/bills/"+id),
+ref(
+db,
+"dealers/"+dealerId+
+"/bills/"+id
+),
 {
 
 id,
+
 customerId,
+
 amount,
 
 dueDate:
-document.getElementById("billDue").value,
+document.getElementById("billDue")
+.value,
 
 status:"unpaid",
 
@@ -1541,11 +1984,13 @@ new Date().toISOString()
 );
 
 
-document.getElementById("billAmount").value="";
+document.getElementById("billAmount")
+.value="";
 
-alert("✅ Bill created");
 
 await loadData();
+
+alert("✅ Bill created");
 
 };
 
@@ -1554,15 +1999,17 @@ function renderBills(){
 
 let html="";
 
+
 Object.values(bills)
 .reverse()
 .forEach(b=>{
 
 const c=customers[b.customerId];
 
+
 html+=`
 
-<div class="glass rounded-2xl p-5 mb-3">
+<div class="card p-5 mb-3">
 
 <div class="flex justify-between">
 
@@ -1570,7 +2017,7 @@ html+=`
 
 <b>${esc(c?.name||"Customer")}</b>
 
-<p class="text-slate-500 text-sm">
+<p class="text-xs text-slate-500 mt-1">
 Due: ${esc(b.dueDate||"-")}
 </p>
 
@@ -1578,50 +2025,55 @@ Due: ${esc(b.dueDate||"-")}
 
 <div class="text-right">
 
-<p class="font-black text-xl">
-Rs ${Number(b.amount||0)}
+<p class="text-xl font-black">
+Rs ${Number(b.amount||0).toLocaleString()}
 </p>
 
-<span class="text-yellow-400 text-sm">
+<p class="text-yellow-400 text-xs mt-1">
 ● ${esc(b.status)}
-</span>
+</p>
 
 </div>
 
 </div>
 
 </div>
+
 `;
 
 });
 
 
 document.getElementById("billList")
-.innerHTML=html||`
-<p class="text-slate-500">
+.innerHTML=
+html||
+`<p class="text-slate-500">
 No bills.
-</p>
-`;
+</p>`;
 
 }
 
 
-/* PAYMENT */
+/* ================= PAYMENT ================= */
 
 document.getElementById("addPayment")
 .onclick=async()=>{
 
 const customerId=
-document.getElementById("payCustomer").value;
+document.getElementById("payCustomer")
+.value;
 
 const amount=
 Number(
-document.getElementById("payAmount").value||0
+document.getElementById("payAmount")
+.value||0
 );
+
 
 if(!customerId||amount<=0){
 
 alert("Select customer and amount.");
+
 return;
 
 }
@@ -1631,16 +2083,22 @@ const id="PAY-"+Date.now();
 
 
 await set(
-ref(db,
-"dealers/"+dealerId+"/payments/"+id),
+ref(
+db,
+"dealers/"+dealerId+
+"/payments/"+id
+),
 {
 
 id,
+
 customerId,
+
 amount,
 
 method:
-document.getElementById("payMethod").value,
+document.getElementById("payMethod")
+.value,
 
 status:"paid",
 
@@ -1651,11 +2109,13 @@ new Date().toISOString()
 );
 
 
-document.getElementById("payAmount").value="";
+document.getElementById("payAmount")
+.value="";
 
-alert("✅ Payment added");
 
 await loadData();
+
+alert("✅ Payment recorded");
 
 };
 
@@ -1664,15 +2124,17 @@ function renderPayments(){
 
 let html="";
 
+
 Object.values(payments)
 .reverse()
 .forEach(p=>{
 
 const c=customers[p.customerId];
 
+
 html+=`
 
-<div class="glass rounded-2xl p-5 mb-3">
+<div class="card p-5 mb-3">
 
 <div class="flex justify-between">
 
@@ -1680,7 +2142,7 @@ html+=`
 
 <b>${esc(c?.name||"Customer")}</b>
 
-<p class="text-slate-500 text-sm">
+<p class="text-xs text-slate-500">
 ${esc(p.method||"")}
 </p>
 
@@ -1688,98 +2150,113 @@ ${esc(p.method||"")}
 
 <div class="text-right">
 
-<p class="font-black text-xl text-green-400">
-Rs ${Number(p.amount||0)}
+<p class="text-xl font-black
+text-green-400">
+Rs ${Number(p.amount||0).toLocaleString()}
 </p>
 
-<span class="text-xs text-green-400">
+<p class="text-xs text-green-400">
 ● PAID
-</span>
+</p>
 
 </div>
 
 </div>
 
 </div>
+
 `;
 
 });
 
 
 document.getElementById("paymentList")
-.innerHTML=html||`
-<p class="text-slate-500">
+.innerHTML=
+html||
+`<p class="text-slate-500">
 No payments.
-</p>
-`;
+</p>`;
 
 }
 
 
-/* DASHBOARD */
+/* ================= DASHBOARD ================= */
 
-function updateDashboard(){
+function dashboard(){
 
-const list=Object.values(customers);
+const list=
+Object.values(customers);
 
-const billList=Object.values(bills);
+const billList=
+Object.values(bills);
 
-const payList=Object.values(payments);
+const payList=
+Object.values(payments);
 
 const now=new Date();
 
 
-document.getElementById("statCustomers")
+document.getElementById("sCustomers")
 .innerText=list.length;
 
 
-document.getElementById("statActive")
-.innerText=list.filter(
+document.getElementById("sActive")
+.innerText=
+list.filter(
 c=>c.status==="active"
 ).length;
 
 
-document.getElementById("statExpired")
-.innerText=list.filter(
-c=>c.expiryDate &&
+document.getElementById("sExpired")
+.innerText=
+list.filter(
+c=>
+c.expiryDate &&
 new Date(c.expiryDate)<now
 ).length;
 
 
-document.getElementById("statUnpaid")
-.innerText=billList.filter(
+document.getElementById("sUnpaid")
+.innerText=
+billList.filter(
 b=>b.status==="unpaid"
 ).length;
 
 
-const paid=payList.reduce(
-(a,p)=>a+Number(p.amount||0),0
+const total=
+payList.reduce(
+(a,p)=>a+Number(p.amount||0),
+0
 );
 
 
-document.getElementById("statPaid")
+document.getElementById("sCollected")
 .innerText=
-"Rs "+paid.toLocaleString();
+"Rs "+total.toLocaleString();
 
 }
 
 
-/* ALERTS */
+/* ================= ALERTS ================= */
 
-function showAlerts(){
-
-let html="";
-let count=0;
+function alerts(){
 
 const now=new Date();
 
+let html="";
 
-Object.entries(customers).forEach(([id,c])=>{
+let count=0;
+
+
+Object.entries(customers)
+.forEach(([id,c])=>{
 
 if(!c.expiryDate)return;
 
 
-const expiry=new Date(c.expiryDate);
+const expiry=
+new Date(c.expiryDate);
+
 
 const days=Math.ceil(
 (expiry-now)/86400000
@@ -1790,27 +2267,26 @@ if(days<=7){
 
 count++;
 
-const status=
+
+const label=
 days<0
 ?"🔴 EXPIRED"
 :days===0
-?"🟠 EXPIRES TODAY"
+?"🟠 TODAY"
 :"🟡 "+days+" DAYS LEFT";
 
 
 html+=`
 
-<div class="glass rounded-2xl p-5 mb-3">
+<div class="card p-5 mb-3">
 
-<div class="flex justify-between gap-3">
+<div class="flex justify-between gap-4">
 
 <div>
 
-<h3 class="font-bold">
-${esc(c.name)}
-</h3>
+<b>${esc(c.name)}</b>
 
-<p class="text-slate-500 text-sm">
+<p class="text-xs text-slate-500 mt-1">
 Expiry: ${esc(c.expiryDate)}
 </p>
 
@@ -1818,13 +2294,16 @@ Expiry: ${esc(c.expiryDate)}
 
 <div class="text-right">
 
-<p>${status}</p>
+<p class="text-sm">
+${label}
+</p>
 
 <button
-class="bg-green-500/15
+onclick="wa('${id}')"
+class="bg-green-500/10
 text-green-400
-px-3 py-2 rounded-lg mt-2"
-onclick="whatsapp('${id}')">
+px-3 py-2 rounded-lg
+text-xs mt-2">
 
 WhatsApp
 
@@ -1835,6 +2314,7 @@ WhatsApp
 </div>
 
 </div>
+
 `;
 
 }
@@ -1842,8 +2322,9 @@ WhatsApp
 });
 
 
-document.getElementById("alertBadge")
+document.getElementById("alertCount")
 .innerText=count;
+
 
 document.getElementById("dashboardAlerts")
 .innerHTML=
@@ -1852,7 +2333,8 @@ html||
 No expiry alerts 🎉
 </p>`;
 
-document.getElementById("fullAlerts")
+
+document.getElementById("allAlerts")
 .innerHTML=
 html||
 `<p class="text-slate-500">
@@ -1862,16 +2344,135 @@ No expiry alerts 🎉
 }
 
 
-/* LOGOUT */
+/* ================= SPEED TEST ================= */
 
-document.getElementById("logout")
+document.getElementById("speedBtn")
+.onclick=async()=>{
+
+const btn=
+document.getElementById("speedBtn");
+
+const status=
+document.getElementById("speedStatus");
+
+
+btn.disabled=true;
+
+btn.innerText=
+"⚡ TESTING...";
+
+status.innerText=
+"Measuring latency...";
+
+
+/* LATENCY */
+
+try{
+
+const start=performance.now();
+
+await fetch(
+location.href+
+"?ping="+Date.now(),
+{
+cache:"no-store",
+method:"HEAD"
+}
+);
+
+const latency=
+Math.round(
+performance.now()-start
+);
+
+document.getElementById("latency")
+.innerText=
+latency+" ms";
+
+}catch{
+
+document.getElementById("latency")
+.innerText="-- ms";
+
+}
+
+
+/*
+DOWNLOAD TEST
+
+This downloads a public file.
+The result depends on browser/network/CDN.
+*/
+
+try{
+
+status.innerText=
+"Testing download speed...";
+
+
+const testUrl=
+"https://speed.cloudflare.com/__down?bytes=5000000";
+
+const start=performance.now();
+
+const response=
+await fetch(
+testUrl+
+"&x="+Date.now(),
+{
+cache:"no-store"
+}
+);
+
+const data=
+await response.blob();
+
+const seconds=
+(performance.now()-start)/1000;
+
+const bits=
+data.size*8;
+
+const mbps=
+(bits/seconds)/1000000;
+
+
+document.getElementById("downloadSpeed")
+.innerText=
+mbps.toFixed(2)+" Mbps";
+
+
+}catch(e){
+
+console.error(e);
+
+document.getElementById("downloadSpeed")
+.innerText="Failed";
+
+}
+
+
+status.innerText=
+"Test completed.";
+
+btn.disabled=false;
+
+btn.innerText=
+"⚡ START SPEED TEST";
+
+};
+
+
+/* ================= LOGOUT ================= */
+
+document.getElementById("sideLogout")
 .onclick=()=>signOut(auth);
 
 document.getElementById("licenseLogout")
 .onclick=()=>signOut(auth);
 
 
-/* ESCAPE */
+/* ================= ESCAPE ================= */
 
 function esc(v){
 
