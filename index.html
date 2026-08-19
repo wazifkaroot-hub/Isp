@@ -2,31 +2,79 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ISP Dealer Billing</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ISP Billing • Dealer Panel</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
+*{box-sizing:border-box}
 body{
-  background:#f1f5f9;
-  font-family:Arial,sans-serif;
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:#080b14;
+  color:#e5e7eb;
 }
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 5px 20px rgba(0,0,0,.08);
+.glass{
+  background:rgba(17,24,39,.78);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  box-shadow:0 20px 60px rgba(0,0,0,.28);
+}
+.gradient{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6,#06b6d4);
 }
 input,select{
   width:100%;
-  padding:11px;
-  border:1px solid #d1d5db;
-  border-radius:10px;
+  background:#0f172a;
+  color:#fff;
+  border:1px solid #263244;
+  padding:12px 14px;
+  border-radius:12px;
+  outline:none;
+}
+input:focus,select:focus{
+  border-color:#6366f1;
+  box-shadow:0 0 0 3px #6366f122;
 }
 button{
-  border-radius:10px;
-  padding:11px 16px;
-  font-weight:bold;
+  transition:.2s;
+}
+button:hover{
+  transform:translateY(-1px);
+}
+.sidebar{
+  background:#0b0f1a;
+  border-right:1px solid #ffffff0d;
+}
+.nav{
+  padding:12px 14px;
+  border-radius:12px;
+  color:#94a3b8;
+  cursor:pointer;
+}
+.nav:hover,.nav.active{
+  background:#6366f122;
+  color:#fff;
+}
+.stat{
+  position:relative;
+  overflow:hidden;
+}
+.stat:after{
+  content:"";
+  position:absolute;
+  width:90px;
+  height:90px;
+  right:-35px;
+  top:-35px;
+  border-radius:50%;
+  background:#6366f133;
+}
+::-webkit-scrollbar{width:7px}
+::-webkit-scrollbar-thumb{
+  background:#334155;
+  border-radius:20px;
 }
 </style>
 </head>
@@ -34,1591 +82,1636 @@ button{
 <body>
 
 <!-- LOGIN -->
+
 <div id="loginPage"
 class="min-h-screen flex items-center justify-center p-5">
 
-  <div class="card w-full max-w-md text-center">
+<div class="glass rounded-3xl p-8 w-full max-w-md text-center">
 
-    <div class="text-5xl mb-4">🌐</div>
+<div class="w-20 h-20 gradient rounded-3xl mx-auto
+flex items-center justify-center text-4xl mb-5">
+🌐
+</div>
 
-    <h1 class="text-3xl font-bold">
-      ISP Billing
-    </h1>
+<h1 class="text-3xl font-black">
+ISP Billing
+</h1>
 
-    <p class="text-gray-500 mt-2 mb-6">
-      Internet Provider Management System
-    </p>
+<p class="text-slate-400 mt-2">
+Premium Dealer Management System
+</p>
 
-    <button
-      id="googleLogin"
-      class="w-full bg-black text-white">
-      Continue with Google
-    </button>
+<button id="googleLogin"
+class="w-full mt-7 bg-white text-black
+font-bold py-3 rounded-xl">
 
-    <p
-      id="loginError"
-      class="text-red-500 text-sm mt-4">
-    </p>
+🇬 Continue with Google
 
-  </div>
+</button>
+
+<p id="loginError"
+class="text-red-400 text-sm mt-4"></p>
+
+</div>
 </div>
 
 
-<!-- DEALER APP -->
-<div id="app" class="hidden">
+<!-- LICENSE -->
 
-<header class="bg-white border-b p-4">
+<div id="licensePage"
+class="hidden min-h-screen flex items-center justify-center p-5">
 
-  <div class="max-w-7xl mx-auto flex justify-between items-center">
+<div class="glass rounded-3xl p-8 w-full max-w-md text-center">
 
-    <div>
-      <h1 class="text-xl font-bold">
-        ISP Dealer Panel
-      </h1>
+<div class="text-5xl mb-4">
+🔐
+</div>
 
-      <p id="userEmail"
-      class="text-sm text-gray-500">
-      </p>
-    </div>
+<h1 class="text-2xl font-black">
+License Verification
+</h1>
 
-    <button
-      id="logout"
-      class="bg-red-500 text-white">
-      Logout
-    </button>
+<p class="text-slate-400 mt-2">
+Enter your dealer license key to continue
+</p>
 
-  </div>
+<input
+id="licenseInput"
+class="mt-6 uppercase"
+placeholder="ISP-XXXX-XXXX-XXXX">
+
+<button
+id="verifyLicense"
+class="w-full gradient text-white font-bold
+py-3 rounded-xl mt-4">
+
+Verify License
+
+</button>
+
+<p id="licenseMessage"
+class="text-sm mt-4"></p>
+
+<button
+id="licenseLogout"
+class="w-full bg-slate-800 py-3 rounded-xl mt-4">
+
+Logout
+
+</button>
+
+</div>
+</div>
+
+
+<!-- APP -->
+
+<div id="app"
+class="hidden min-h-screen">
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+
+<aside
+class="sidebar w-64 p-5 hidden lg:block">
+
+<div class="flex items-center gap-3 mb-8">
+
+<div class="w-11 h-11 gradient rounded-xl
+flex items-center justify-center text-xl">
+🌐
+</div>
+
+<div>
+<h2 class="font-black">ISP Billing</h2>
+<p class="text-xs text-slate-500">DEALER</p>
+</div>
+
+</div>
+
+<div class="space-y-2">
+
+<div class="nav active"
+onclick="showSection('dashboard',this)">
+📊 Dashboard
+</div>
+
+<div class="nav"
+onclick="showSection('customers',this)">
+👥 Customers
+</div>
+
+<div class="nav"
+onclick="showSection('packages',this)">
+📦 Packages
+</div>
+
+<div class="nav"
+onclick="showSection('bills',this)">
+🧾 Bills
+</div>
+
+<div class="nav"
+onclick="showSection('payments',this)">
+💰 Payments
+</div>
+
+<div class="nav"
+onclick="showSection('alerts',this)">
+🔔 Alerts
+</div>
+
+</div>
+
+<div class="mt-10 glass rounded-2xl p-4">
+
+<p class="text-xs text-slate-500">
+LICENSE
+</p>
+
+<p id="sideLicense"
+class="font-bold text-sm mt-1">
+-
+</p>
+
+<p id="sideExpiry"
+class="text-xs text-green-400 mt-1">
+-
+</p>
+
+</div>
+
+<button
+id="logout"
+class="w-full bg-red-500/10 text-red-400
+py-3 rounded-xl mt-5">
+
+Logout
+
+</button>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="flex-1 min-w-0">
+
+<!-- TOP -->
+
+<header
+class="sticky top-0 z-20 bg-[#080b14]/90
+backdrop-blur-xl border-b border-white/5">
+
+<div class="p-4 lg:p-5 flex justify-between items-center">
+
+<div>
+
+<p class="text-xs text-slate-500">
+DEALER PANEL
+</p>
+
+<h1
+id="pageTitle"
+class="text-xl lg:text-2xl font-black">
+Dashboard
+</h1>
+
+</div>
+
+<div class="flex items-center gap-3">
+
+<div class="text-right hidden sm:block">
+
+<p id="dealerName"
+class="font-bold">
+Dealer
+</p>
+
+<p id="dealerEmail"
+class="text-xs text-slate-500">
+-
+</p>
+
+</div>
+
+<div
+class="w-11 h-11 gradient rounded-full
+flex items-center justify-center font-bold">
+D
+</div>
+
+</div>
+
+</div>
 
 </header>
 
 
-<main class="max-w-7xl mx-auto p-4">
-
-
-<!-- DEALER INFO -->
-<div id="dealerInfo"
-class="card mb-5">
-  Loading dealer...
-</div>
+<div class="p-4 lg:p-6">
 
 
 <!-- DASHBOARD -->
-<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-5">
 
-  <div class="card">
-    <p class="text-gray-500">Customers</p>
-    <h2 id="totalCustomers"
-    class="text-2xl font-bold">0</h2>
-  </div>
+<section id="dashboard">
 
-  <div class="card">
-    <p class="text-gray-500">Active</p>
-    <h2 id="activeCustomers"
-    class="text-2xl font-bold">0</h2>
-  </div>
+<div class="glass rounded-3xl p-6 mb-6">
 
-  <div class="card">
-    <p class="text-gray-500">Expired</p>
-    <h2 id="expiredCustomers"
-    class="text-2xl font-bold">0</h2>
-  </div>
+<div class="flex flex-col md:flex-row
+justify-between gap-5">
 
-  <div class="card">
-    <p class="text-gray-500">Unpaid</p>
-    <h2 id="unpaidBills"
-    class="text-2xl font-bold">0</h2>
-  </div>
+<div>
 
-  <div class="card">
-    <p class="text-gray-500">Paid</p>
-    <h2 id="paidAmount"
-    class="text-2xl font-bold">Rs 0</h2>
-  </div>
+<p class="text-slate-400">
+Welcome back 👋
+</p>
+
+<h2
+id="welcomeName"
+class="text-3xl font-black mt-1">
+Dealer
+</h2>
+
+<p class="text-slate-500 mt-2">
+Manage your ISP customers, billing and payments.
+</p>
+
+</div>
+
+<div
+class="gradient rounded-2xl p-5 min-w-[230px]">
+
+<p class="text-white/70 text-sm">
+License Status
+</p>
+
+<h3 class="text-2xl font-black mt-1">
+✓ ACTIVE
+</h3>
+
+<p
+id="heroExpiry"
+class="text-sm text-white/80 mt-2">
+-
+</p>
+
+</div>
+
+</div>
 
 </div>
 
 
-<!-- EXPIRY ALERT -->
-<div class="card mb-5">
+<div class="grid grid-cols-2 xl:grid-cols-5 gap-4">
 
-  <div class="flex justify-between items-center">
+<div class="glass stat rounded-2xl p-5">
 
-    <h2 class="text-xl font-bold">
-      🔔 Expiry Alerts
-    </h2>
+<p class="text-slate-500 text-sm">
+Customers
+</p>
 
-    <span id="alertCount"
-    class="bg-red-500 text-white px-3 py-1 rounded-full">
-      0
-    </span>
+<h2 id="statCustomers"
+class="text-3xl font-black mt-2">
+0
+</h2>
 
-  </div>
+</div>
 
-  <div id="alerts" class="mt-4">
-    No alerts.
-  </div>
+<div class="glass stat rounded-2xl p-5">
+
+<p class="text-slate-500 text-sm">
+Active
+</p>
+
+<h2 id="statActive"
+class="text-3xl font-black text-green-400 mt-2">
+0
+</h2>
+
+</div>
+
+<div class="glass stat rounded-2xl p-5">
+
+<p class="text-slate-500 text-sm">
+Expired
+</p>
+
+<h2 id="statExpired"
+class="text-3xl font-black text-red-400 mt-2">
+0
+</h2>
+
+</div>
+
+<div class="glass stat rounded-2xl p-5">
+
+<p class="text-slate-500 text-sm">
+Unpaid
+</p>
+
+<h2 id="statUnpaid"
+class="text-3xl font-black text-yellow-400 mt-2">
+0
+</h2>
+
+</div>
+
+<div class="glass stat rounded-2xl p-5">
+
+<p class="text-slate-500 text-sm">
+Collected
+</p>
+
+<h2 id="statPaid"
+class="text-2xl font-black text-cyan-400 mt-2">
+Rs 0
+</h2>
+
+</div>
 
 </div>
 
 
-<!-- ADD CUSTOMER -->
-<div class="card mb-5">
+<div class="glass rounded-3xl p-6 mt-6">
 
-  <h2 class="text-xl font-bold mb-4">
-    👤 Add Customer
-  </h2>
+<div class="flex justify-between">
 
-  <div class="grid md:grid-cols-3 gap-3">
+<div>
+<h2 class="text-xl font-bold">
+🔔 Expiry Alerts
+</h2>
 
-    <input id="cName"
-    placeholder="Customer Name">
+<p class="text-slate-500 text-sm">
+Customers expiring within 7 days
+</p>
+</div>
 
-    <input id="cPhone"
-    placeholder="Phone">
+<span
+id="alertBadge"
+class="bg-red-500/20 text-red-400
+px-3 py-1 rounded-full h-fit">
+0
+</span>
 
-    <input id="cAddress"
-    placeholder="Address">
+</div>
 
-    <input id="cUsername"
-    placeholder="ISP Username">
+<div id="dashboardAlerts"
+class="mt-5">
+</div>
 
-    <input id="cPackage"
-    placeholder="Package">
+</div>
 
-    <input id="cFee"
-    type="number"
-    placeholder="Monthly Fee">
+</section>
 
-    <input id="cStart"
-    type="date">
 
-    <input id="cExpiry"
-    type="date">
+<!-- CUSTOMERS -->
 
-    <select id="cStatus">
-      <option value="active">Active</option>
-      <option value="suspended">Suspended</option>
-    </select>
+<section id="customers"
+class="hidden">
 
-  </div>
+<div class="glass rounded-3xl p-6">
 
-  <button
-    id="addCustomer"
-    class="bg-blue-600 text-white mt-4">
-    + Add Customer
-  </button>
+<div class="flex flex-col md:flex-row
+justify-between gap-4 mb-6">
+
+<div>
+
+<h2 class="text-2xl font-black">
+👥 Customers
+</h2>
+
+<p class="text-slate-500">
+Manage your internet customers
+</p>
+
+</div>
+
+<input
+id="customerSearch"
+class="md:w-72"
+placeholder="Search customer...">
 
 </div>
 
 
-<!-- CUSTOMER LIST -->
-<div class="card mb-5">
+<div class="grid md:grid-cols-3 gap-3">
 
-  <div class="flex justify-between items-center mb-4">
+<input id="cName"
+placeholder="Customer Name">
 
-    <h2 class="text-xl font-bold">
-      👥 Customers
-    </h2>
+<input id="cPhone"
+placeholder="Phone">
 
-    <input
-      id="search"
-      class="max-w-xs"
-      placeholder="Search Customer">
+<input id="cUsername"
+placeholder="Username">
 
-  </div>
+<input id="cPackage"
+placeholder="Package">
 
-  <div class="overflow-x-auto">
+<input id="cFee"
+type="number"
+placeholder="Monthly Fee">
 
-    <table class="w-full text-sm">
-
-      <thead>
-
-        <tr class="border-b">
-
-          <th class="p-2 text-left">Name</th>
-          <th class="p-2 text-left">Phone</th>
-          <th class="p-2 text-left">Package</th>
-          <th class="p-2 text-left">Fee</th>
-          <th class="p-2 text-left">Expiry</th>
-          <th class="p-2 text-left">Status</th>
-          <th class="p-2">Action</th>
-
-        </tr>
-
-      </thead>
-
-      <tbody id="customerTable"></tbody>
-
-    </table>
-
-  </div>
+<input id="cExpiry"
+type="date">
 
 </div>
+
+<button
+id="addCustomer"
+class="gradient text-white font-bold
+px-6 py-3 rounded-xl mt-4">
+
++ Add Customer
+
+</button>
+
+
+<div class="overflow-x-auto mt-7">
+
+<table class="w-full text-sm">
+
+<thead>
+
+<tr class="border-b border-white/10">
+
+<th class="text-left p-3">Customer</th>
+<th class="text-left p-3">Phone</th>
+<th class="text-left p-3">Package</th>
+<th class="text-left p-3">Fee</th>
+<th class="text-left p-3">Expiry</th>
+<th class="text-left p-3">Status</th>
+<th class="p-3">Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="customerTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
 
 
 <!-- PACKAGES -->
-<div class="card mb-5">
 
-  <h2 class="text-xl font-bold mb-4">
-    📦 Packages
-  </h2>
+<section id="packages" class="hidden">
 
-  <div class="grid md:grid-cols-4 gap-3">
+<div class="glass rounded-3xl p-6">
 
-    <input id="pName"
-    placeholder="Package Name">
+<h2 class="text-2xl font-black">
+📦 Internet Packages
+</h2>
 
-    <input id="pSpeed"
-    placeholder="Speed e.g. 20 Mbps">
+<div class="grid md:grid-cols-3 gap-3 mt-6">
 
-    <input id="pPrice"
-    type="number"
-    placeholder="Monthly Price">
+<input id="pName"
+placeholder="Package Name">
 
-    <button
-      id="addPackage"
-      class="bg-green-600 text-white">
-      + Add Package
-    </button>
+<input id="pSpeed"
+placeholder="Speed e.g. 20 Mbps">
 
-  </div>
-
-  <div
-    id="packageList"
-    class="grid md:grid-cols-3 gap-3 mt-5">
-  </div>
+<input id="pPrice"
+type="number"
+placeholder="Price">
 
 </div>
+
+<button
+id="addPackage"
+class="gradient text-white
+font-bold px-6 py-3 rounded-xl mt-4">
+
++ Add Package
+
+</button>
+
+<div
+id="packageList"
+class="grid md:grid-cols-3 gap-4 mt-7">
+</div>
+
+</div>
+
+</section>
 
 
 <!-- BILLS -->
-<div class="card mb-5">
 
-  <h2 class="text-xl font-bold mb-4">
-    🧾 Create Bill
-  </h2>
+<section id="bills" class="hidden">
 
-  <div class="grid md:grid-cols-3 gap-3">
+<div class="glass rounded-3xl p-6">
 
-    <select id="billCustomer">
-      <option value="">Select Customer</option>
-    </select>
+<h2 class="text-2xl font-black">
+🧾 Billing
+</h2>
 
-    <input
-      id="billAmount"
-      type="number"
-      placeholder="Bill Amount">
+<div class="grid md:grid-cols-3 gap-3 mt-6">
 
-    <input
-      id="billDue"
-      type="date">
+<select id="billCustomer">
+<option value="">
+Select Customer
+</option>
+</select>
 
-  </div>
+<input
+id="billAmount"
+type="number"
+placeholder="Amount">
 
-  <button
-    id="createBill"
-    class="bg-purple-600 text-white mt-4">
-    Create Bill
-  </button>
-
-  <div id="billList" class="mt-5"></div>
+<input
+id="billDue"
+type="date">
 
 </div>
 
+<button
+id="createBill"
+class="gradient text-white
+font-bold px-6 py-3 rounded-xl mt-4">
+
+Create Bill
+
+</button>
+
+<div id="billList" class="mt-7"></div>
+
+</div>
+
+</section>
+
 
 <!-- PAYMENTS -->
-<div class="card">
 
-  <h2 class="text-xl font-bold mb-4">
-    💰 Add Payment
-  </h2>
+<section id="payments" class="hidden">
 
-  <div class="grid md:grid-cols-3 gap-3">
+<div class="glass rounded-3xl p-6">
 
-    <select id="payCustomer">
-      <option value="">Select Customer</option>
-    </select>
+<h2 class="text-2xl font-black">
+💰 Payments
+</h2>
 
-    <input
-      id="payAmount"
-      type="number"
-      placeholder="Payment Amount">
+<div class="grid md:grid-cols-3 gap-3 mt-6">
 
-    <select id="payMethod">
+<select id="payCustomer">
+<option value="">
+Select Customer
+</option>
+</select>
 
-      <option value="Cash">Cash</option>
-      <option value="Bank">Bank</option>
-      <option value="JazzCash">JazzCash</option>
-      <option value="Easypaisa">Easypaisa</option>
+<input
+id="payAmount"
+type="number"
+placeholder="Payment Amount">
 
-    </select>
+<select id="payMethod">
 
-  </div>
+<option>Cash</option>
+<option>Bank</option>
+<option>JazzCash</option>
+<option>Easypaisa</option>
 
-  <button
-    id="addPayment"
-    class="bg-emerald-600 text-white mt-4">
-    Add Payment
-  </button>
+</select>
 
-  <div id="paymentList" class="mt-5"></div>
+</div>
+
+<button
+id="addPayment"
+class="gradient text-white
+font-bold px-6 py-3 rounded-xl mt-4">
+
++ Add Payment
+
+</button>
+
+<div id="paymentList" class="mt-7"></div>
+
+</div>
+
+</section>
+
+
+<!-- ALERTS -->
+
+<section id="alerts" class="hidden">
+
+<div class="glass rounded-3xl p-6">
+
+<h2 class="text-2xl font-black">
+🔔 Expiry Alerts
+</h2>
+
+<div id="fullAlerts"
+class="mt-6">
+</div>
+
+</div>
+
+</section>
 
 </div>
 
 </main>
+
+</div>
 </div>
 
 
 <script type="module">
 
-/* FIREBASE */
-
 import {
-  initializeApp
+initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut
+getAuth,
+GoogleAuthProvider,
+signInWithPopup,
+onAuthStateChanged,
+signOut
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-
 import {
-  getDatabase,
-  ref,
-  get,
-  set
+getDatabase,
+ref,
+get,
+set,
+update
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-/* FIREBASE CONFIG */
+const firebaseConfig={
 
-const firebaseConfig = {
+apiKey:
+"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
 
-  apiKey:
-  "AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
+authDomain:
+"isp-billing-system-27cf8.firebaseapp.com",
 
-  authDomain:
-  "isp-billing-system-27cf8.firebaseapp.com",
+databaseURL:
+"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
 
-  databaseURL:
-  "https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
+projectId:
+"isp-billing-system-27cf8",
 
-  projectId:
-  "isp-billing-system-27cf8",
+storageBucket:
+"isp-billing-system-27cf8.firebasestorage.app",
 
-  storageBucket:
-  "isp-billing-system-27cf8.firebasestorage.app",
+messagingSenderId:
+"643339508063",
 
-  messagingSenderId:
-  "643339508063",
+appId:
+"1:643339508063:web:232e6769f7128b6e323eea",
 
-  appId:
-  "1:643339508063:web:232e6769f7128b6e323eea",
-
-  measurementId:
-  "G-J0QK9KKPC6"
+measurementId:
+"G-J0QK9KKPC6"
 
 };
 
 
-const app =
-initializeApp(firebaseConfig);
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
 
-const auth =
-getAuth(app);
+const provider=new GoogleAuthProvider();
 
-const db =
-getDatabase(app);
-
-const googleProvider =
-new GoogleAuthProvider();
-
-googleProvider.setCustomParameters({
-  prompt:"select_account"
+provider.setCustomParameters({
+prompt:"select_account"
 });
 
 
-let dealerId = null;
-
-let customers = {};
-
-let packages = {};
-
-let bills = {};
-
-let payments = {};
+let dealerId=null;
+let dealer=null;
+let customers={};
+let packages={};
+let bills={};
+let payments={};
 
 
-/* GOOGLE LOGIN */
+/* GOOGLE */
 
-document
-.getElementById("googleLogin")
-.onclick = async () => {
+document.getElementById("googleLogin")
+.onclick=async()=>{
 
-  const button =
-  document.getElementById("googleLogin");
+try{
 
-  const error =
-  document.getElementById("loginError");
+await signInWithPopup(auth,provider);
 
-  error.innerText = "";
+}catch(e){
 
-  button.disabled = true;
+document.getElementById("loginError")
+.innerText=e.code+" : "+e.message;
 
-  button.innerText =
-  "Signing in...";
-
-  try {
-
-    await signInWithPopup(
-      auth,
-      googleProvider
-    );
-
-  } catch(errorObject) {
-
-    console.error(errorObject);
-
-    error.innerText =
-      errorObject.code +
-      " : " +
-      errorObject.message;
-
-    button.disabled = false;
-
-    button.innerText =
-      "Continue with Google";
-
-  }
+}
 
 };
 
 
 /* AUTH */
 
-onAuthStateChanged(
-  auth,
-  async user => {
+onAuthStateChanged(auth,async user=>{
 
-    if(!user){
+if(!user){
 
-      document
-      .getElementById("loginPage")
-      .classList
-      .remove("hidden");
+show("loginPage");
 
-      document
-      .getElementById("app")
-      .classList
-      .add("hidden");
+return;
 
-      return;
+}
 
-    }
+document.getElementById("dealerEmail")
+.innerText=user.email;
+
+await findDealer(user);
+
+});
 
 
-    document
-    .getElementById("loginPage")
-    .classList
-    .add("hidden");
+async function findDealer(user){
 
-    document
-    .getElementById("app")
-    .classList
-    .remove("hidden");
+const snap=await get(ref(db,"dealers"));
+
+if(!snap.exists()){
+
+showLicense(
+"No dealer account found."
+);
+
+return;
+
+}
+
+const all=snap.val();
 
 
-    document
-    .getElementById("userEmail")
-    .innerText =
-    user.email;
-
-
-    await loadDealer(user.uid);
-
-  }
+let found=Object.entries(all)
+.find(([id,d])=>
+d.email &&
+d.email.toLowerCase()===
+user.email.toLowerCase()
 );
 
 
-/* LOGOUT */
+if(!found){
+
+showLicense(
+"Enter the License Key issued by Super Admin."
+);
+
+return;
+
+}
+
+
+dealerId=found[0];
+dealer=found[1];
+
+
+// Already verified by email + license
+await verifyDealer(dealer);
+
+}
+
+
+/* LICENSE */
+
+function showLicense(message){
+
+hideAll();
 
 document
-.getElementById("logout")
-.onclick = async () => {
+.getElementById("licensePage")
+.classList.remove("hidden");
 
-  await signOut(auth);
+document
+.getElementById("licenseMessage")
+innerText=message;
+
+}
+
+
+document.getElementById("verifyLicense")
+.onclick=async()=>{
+
+const key=
+document.getElementById("licenseInput")
+.value.trim().toUpperCase();
+
+if(!key){
+
+document.getElementById("licenseMessage")
+.innerText="Please enter License Key.";
+
+return;
+
+}
+
+
+const snap=await get(ref(db,"dealers"));
+
+if(!snap.exists())return;
+
+
+const all=snap.val();
+
+
+const found=
+Object.entries(all)
+.find(([id,d])=>
+d.licenseKey &&
+d.licenseKey.toUpperCase()===key
+);
+
+
+if(!found){
+
+document.getElementById("licenseMessage")
+innerText="❌ Invalid License Key.";
+
+return;
+
+}
+
+
+dealerId=found[0];
+dealer=found[1];
+
+
+const user=auth.currentUser;
+
+
+/*
+IMPORTANT:
+Connect Google account to dealer
+*/
+
+await update(
+ref(db,"dealers/"+dealerId),
+{
+uid:user.uid,
+email:user.email
+}
+);
+
+
+await verifyDealer(dealer);
+
 
 };
 
 
-/* LOAD DEALER */
+async function verifyDealer(d){
 
-async function loadDealer(uid){
+if(d.status!=="active"){
 
-  try {
+showLicense(
+"🔴 Your dealer account is suspended."
+);
 
-    const snapshot =
-    await get(
-      ref(db,"dealers")
-    );
-
-
-    if(!snapshot.exists()){
-
-      showDealerError(
-        "No dealer records found."
-      );
-
-      return;
-
-    }
-
-
-    const dealers =
-    snapshot.val();
-
-
-    const found =
-    Object
-    .entries(dealers)
-    .find(
-      ([id,dealer]) =>
-      dealer.uid === uid
-    );
-
-
-    if(!found){
-
-      showDealerError(
-        "This Google account is not registered as a dealer."
-      );
-
-      return;
-
-    }
-
-
-    dealerId =
-    found[0];
-
-
-    const dealer =
-    found[1];
-
-
-    if(
-      dealer.status &&
-      dealer.status !== "active"
-    ){
-
-      showDealerError(
-        "Dealer account is inactive."
-      );
-
-      return;
-
-    }
-
-
-    document
-    .getElementById("dealerInfo")
-    .innerHTML = `
-
-      <h2 class="text-xl font-bold">
-        👨‍💼 ${escapeHTML(dealer.name || "Dealer")}
-      </h2>
-
-      <p class="text-gray-500 mt-1">
-        ${escapeHTML(dealer.email || "")}
-      </p>
-
-      <div class="mt-3 grid md:grid-cols-3 gap-3">
-
-        <div>
-          <b>License</b>
-          <p>${escapeHTML(dealer.licenseKey || "-")}</p>
-        </div>
-
-        <div>
-          <b>Expiry</b>
-          <p>${escapeHTML(dealer.licenseExpiry || "-")}</p>
-        </div>
-
-        <div>
-          <b>Status</b>
-          <p class="text-green-600">
-            ● Active
-          </p>
-        </div>
-
-      </div>
-    `;
-
-
-    await loadData();
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    showDealerError(
-      error.message
-    );
-
-  }
+return;
 
 }
 
 
-function showDealerError(message){
+if(
+d.licenseExpiry &&
+new Date(d.licenseExpiry)<new Date()
+){
 
-  document
-  .getElementById("dealerInfo")
-  .innerHTML = `
+showLicense(
+"⏰ Your License has expired."
+);
 
-    <div class="text-red-500 font-bold">
-      ${escapeHTML(message)}
-    </div>
-
-  `;
+return;
 
 }
 
 
-/* LOAD DATA */
+showApp();
+
+await loadData();
+
+}
+
+
+/* APP */
+
+function showApp(){
+
+hideAll();
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+document
+.getElementById("dealerName")
+.innerText=
+dealer.name||"Dealer";
+
+document
+.getElementById("welcomeName")
+.innerText=
+dealer.name||"Dealer";
+
+document
+.getElementById("sideLicense")
+.innerText=
+dealer.licenseKey||"-";
+
+document
+.getElementById("sideExpiry")
+.innerText=
+"Expiry: "+
+(dealer.licenseExpiry||"Unlimited");
+
+document
+.getElementById("heroExpiry")
+.innerText=
+"Expires: "+
+(dealer.licenseExpiry||"Unlimited");
+
+}
+
+
+function hideAll(){
+
+[
+"loginPage",
+"licensePage",
+"app"
+].forEach(id=>{
+
+document
+.getElementById(id)
+.classList.add("hidden");
+
+});
+
+}
+
+
+function show(id){
+
+hideAll();
+
+document
+.getElementById(id)
+.classList.remove("hidden");
+
+}
+
+
+/* LOAD */
 
 async function loadData(){
 
-  if(!dealerId) return;
+const base=
+"dealers/"+dealerId;
 
 
-  const base =
-  "dealers/" + dealerId;
+const cs=await get(
+ref(db,base+"/customers")
+);
+
+const ps=await get(
+ref(db,base+"/packages")
+);
+
+const bs=await get(
+ref(db,base+"/bills")
+);
+
+const pays=await get(
+ref(db,base+"/payments")
+);
 
 
-  const customerSnapshot =
-  await get(
-    ref(
-      db,
-      base + "/customers"
-    )
-  );
+customers=cs.exists()?cs.val():{};
+packages=ps.exists()?ps.val():{};
+bills=bs.exists()?bs.val():{};
+payments=pays.exists()?pays.val():{};
 
 
-  const packageSnapshot =
-  await get(
-    ref(
-      db,
-      base + "/packages"
-    )
-  );
-
-
-  const billSnapshot =
-  await get(
-    ref(
-      db,
-      base + "/bills"
-    )
-  );
-
-
-  const paymentSnapshot =
-  await get(
-    ref(
-      db,
-      base + "/payments"
-    )
-  );
-
-
-  customers =
-  customerSnapshot.exists()
-  ? customerSnapshot.val()
-  : {};
-
-
-  packages =
-  packageSnapshot.exists()
-  ? packageSnapshot.val()
-  : {};
-
-
-  bills =
-  billSnapshot.exists()
-  ? billSnapshot.val()
-  : {};
-
-
-  payments =
-  paymentSnapshot.exists()
-  ? paymentSnapshot.val()
-  : {};
-
-
-  renderCustomers();
-
-  renderPackages();
-
-  renderBills();
-
-  renderPayments();
-
-  updateDashboard();
-
-  showAlerts();
+renderCustomers();
+renderPackages();
+renderBills();
+renderPayments();
+updateDashboard();
+showAlerts();
 
 }
 
 
-/* ADD CUSTOMER */
+/* NAV */
+
+window.showSection=function(id,el){
+
+[
+"dashboard",
+"customers",
+"packages",
+"bills",
+"payments",
+"alerts"
+].forEach(x=>
+document.getElementById(x)
+.classList.add("hidden")
+);
+
+document.getElementById(id)
+.classList.remove("hidden");
 
 document
-.getElementById("addCustomer")
-.onclick = async () => {
+.querySelectorAll(".nav")
+.forEach(x=>x.classList.remove("active"));
 
-  if(!dealerId){
+if(el)el.classList.add("active");
 
-    alert("Dealer login required.");
+const titles={
+dashboard:"Dashboard",
+customers:"Customers",
+packages:"Packages",
+bills:"Bills",
+payments:"Payments",
+alerts:"Expiry Alerts"
+};
 
-    return;
-
-  }
-
-
-  const name =
-  document
-  .getElementById("cName")
-  .value
-  .trim();
-
-
-  if(!name){
-
-    alert("Customer name required.");
-
-    return;
-
-  }
-
-
-  const id =
-  "CUST-" + Date.now();
-
-
-  const customer = {
-
-    id,
-
-    name,
-
-    phone:
-    document
-    .getElementById("cPhone")
-    .value
-    .trim(),
-
-    address:
-    document
-    .getElementById("cAddress")
-    .value
-    .trim(),
-
-    username:
-    document
-    .getElementById("cUsername")
-    .value
-    .trim(),
-
-    package:
-    document
-    .getElementById("cPackage")
-    .value
-    .trim(),
-
-    monthlyFee:
-    Number(
-      document
-      .getElementById("cFee")
-      .value || 0
-    ),
-
-    startDate:
-    document
-    .getElementById("cStart")
-    .value,
-
-    expiryDate:
-    document
-    .getElementById("cExpiry")
-    .value,
-
-    status:
-    document
-    .getElementById("cStatus")
-    .value,
-
-    createdAt:
-    new Date().toISOString()
-
-  };
-
-
-  await set(
-
-    ref(
-      db,
-      "dealers/" +
-      dealerId +
-      "/customers/" +
-      id
-    ),
-
-    customer
-
-  );
-
-
-  alert("✅ Customer added");
-
-  clearCustomerForm();
-
-  await loadData();
+document.getElementById("pageTitle")
+.innerText=titles[id];
 
 };
 
 
-function clearCustomerForm(){
+/* CUSTOMER */
 
-  [
-    "cName",
-    "cPhone",
-    "cAddress",
-    "cUsername",
-    "cPackage",
-    "cFee",
-    "cStart",
-    "cExpiry"
-  ]
-  .forEach(
-    id =>
-    document
-    .getElementById(id)
-    .value = ""
-  );
+document.getElementById("addCustomer")
+.onclick=async()=>{
+
+const name=
+document.getElementById("cName").value.trim();
+
+if(!name){
+
+alert("Customer name required.");
+return;
 
 }
 
 
-/* CUSTOMERS */
+const limit=Number(
+dealer.customerLimit||999999
+);
+
+if(Object.keys(customers).length>=limit){
+
+alert(
+"Customer limit reached: "+limit
+);
+
+return;
+
+}
+
+
+const id="CUST-"+Date.now();
+
+
+const data={
+
+id,
+name,
+
+phone:
+document.getElementById("cPhone").value.trim(),
+
+username:
+document.getElementById("cUsername").value.trim(),
+
+package:
+document.getElementById("cPackage").value.trim(),
+
+monthlyFee:
+Number(
+document.getElementById("cFee").value||0
+),
+
+expiryDate:
+document.getElementById("cExpiry").value,
+
+status:"active",
+
+createdAt:new Date().toISOString()
+
+};
+
+
+await set(
+ref(db,
+"dealers/"+dealerId+"/customers/"+id),
+data
+);
+
+
+[
+"cName",
+"cPhone",
+"cUsername",
+"cPackage",
+"cFee",
+"cExpiry"
+].forEach(id=>
+document.getElementById(id).value=""
+);
+
+
+alert("✅ Customer added");
+
+await loadData();
+
+};
+
+
+/* CUSTOMER LIST */
 
 function renderCustomers(){
 
-  const search =
-  document
-  .getElementById("search")
-  .value
-  .toLowerCase();
+const search=
+document.getElementById("customerSearch")
+.value.toLowerCase();
+
+let html="";
+let options=
+'<option value="">Select Customer</option>';
 
 
-  let html = "";
+Object.entries(customers).forEach(([id,c])=>{
 
-  let options =
-  `<option value="">
-  Select Customer
-  </option>`;
+const text=
+(
+c.name+
+" "+
+(c.phone||"")+
+(c.username||"")+
+(c.package||"")
+).toLowerCase();
 
-
-  Object
-  .entries(customers)
-  .forEach(
-    ([id,c]) => {
-
-      const text =
-      (
-        (c.name || "") +
-        (c.phone || "") +
-        (c.username || "") +
-        (c.package || "")
-      )
-      .toLowerCase();
+if(!text.includes(search))return;
 
 
-      if(
-        !text.includes(search)
-      ) return;
+html+=`
+
+<tr class="border-b border-white/5">
+
+<td class="p-3">
+<b>${esc(c.name)}</b>
+<br>
+<span class="text-xs text-slate-500">
+${esc(c.username||"")}
+</span>
+</td>
+
+<td class="p-3">
+${esc(c.phone||"-")}
+</td>
+
+<td class="p-3">
+${esc(c.package||"-")}
+</td>
+
+<td class="p-3">
+Rs ${Number(c.monthlyFee||0)}
+</td>
+
+<td class="p-3">
+${esc(c.expiryDate||"-")}
+</td>
+
+<td class="p-3">
+<span class="${
+c.status==="active"
+?"text-green-400"
+:"text-red-400"
+}">
+● ${esc(c.status||"")}
+</span>
+</td>
+
+<td class="p-3">
+
+<button
+class="bg-green-500/15 text-green-400
+px-3 py-2 rounded-lg"
+onclick="whatsapp('${id}')">
+
+WhatsApp
+
+</button>
+
+</td>
+
+</tr>
+`;
 
 
-      html += `
+options+=`
+<option value="${id}">
+${esc(c.name)}
+</option>
+`;
 
-        <tr class="border-b">
-
-          <td class="p-2">
-            ${escapeHTML(c.name || "")}
-          </td>
-
-          <td class="p-2">
-            ${escapeHTML(c.phone || "")}
-          </td>
-
-          <td class="p-2">
-            ${escapeHTML(c.package || "")}
-          </td>
-
-          <td class="p-2">
-            Rs ${Number(c.monthlyFee || 0)}
-          </td>
-
-          <td class="p-2">
-            ${escapeHTML(c.expiryDate || "")}
-          </td>
-
-          <td class="p-2">
-            ${escapeHTML(c.status || "")}
-          </td>
-
-          <td class="p-2">
-
-            <button
-            class="bg-green-600 text-white"
-            onclick="sendWhatsApp('${id}')">
-
-              WhatsApp
-
-            </button>
-
-          </td>
-
-        </tr>
-      `;
+});
 
 
-      options += `
-
-        <option value="${id}">
-          ${escapeHTML(c.name || id)}
-        </option>
-
-      `;
-
-    }
-  );
-
-
-  document
-  .getElementById("customerTable")
-  .innerHTML = html;
+document.getElementById("customerTable")
+.innerHTML=html||`
+<tr>
+<td colspan="7"
+class="p-5 text-center text-slate-500">
+No customers found.
+</td>
+</tr>
+`;
 
 
-  document
-  .getElementById("billCustomer")
-  .innerHTML = options;
+document.getElementById("billCustomer")
+.innerHTML=options;
 
-
-  document
-  .getElementById("payCustomer")
-  .innerHTML = options;
+document.getElementById("payCustomer")
+.innerHTML=options;
 
 }
 
 
-document
-.getElementById("search")
-.oninput =
-renderCustomers;
+document.getElementById("customerSearch")
+.oninput=renderCustomers;
 
 
 /* WHATSAPP */
 
-window.sendWhatsApp =
-function(id){
+window.whatsapp=function(id){
 
-  const customer =
-  customers[id];
+const c=customers[id];
 
+if(!c||!c.phone){
 
-  if(!customer) return;
-
-
-  const phone =
-  (customer.phone || "")
-  .replace(/\D/g,"");
-
-
-  if(!phone){
-
-    alert(
-      "Customer phone number missing."
-    );
-
-    return;
-
-  }
-
-
-  const message =
-`Assalam-o-Alaikum ${customer.name},
-
-Aapka internet package ${customer.expiryDate || "soon"} ko expire ho raha hai.
-
-Kindly package renew kar dein.
-
-Shukriya.`;
-
-
-  window.open(
-    "https://wa.me/" +
-    phone +
-    "?text=" +
-    encodeURIComponent(message),
-    "_blank"
-  );
-
-};
-
-
-/* ALERTS */
-
-function showAlerts(){
-
-  const now =
-  new Date();
-
-  let html = "";
-
-  let count = 0;
-
-
-  Object
-  .entries(customers)
-  .forEach(
-    ([id,c]) => {
-
-      if(!c.expiryDate)
-      return;
-
-
-      const expiry =
-      new Date(c.expiryDate);
-
-
-      const days =
-      Math.ceil(
-        (expiry - now) /
-        86400000
-      );
-
-
-      if(days <= 7){
-
-        count++;
-
-
-        let statusText;
-
-
-        if(days < 0){
-
-          statusText =
-          "🔴 EXPIRED";
-
-        }
-        else if(days === 0){
-
-          statusText =
-          "🟠 EXPIRES TODAY";
-
-        }
-        else{
-
-          statusText =
-          "🟡 " +
-          days +
-          " DAYS LEFT";
-
-        }
-
-
-        html += `
-
-          <div
-          class="border rounded-xl p-4 mb-3">
-
-            <b>
-              ${escapeHTML(c.name || "")}
-            </b>
-
-            <p>
-              ${statusText}
-            </p>
-
-            <p class="text-gray-500">
-              Expiry:
-              ${escapeHTML(c.expiryDate)}
-            </p>
-
-            <button
-            class="bg-green-600 text-white mt-2"
-            onclick="sendWhatsApp('${id}')">
-
-              WhatsApp
-
-            </button>
-
-          </div>
-
-        `;
-
-      }
-
-    }
-  );
-
-
-  document
-  .getElementById("alerts")
-  .innerHTML =
-  html || "No expiry alerts.";
-
-
-  document
-  .getElementById("alertCount")
-  .innerText =
-  count;
+alert("Phone number not available.");
+return;
 
 }
 
+let phone=c.phone.replace(/\D/g,"");
 
-/* ADD PACKAGE */
+if(phone.startsWith("0"))
+phone="92"+phone.substring(1);
 
-document
-.getElementById("addPackage")
-.onclick = async () => {
+const msg=
+`Assalam-o-Alaikum ${c.name},
 
-  if(!dealerId) return;
+Your ISP package is expiring on ${c.expiryDate||"soon"}.
 
+Please renew your internet package.
 
-  const name =
-  document
-  .getElementById("pName")
-  .value
-  .trim();
+Thank you.`;
 
-
-  if(!name){
-
-    alert("Package name required.");
-
-    return;
-
-  }
-
-
-  const id =
-  "PKG-" + Date.now();
-
-
-  await set(
-
-    ref(
-      db,
-      "dealers/" +
-      dealerId +
-      "/packages/" +
-      id
-    ),
-
-    {
-
-      id,
-
-      name,
-
-      speed:
-      document
-      .getElementById("pSpeed")
-      .value
-      .trim(),
-
-      price:
-      Number(
-        document
-        .getElementById("pPrice")
-        .value || 0
-      ),
-
-      status:"active",
-
-      createdAt:
-      new Date().toISOString()
-
-    }
-
-  );
-
-
-  document.getElementById("pName").value="";
-  document.getElementById("pSpeed").value="";
-  document.getElementById("pPrice").value="";
-
-
-  alert("✅ Package added");
-
-  await loadData();
+window.open(
+"https://wa.me/"+
+phone+
+"?text="+
+encodeURIComponent(msg),
+"_blank"
+);
 
 };
 
 
 /* PACKAGES */
 
-function renderPackages(){
+document.getElementById("addPackage")
+.onclick=async()=>{
 
-  let html = "";
+const name=
+document.getElementById("pName").value.trim();
 
-
-  Object
-  .values(packages)
-  .forEach(
-    p => {
-
-      html += `
-
-        <div
-        class="border rounded-xl p-4">
-
-          <h3 class="font-bold">
-            ${escapeHTML(p.name || "")}
-          </h3>
-
-          <p>
-            Speed:
-            ${escapeHTML(p.speed || "")}
-          </p>
-
-          <p>
-            Price:
-            Rs ${Number(p.price || 0)}
-          </p>
-
-          <p class="text-green-600">
-            ● Active
-          </p>
-
-        </div>
-
-      `;
-
-    }
-  );
+if(!name)return;
 
 
-  document
-  .getElementById("packageList")
-  .innerHTML =
-  html || "No packages.";
+const id="PKG-"+Date.now();
+
+
+await set(
+ref(db,
+"dealers/"+dealerId+"/packages/"+id),
+{
+
+id,
+name,
+
+speed:
+document.getElementById("pSpeed").value.trim(),
+
+price:
+Number(
+document.getElementById("pPrice").value||0
+),
+
+createdAt:
+new Date().toISOString()
 
 }
+);
 
 
-/* CREATE BILL */
-
-document
-.getElementById("createBill")
-.onclick = async () => {
-
-  if(!dealerId) return;
-
-
-  const customerId =
-  document
-  .getElementById("billCustomer")
-  .value;
+[
+"pName",
+"pSpeed",
+"pPrice"
+].forEach(id=>
+document.getElementById(id).value=""
+);
 
 
-  const amount =
-  Number(
-    document
-    .getElementById("billAmount")
-    .value || 0
-  );
+alert("✅ Package added");
 
-
-  if(
-    !customerId ||
-    amount <= 0
-  ){
-
-    alert(
-      "Select customer and enter amount."
-    );
-
-    return;
-
-  }
-
-
-  const id =
-  "BILL-" + Date.now();
-
-
-  await set(
-
-    ref(
-      db,
-      "dealers/" +
-      dealerId +
-      "/bills/" +
-      id
-    ),
-
-    {
-
-      id,
-
-      customerId,
-
-      amount,
-
-      dueDate:
-      document
-      .getElementById("billDue")
-      .value,
-
-      status:"unpaid",
-
-      createdAt:
-      new Date().toISOString()
-
-    }
-
-  );
-
-
-  document
-  .getElementById("billAmount")
-  .value = "";
-
-
-  alert("✅ Bill created");
-
-  await loadData();
+await loadData();
 
 };
 
 
-/* BILLS */
+function renderPackages(){
+
+let html="";
+
+Object.values(packages).forEach(p=>{
+
+html+=`
+
+<div class="glass rounded-2xl p-5">
+
+<div class="text-3xl">
+⚡
+</div>
+
+<h3 class="font-black text-lg mt-3">
+${esc(p.name)}
+</h3>
+
+<p class="text-cyan-400 mt-1">
+${esc(p.speed||"")}
+</p>
+
+<p class="text-2xl font-black mt-3">
+Rs ${Number(p.price||0)}
+</p>
+
+<p class="text-xs text-slate-500">
+Monthly
+</p>
+
+</div>
+`;
+
+});
+
+
+document.getElementById("packageList")
+.innerHTML=html||`
+<p class="text-slate-500">
+No packages yet.
+</p>
+`;
+
+}
+
+
+/* BILL */
+
+document.getElementById("createBill")
+.onclick=async()=>{
+
+const customerId=
+document.getElementById("billCustomer").value;
+
+const amount=
+Number(
+document.getElementById("billAmount").value||0
+);
+
+if(!customerId||amount<=0){
+
+alert("Select customer and amount.");
+return;
+
+}
+
+
+const id="BILL-"+Date.now();
+
+
+await set(
+ref(db,
+"dealers/"+dealerId+"/bills/"+id),
+{
+
+id,
+customerId,
+amount,
+
+dueDate:
+document.getElementById("billDue").value,
+
+status:"unpaid",
+
+createdAt:
+new Date().toISOString()
+
+}
+);
+
+
+document.getElementById("billAmount").value="";
+
+alert("✅ Bill created");
+
+await loadData();
+
+};
+
 
 function renderBills(){
 
-  let html = "";
+let html="";
+
+Object.values(bills)
+.reverse()
+.forEach(b=>{
+
+const c=customers[b.customerId];
+
+html+=`
+
+<div class="glass rounded-2xl p-5 mb-3">
+
+<div class="flex justify-between">
+
+<div>
+
+<b>${esc(c?.name||"Customer")}</b>
+
+<p class="text-slate-500 text-sm">
+Due: ${esc(b.dueDate||"-")}
+</p>
+
+</div>
+
+<div class="text-right">
+
+<p class="font-black text-xl">
+Rs ${Number(b.amount||0)}
+</p>
+
+<span class="text-yellow-400 text-sm">
+● ${esc(b.status)}
+</span>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+});
 
 
-  Object
-  .values(bills)
-  .forEach(
-    b => {
-
-      const customer =
-      customers[b.customerId];
-
-
-      html += `
-
-        <div
-        class="border rounded-xl p-4 mb-3">
-
-          <b>
-            ${escapeHTML(
-              customer?.name ||
-              b.customerId
-            )}
-          </b>
-
-          <p>
-            Bill:
-            Rs ${Number(b.amount || 0)}
-          </p>
-
-          <p>
-            Due:
-            ${escapeHTML(b.dueDate || "")}
-          </p>
-
-          <p>
-            Status:
-            <b>
-              ${escapeHTML(b.status || "")}
-            </b>
-          </p>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-  document
-  .getElementById("billList")
-  .innerHTML =
-  html || "No bills.";
+document.getElementById("billList")
+.innerHTML=html||`
+<p class="text-slate-500">
+No bills.
+</p>
+`;
 
 }
 
 
 /* PAYMENT */
 
-document
-.getElementById("addPayment")
-.onclick = async () => {
+document.getElementById("addPayment")
+.onclick=async()=>{
 
-  if(!dealerId) return;
+const customerId=
+document.getElementById("payCustomer").value;
 
+const amount=
+Number(
+document.getElementById("payAmount").value||0
+);
 
-  const customerId =
-  document
-  .getElementById("payCustomer")
-  .value;
+if(!customerId||amount<=0){
 
+alert("Select customer and amount.");
+return;
 
-  const amount =
-  Number(
-    document
-    .getElementById("payAmount")
-    .value || 0
-  );
+}
 
 
-  if(
-    !customerId ||
-    amount <= 0
-  ){
-
-    alert(
-      "Select customer and enter amount."
-    );
-
-    return;
-
-  }
+const id="PAY-"+Date.now();
 
 
-  const id =
-  "PAY-" + Date.now();
+await set(
+ref(db,
+"dealers/"+dealerId+"/payments/"+id),
+{
+
+id,
+customerId,
+amount,
+
+method:
+document.getElementById("payMethod").value,
+
+status:"paid",
+
+date:
+new Date().toISOString()
+
+}
+);
 
 
-  await set(
+document.getElementById("payAmount").value="";
 
-    ref(
-      db,
-      "dealers/" +
-      dealerId +
-      "/payments/" +
-      id
-    ),
+alert("✅ Payment added");
 
-    {
-
-      id,
-
-      customerId,
-
-      amount,
-
-      method:
-      document
-      .getElementById("payMethod")
-      .value,
-
-      status:"paid",
-
-      date:
-      new Date().toISOString()
-
-    }
-
-  );
-
-
-  document
-  .getElementById("payAmount")
-  .value = "";
-
-
-  alert("✅ Payment added");
-
-  await loadData();
+await loadData();
 
 };
 
 
-/* PAYMENTS */
-
 function renderPayments(){
 
-  let html = "";
+let html="";
+
+Object.values(payments)
+.reverse()
+.forEach(p=>{
+
+const c=customers[p.customerId];
+
+html+=`
+
+<div class="glass rounded-2xl p-5 mb-3">
+
+<div class="flex justify-between">
+
+<div>
+
+<b>${esc(c?.name||"Customer")}</b>
+
+<p class="text-slate-500 text-sm">
+${esc(p.method||"")}
+</p>
+
+</div>
+
+<div class="text-right">
+
+<p class="font-black text-xl text-green-400">
+Rs ${Number(p.amount||0)}
+</p>
+
+<span class="text-xs text-green-400">
+● PAID
+</span>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+});
 
 
-  Object
-  .values(payments)
-  .slice(-20)
-  .reverse()
-  .forEach(
-    p => {
-
-      const customer =
-      customers[p.customerId];
-
-
-      html += `
-
-        <div
-        class="border rounded-xl p-3 mb-2">
-
-          <b>
-            ${escapeHTML(
-              customer?.name ||
-              p.customerId
-            )}
-          </b>
-
-          <p>
-            Rs ${Number(p.amount || 0)}
-          </p>
-
-          <p>
-            ${escapeHTML(p.method || "")}
-          </p>
-
-          <p class="text-green-600">
-            ● Paid
-          </p>
-
-        </div>
-
-      `;
-
-    }
-  );
-
-
-  document
-  .getElementById("paymentList")
-  .innerHTML =
-  html || "No payments.";
+document.getElementById("paymentList")
+.innerHTML=html||`
+<p class="text-slate-500">
+No payments.
+</p>
+`;
 
 }
 
@@ -1627,77 +1720,167 @@ function renderPayments(){
 
 function updateDashboard(){
 
-  const list =
-  Object.values(customers);
+const list=Object.values(customers);
 
-  const billList =
-  Object.values(bills);
+const billList=Object.values(bills);
 
-  const paymentList =
-  Object.values(payments);
+const payList=Object.values(payments);
 
-  const today =
-  new Date();
+const now=new Date();
 
 
-  document
-  .getElementById("totalCustomers")
-  .innerText =
-  list.length;
+document.getElementById("statCustomers")
+.innerText=list.length;
 
 
-  document
-  .getElementById("activeCustomers")
-  .innerText =
-  list.filter(
-    c => c.status === "active"
-  ).length;
+document.getElementById("statActive")
+.innerText=list.filter(
+c=>c.status==="active"
+).length;
 
 
-  document
-  .getElementById("expiredCustomers")
-  .innerText =
-  list.filter(
-    c =>
-    c.expiryDate &&
-    new Date(c.expiryDate) < today
-  ).length;
+document.getElementById("statExpired")
+.innerText=list.filter(
+c=>c.expiryDate &&
+new Date(c.expiryDate)<now
+).length;
 
 
-  document
-  .getElementById("unpaidBills")
-  .innerText =
-  billList.filter(
-    b => b.status === "unpaid"
-  ).length;
+document.getElementById("statUnpaid")
+.innerText=billList.filter(
+b=>b.status==="unpaid"
+).length;
 
 
-  const total =
-  paymentList.reduce(
-    (sum,p) =>
-    sum + Number(p.amount || 0),
-    0
-  );
+const paid=payList.reduce(
+(a,p)=>a+Number(p.amount||0),0
+);
 
 
-  document
-  .getElementById("paidAmount")
-  .innerText =
-  "Rs " + total;
+document.getElementById("statPaid")
+.innerText=
+"Rs "+paid.toLocaleString();
 
 }
 
 
-/* SECURITY */
+/* ALERTS */
 
-function escapeHTML(value){
+function showAlerts(){
 
-  return String(value)
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
+let html="";
+let count=0;
+
+const now=new Date();
+
+
+Object.entries(customers).forEach(([id,c])=>{
+
+if(!c.expiryDate)return;
+
+
+const expiry=new Date(c.expiryDate);
+
+const days=Math.ceil(
+(expiry-now)/86400000
+);
+
+
+if(days<=7){
+
+count++;
+
+const status=
+days<0
+?"🔴 EXPIRED"
+:days===0
+?"🟠 EXPIRES TODAY"
+:"🟡 "+days+" DAYS LEFT";
+
+
+html+=`
+
+<div class="glass rounded-2xl p-5 mb-3">
+
+<div class="flex justify-between gap-3">
+
+<div>
+
+<h3 class="font-bold">
+${esc(c.name)}
+</h3>
+
+<p class="text-slate-500 text-sm">
+Expiry: ${esc(c.expiryDate)}
+</p>
+
+</div>
+
+<div class="text-right">
+
+<p>${status}</p>
+
+<button
+class="bg-green-500/15
+text-green-400
+px-3 py-2 rounded-lg mt-2"
+onclick="whatsapp('${id}')">
+
+WhatsApp
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+}
+
+});
+
+
+document.getElementById("alertBadge")
+.innerText=count;
+
+document.getElementById("dashboardAlerts")
+.innerHTML=
+html||
+`<p class="text-slate-500">
+No expiry alerts 🎉
+</p>`;
+
+document.getElementById("fullAlerts")
+.innerHTML=
+html||
+`<p class="text-slate-500">
+No expiry alerts 🎉
+</p>`;
+
+}
+
+
+/* LOGOUT */
+
+document.getElementById("logout")
+.onclick=()=>signOut(auth);
+
+document.getElementById("licenseLogout")
+.onclick=()=>signOut(auth);
+
+
+/* ESCAPE */
+
+function esc(v){
+
+return String(v??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
 }
 
