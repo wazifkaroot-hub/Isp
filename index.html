@@ -2,375 +2,119 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ISP Pro • Dealer Panel</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ISP Pro Dealer Panel</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-*{box-sizing:border-box}
-body{
-margin:0;
-font-family:Inter,Arial,sans-serif;
-background:#060913;
-color:#f8fafc;
-}
-.glass{
-background:rgba(15,23,42,.78);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(20px);
-box-shadow:0 20px 60px rgba(0,0,0,.25);
-}
-.gradient{
-background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);
-}
-.gradientText{
-background:linear-gradient(90deg,#818cf8,#c084fc,#22d3ee);
--webkit-background-clip:text;
-color:transparent;
-}
-input,select{
-width:100%;
-background:#0b1220;
-color:white;
-border:1px solid #263246;
-padding:13px 14px;
-border-radius:13px;
-outline:none;
-}
-input:focus,select:focus{
-border-color:#6366f1;
-box-shadow:0 0 0 3px #6366f122;
-}
-button{
-transition:.18s;
-}
-button:hover{
-transform:translateY(-1px);
-}
-.sidebar{
-background:#080c16;
-border-right:1px solid #ffffff0b;
-}
-.nav{
-padding:12px 14px;
-border-radius:12px;
-color:#94a3b8;
-cursor:pointer;
-margin-bottom:5px;
-}
-.nav:hover,.nav.active{
-background:#6366f120;
-color:white;
-}
-.card{
-background:rgba(15,23,42,.75);
-border:1px solid #ffffff0a;
-border-radius:22px;
-}
-.pulse{
-animation:pulse 2s infinite;
-}
-@keyframes pulse{
-0%,100%{opacity:1}
-50%{opacity:.55}
-}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-thumb{
-background:#334155;
-border-radius:20px;
-}
+body{margin:0;background:#050816;color:#f8fafc;font-family:Arial,sans-serif}
+.glass{background:rgba(15,23,42,.82);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(18px)}
+.gradient{background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2)}
+input,select{width:100%;background:#0b1220;color:#fff;border:1px solid #263246;padding:13px;border-radius:12px;outline:0}
+input:focus,select:focus{border-color:#6366f1}
+.card{background:rgba(15,23,42,.75);border:1px solid #ffffff0b;border-radius:20px}
+.nav{padding:12px;border-radius:12px;color:#94a3b8;cursor:pointer;margin-bottom:5px}
+.nav:hover,.nav.active{background:#6366f122;color:#fff}
 </style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-5">
+<div class="glass rounded-3xl p-8 w-full max-w-md text-center">
 
-<div id="loginScreen"
-class="min-h-screen flex items-center justify-center p-5">
+<div class="w-20 h-20 gradient rounded-3xl mx-auto flex items-center justify-center text-4xl">🌐</div>
 
-<div class="glass rounded-[30px] p-8 w-full max-w-md text-center">
+<h1 class="text-3xl font-black mt-5">ISP <span class="text-indigo-400">PRO</span></h1>
+<p class="text-slate-400 mt-2">Dealer Management System</p>
 
-<div class="w-20 h-20 gradient rounded-3xl
-mx-auto flex items-center justify-center
-text-4xl shadow-2xl">
-🌐
-</div>
-
-<h1 class="text-3xl font-black mt-6">
-ISP <span class="gradientText">PRO</span>
-</h1>
-
-<p class="text-slate-400 mt-2">
-Dealer Management System
-</p>
-
-<button
-id="googleBtn"
-class="w-full bg-white text-black
-font-bold py-3.5 rounded-xl mt-7">
-
-🇬 Continue with Google
-
+<button id="googleBtn" class="w-full bg-white text-black font-bold py-4 rounded-xl mt-7">
+🇬🇧 Continue with Google
 </button>
 
-<div id="loginError"
-class="text-red-400 text-xs mt-4">
-</div>
-
+<p id="loginError" class="text-red-400 text-xs mt-4"></p>
 </div>
 </div>
 
 
-<!-- ================= LICENSE ================= -->
+<!-- LICENSE -->
+<div id="licenseScreen" class="hidden min-h-screen flex items-center justify-center p-5">
+<div class="glass rounded-3xl p-8 w-full max-w-md">
 
-<div id="licenseScreen"
-class="hidden min-h-screen flex items-center justify-center p-5">
-
-<div class="glass rounded-[30px] p-8 w-full max-w-md text-center">
-
-<div class="w-20 h-20 bg-indigo-500/10
-border border-indigo-400/20 rounded-3xl
-mx-auto flex items-center justify-center
-text-4xl">
-🔐
+<div class="text-center">
+<div class="w-20 h-20 bg-indigo-500/10 rounded-3xl mx-auto flex items-center justify-center text-4xl">🔐</div>
+<h1 class="text-2xl font-black mt-5">License Verification</h1>
+<p class="text-slate-400 text-sm mt-2">Enter your license key issued by Super Admin.</p>
 </div>
 
-<h1 class="text-2xl font-black mt-6">
-License Verification
-</h1>
+<label class="block text-xs text-slate-400 mt-7">LICENSE KEY</label>
+<input id="licenseInput" class="mt-2 uppercase" placeholder="ISP-XXXX-XXXX-XXXX">
 
-<p class="text-slate-400 text-sm mt-2">
-Enter the license key provided by your Super Admin.
-</p>
-
-<div class="text-left mt-6">
-
-<label class="text-xs text-slate-400">
-LICENSE KEY
-</label>
-
-<input
-id="licenseInput"
-class="mt-2 uppercase"
-autocomplete="off"
-placeholder="ISP-XXXX-XXXX-XXXX">
-
-</div>
-
-<button
-id="licenseBtn"
-class="w-full gradient text-white
-font-bold py-3.5 rounded-xl mt-4">
-
+<button id="licenseBtn" class="w-full gradient py-4 rounded-xl font-bold mt-4">
 Verify License
-
 </button>
 
-<div
-id="licenseStatus"
-class="text-sm mt-4 min-h-[20px]">
-</div>
+<p id="licenseStatus" class="text-sm text-center mt-4 min-h-[22px]"></p>
 
-<div
-id="licenseInfo"
-class="hidden mt-5 text-left
-bg-black/20 rounded-2xl p-4 text-sm">
-</div>
-
-<button
-id="licenseLogout"
-class="w-full bg-slate-800
-py-3 rounded-xl mt-4">
-
+<button id="licenseLogout" class="w-full bg-slate-800 py-3 rounded-xl mt-4">
 Logout
-
 </button>
 
 </div>
 </div>
 
 
-<!-- ================= APP ================= -->
-
+<!-- APP -->
 <div id="appScreen" class="hidden">
 
 <div class="flex min-h-screen">
 
-<!-- SIDEBAR -->
-
-<aside class="sidebar w-64 p-5 hidden lg:block">
+<aside class="w-64 bg-[#080c16] border-r border-white/5 p-5 hidden lg:block">
 
 <div class="flex items-center gap-3 mb-8">
-
-<div class="w-11 h-11 gradient rounded-xl
-flex items-center justify-center text-xl">
-🌐
-</div>
-
+<div class="w-11 h-11 gradient rounded-xl flex items-center justify-center text-xl">🌐</div>
 <div>
 <h2 class="font-black">ISP PRO</h2>
-<p class="text-[10px] text-slate-500">
-DEALER PANEL
-</p>
+<p class="text-[10px] text-slate-500">DEALER PANEL</p>
+</div>
 </div>
 
+<div class="nav active" data-page="dashboard">📊 Dashboard</div>
+<div class="nav" data-page="customers">👥 Customers</div>
+<div class="nav" data-page="billing">🧾 Billing</div>
+<div class="nav" data-page="payments">💰 Payments</div>
+<div class="nav" data-page="speed">⚡ Speed Test</div>
+<div class="nav" data-page="alerts">🔔 Alerts</div>
+
+<div class="glass rounded-xl p-4 mt-8">
+<p class="text-[10px] text-slate-500">LICENSE</p>
+<p id="sideLicense" class="text-xs font-bold mt-1 break-all">-</p>
+<p id="sideExpiry" class="text-xs text-green-400 mt-2">-</p>
 </div>
 
-<div>
-
-<div class="nav active"
-data-page="dashboard">
-📊 Dashboard
-</div>
-
-<div class="nav"
-data-page="customers">
-👥 Customers
-</div>
-
-<div class="nav"
-data-page="packages">
-📦 Packages
-</div>
-
-<div class="nav"
-data-page="billing">
-🧾 Billing
-</div>
-
-<div class="nav"
-data-page="payments">
-💰 Payments
-</div>
-
-<div class="nav"
-data-page="speed">
-⚡ Speed Test
-</div>
-
-<div class="nav"
-data-page="alerts">
-🔔 Alerts
-</div>
-
-</div>
-
-<div class="glass rounded-2xl p-4 mt-8">
-
-<p class="text-[10px] text-slate-500">
-LICENSE
-</p>
-
-<p
-id="sideLicense"
-class="font-bold text-xs mt-1 break-all">
--
-</p>
-
-<p
-id="sideExpiry"
-class="text-xs text-green-400 mt-2">
--
-</p>
-
-</div>
-
-<button
-id="sideLogout"
-class="w-full bg-red-500/10
-text-red-400 py-3 rounded-xl mt-5">
-
+<button id="sideLogout" class="w-full bg-red-500/10 text-red-400 py-3 rounded-xl mt-5">
 Logout
-
 </button>
 
 </aside>
 
 
-<!-- MAIN -->
-
 <main class="flex-1 min-w-0">
 
-<header
-class="sticky top-0 z-30
-bg-[#060913]/90 backdrop-blur-xl
-border-b border-white/5">
+<header class="sticky top-0 z-20 bg-[#060913]/90 backdrop-blur-xl border-b border-white/5 p-4">
 
-<div class="p-4 lg:p-5
-flex justify-between items-center">
+<div class="flex justify-between items-center">
 
 <div>
-
-<p class="text-[10px] text-slate-500">
-ISP PRO / DEALER
-</p>
-
-<h1
-id="pageTitle"
-class="text-xl lg:text-2xl font-black">
-Dashboard
-</h1>
-
+<p class="text-[10px] text-slate-500">ISP PRO / DEALER</p>
+<h1 id="pageTitle" class="text-xl font-black">Dashboard</h1>
 </div>
 
-<div class="flex items-center gap-3">
-
-<div class="text-right hidden sm:block">
-
-<p
-id="topName"
-class="font-bold text-sm">
-Dealer
-</p>
-
-<p
-id="topEmail"
-class="text-[10px] text-slate-500">
--
-</p>
-
+<div class="text-right">
+<p id="topName" class="font-bold text-sm">Dealer</p>
+<p id="topEmail" class="text-[10px] text-slate-500">-</p>
 </div>
-
-<div class="w-11 h-11 gradient
-rounded-full flex items-center
-justify-center font-black">
-D
-</div>
-
-</div>
-
-</div>
-
-<!-- MOBILE NAV -->
-
-<div class="lg:hidden flex gap-2 overflow-x-auto px-4 pb-3">
-
-<button data-page="dashboard"
-class="mobileNav bg-indigo-500/20 px-4 py-2 rounded-xl text-sm">
-Dashboard
-</button>
-
-<button data-page="customers"
-class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
-Customers
-</button>
-
-<button data-page="billing"
-class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
-Billing
-</button>
-
-<button data-page="payments"
-class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
-Payments
-</button>
-
-<button data-page="speed"
-class="mobileNav bg-slate-800 px-4 py-2 rounded-xl text-sm">
-Speed
-</button>
 
 </div>
 
@@ -381,143 +125,39 @@ Speed
 
 
 <!-- DASHBOARD -->
-
 <section id="page-dashboard">
 
-<div class="card p-6 mb-6">
+<div class="card p-6">
+<p class="text-slate-500">Welcome back 👋</p>
+<h2 id="welcomeName" class="text-3xl font-black mt-1">Dealer</h2>
 
-<div class="flex flex-col md:flex-row
-justify-between gap-5">
-
-<div>
-
-<p class="text-slate-500 text-sm">
-Welcome back 👋
-</p>
-
-<h2
-id="welcomeName"
-class="text-3xl font-black mt-1">
-Dealer
-</h2>
-
-<p class="text-slate-500 mt-2">
-Your ISP business at a glance.
-</p>
-
+<div class="gradient rounded-2xl p-5 mt-6">
+<p class="text-xs text-white/70">LICENSE STATUS</p>
+<h3 class="text-2xl font-black">✓ ACTIVE</h3>
+<p id="heroExpiry" class="text-xs text-white/70 mt-2">-</p>
+</div>
 </div>
 
-<div class="gradient rounded-2xl p-5">
-
-<p class="text-white/70 text-xs">
-LICENSE STATUS
-</p>
-
-<h3 class="text-2xl font-black mt-1">
-✓ ACTIVE
-</h3>
-
-<p
-id="heroExpiry"
-class="text-white/70 text-xs mt-2">
--
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="grid grid-cols-2
-md:grid-cols-3 xl:grid-cols-5 gap-4">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
 
 <div class="card p-5">
-<p class="text-xs text-slate-500">
-Customers
-</p>
-<h2 id="sCustomers"
-class="text-3xl font-black mt-2">
-0
-</h2>
+<p class="text-xs text-slate-500">Customers</p>
+<h2 id="sCustomers" class="text-3xl font-black mt-2">0</h2>
 </div>
 
 <div class="card p-5">
-<p class="text-xs text-slate-500">
-Active
-</p>
-<h2 id="sActive"
-class="text-3xl font-black
-text-green-400 mt-2">
-0
-</h2>
+<p class="text-xs text-slate-500">Active</p>
+<h2 id="sActive" class="text-3xl font-black text-green-400 mt-2">0</h2>
 </div>
 
 <div class="card p-5">
-<p class="text-xs text-slate-500">
-Expired
-</p>
-<h2 id="sExpired"
-class="text-3xl font-black
-text-red-400 mt-2">
-0
-</h2>
+<p class="text-xs text-slate-500">Unpaid Bills</p>
+<h2 id="sUnpaid" class="text-3xl font-black text-yellow-400 mt-2">0</h2>
 </div>
 
 <div class="card p-5">
-<p class="text-xs text-slate-500">
-Unpaid Bills
-</p>
-<h2 id="sUnpaid"
-class="text-3xl font-black
-text-yellow-400 mt-2">
-0
-</h2>
-</div>
-
-<div class="card p-5">
-<p class="text-xs text-slate-500">
-Collected
-</p>
-<h2 id="sCollected"
-class="text-xl font-black
-text-cyan-400 mt-3">
-Rs 0
-</h2>
-</div>
-
-</div>
-
-
-<div class="card p-6 mt-6">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h2 class="font-black text-xl">
-🔔 Expiry Alerts
-</h2>
-
-<p class="text-xs text-slate-500 mt-1">
-Customers expiring soon
-</p>
-
-</div>
-
-<span
-id="alertCount"
-class="bg-red-500/15
-text-red-400 px-3 py-1
-rounded-full text-xs">
-0
-</span>
-
-</div>
-
-<div id="dashboardAlerts"
-class="mt-5">
+<p class="text-xs text-slate-500">Collected</p>
+<h2 id="sCollected" class="text-xl font-black text-cyan-400 mt-3">Rs 0</h2>
 </div>
 
 </div>
@@ -526,62 +166,33 @@ class="mt-5">
 
 
 <!-- CUSTOMERS -->
-
-<section id="page-customers"
-class="hidden">
+<section id="page-customers" class="hidden">
 
 <div class="card p-6">
 
-<div class="flex flex-col
-md:flex-row justify-between gap-4">
-
+<div class="flex justify-between gap-4 flex-wrap">
 <div>
-<h2 class="text-2xl font-black">
-👥 Customers
-</h2>
-<p class="text-slate-500 text-sm">
-Manage ISP customers
-</p>
+<h2 class="text-2xl font-black">👥 Customers</h2>
+<p class="text-slate-500 text-sm">Manage your ISP customers</p>
 </div>
 
-<input
-id="searchCustomer"
-class="md:w-72"
-placeholder="Search customer...">
-
+<input id="searchCustomer" class="max-w-xs" placeholder="Search customer">
 </div>
 
 
 <div class="grid md:grid-cols-3 gap-3 mt-6">
 
-<input id="cName"
-placeholder="Customer name">
-
-<input id="cPhone"
-placeholder="Phone">
-
-<input id="cUsername"
-placeholder="Username">
-
-<input id="cPackage"
-placeholder="Package">
-
-<input id="cFee"
-type="number"
-placeholder="Monthly fee">
-
-<input id="cExpiry"
-type="date">
+<input id="cName" placeholder="Customer name">
+<input id="cPhone" placeholder="Phone e.g. 03001234567">
+<input id="cUsername" placeholder="Username">
+<input id="cPackage" placeholder="Package">
+<input id="cFee" type="number" placeholder="Monthly fee">
+<input id="cExpiry" type="date">
 
 </div>
 
-<button
-id="addCustomer"
-class="gradient px-6 py-3
-rounded-xl font-bold mt-4">
-
+<button id="addCustomer" class="gradient px-6 py-3 rounded-xl font-bold mt-4">
 + Add Customer
-
 </button>
 
 
@@ -591,15 +202,12 @@ rounded-xl font-bold mt-4">
 
 <thead>
 <tr class="border-b border-white/10">
-
 <th class="p-3 text-left">Customer</th>
 <th class="p-3 text-left">Phone</th>
 <th class="p-3 text-left">Package</th>
 <th class="p-3 text-left">Fee</th>
 <th class="p-3 text-left">Expiry</th>
-<th class="p-3 text-left">Status</th>
-<th class="p-3">Action</th>
-
+<th class="p-3 text-left">Actions</th>
 </tr>
 </thead>
 
@@ -608,261 +216,124 @@ rounded-xl font-bold mt-4">
 </table>
 
 </div>
-
 </div>
-
-</section>
-
-
-<!-- PACKAGES -->
-
-<section id="page-packages"
-class="hidden">
-
-<div class="card p-6">
-
-<h2 class="text-2xl font-black">
-📦 Packages
-</h2>
-
-<div class="grid md:grid-cols-3 gap-3 mt-6">
-
-<input id="pName"
-placeholder="Package name">
-
-<input id="pSpeed"
-placeholder="Speed e.g. 20 Mbps">
-
-<input id="pPrice"
-type="number"
-placeholder="Monthly price">
-
-</div>
-
-<button
-id="addPackage"
-class="gradient px-6 py-3
-rounded-xl font-bold mt-4">
-
-+ Add Package
-
-</button>
-
-<div
-id="packageList"
-class="grid md:grid-cols-3 gap-4 mt-7">
-</div>
-
-</div>
-
 </section>
 
 
 <!-- BILLING -->
-
-<section id="page-billing"
-class="hidden">
+<section id="page-billing" class="hidden">
 
 <div class="card p-6">
 
-<h2 class="text-2xl font-black">
-🧾 Billing
-</h2>
+<h2 class="text-2xl font-black">🧾 Billing</h2>
 
 <div class="grid md:grid-cols-3 gap-3 mt-6">
 
 <select id="billCustomer">
-<option value="">
-Select Customer
-</option>
+<option value="">Select Customer</option>
 </select>
 
-<input
-id="billAmount"
-type="number"
-placeholder="Amount">
+<input id="billAmount" type="number" placeholder="Amount">
 
-<input
-id="billDue"
-type="date">
+<input id="billDue" type="date">
 
 </div>
 
-<button
-id="createBill"
-class="gradient px-6 py-3
-rounded-xl font-bold mt-4">
-
+<button id="createBill" class="gradient px-6 py-3 rounded-xl font-bold mt-4">
 Create Bill
-
 </button>
 
 <div id="billList" class="mt-7"></div>
 
 </div>
-
 </section>
 
 
 <!-- PAYMENTS -->
-
-<section id="page-payments"
-class="hidden">
+<section id="page-payments" class="hidden">
 
 <div class="card p-6">
 
-<h2 class="text-2xl font-black">
-💰 Payments
-</h2>
+<h2 class="text-2xl font-black">💰 Payments</h2>
 
 <div class="grid md:grid-cols-3 gap-3 mt-6">
 
 <select id="payCustomer">
-<option value="">
-Select Customer
-</option>
+<option value="">Select Customer</option>
 </select>
 
-<input
-id="payAmount"
-type="number"
-placeholder="Payment amount">
+<input id="payAmount" type="number" placeholder="Payment amount">
 
 <select id="payMethod">
-
 <option>Cash</option>
 <option>Bank</option>
 <option>JazzCash</option>
 <option>Easypaisa</option>
-
 </select>
 
 </div>
 
-<button
-id="addPayment"
-class="gradient px-6 py-3
-rounded-xl font-bold mt-4">
-
+<button id="addPayment" class="gradient px-6 py-3 rounded-xl font-bold mt-4">
 + Add Payment
-
 </button>
 
 <div id="paymentList" class="mt-7"></div>
 
 </div>
-
 </section>
 
 
 <!-- SPEED -->
-
-<section id="page-speed"
-class="hidden">
+<section id="page-speed" class="hidden">
 
 <div class="card p-7 text-center">
 
-<div class="text-6xl">
-⚡
-</div>
+<div class="text-6xl">⚡</div>
 
-<h2 class="text-3xl font-black mt-4">
-Internet Speed Test
-</h2>
-
-<p class="text-slate-500 mt-2">
-Run a real browser download test.
-</p>
+<h2 class="text-3xl font-black mt-4">Internet Speed Test</h2>
 
 <div class="grid md:grid-cols-3 gap-4 mt-8">
 
 <div class="card p-5">
-
-<p class="text-slate-500 text-sm">
-DOWNLOAD
-</p>
-
-<h2
-id="downloadSpeed"
-class="text-3xl font-black
-text-cyan-400 mt-2">
--- Mbps
-</h2>
-
+<p class="text-xs text-slate-500">DOWNLOAD</p>
+<h2 id="downloadSpeed" class="text-3xl font-black text-cyan-400 mt-2">-- Mbps</h2>
 </div>
 
 <div class="card p-5">
-
-<p class="text-slate-500 text-sm">
-UPLOAD
-</p>
-
-<h2
-id="uploadSpeed"
-class="text-3xl font-black
-text-purple-400 mt-2">
--- Mbps
-</h2>
-
+<p class="text-xs text-slate-500">UPLOAD</p>
+<h2 id="uploadSpeed" class="text-3xl font-black text-purple-400 mt-2">-- Mbps</h2>
 </div>
 
 <div class="card p-5">
-
-<p class="text-slate-500 text-sm">
-LATENCY
-</p>
-
-<h2
-id="latency"
-class="text-3xl font-black
-text-green-400 mt-2">
--- ms
-</h2>
-
+<p class="text-xs text-slate-500">LATENCY</p>
+<h2 id="latency" class="text-3xl font-black text-green-400 mt-2">-- ms</h2>
 </div>
 
 </div>
 
-<button
-id="speedBtn"
-class="gradient px-10 py-4
-rounded-2xl font-black mt-8">
-
+<button id="speedBtn" class="gradient px-10 py-4 rounded-2xl font-black mt-8">
 ⚡ START SPEED TEST
-
 </button>
 
-<p
-id="speedStatus"
-class="text-xs text-slate-500 mt-4">
-Ready
-</p>
+<p id="speedStatus" class="text-xs text-slate-500 mt-4">Ready</p>
 
 </div>
-
 </section>
 
 
 <!-- ALERTS -->
-
-<section id="page-alerts"
-class="hidden">
+<section id="page-alerts" class="hidden">
 
 <div class="card p-6">
 
-<h2 class="text-2xl font-black">
-🔔 Expiry Alerts
-</h2>
+<h2 class="text-2xl font-black">🔔 Expiry Alerts</h2>
 
-<div id="allAlerts" class="mt-6">
-</div>
+<div id="allAlerts" class="mt-6"></div>
 
 </div>
-
 </section>
 
 </div>
-
 </main>
 </div>
 </div>
@@ -870,11 +341,8 @@ class="hidden">
 
 <script type="module">
 
-import {
-initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getAuth,
@@ -883,8 +351,7 @@ signInWithPopup,
 onAuthStateChanged,
 signOut
 }
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 getDatabase,
@@ -893,47 +360,25 @@ get,
 set,
 update
 }
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
 /* FIREBASE */
 
 const firebaseConfig={
-
-apiKey:
-"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
-
-authDomain:
-"isp-billing-system-27cf8.firebaseapp.com",
-
-databaseURL:
-"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
-
-projectId:
-"isp-billing-system-27cf8",
-
-storageBucket:
-"isp-billing-system-27cf8.firebasestorage.app",
-
-messagingSenderId:
-"643339508063",
-
-appId:
-"1:643339508063:web:232e6769f7128b6e323eea",
-
-measurementId:
-"G-J0QK9KKPC6"
-
+apiKey:"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
+authDomain:"isp-billing-system-27cf8.firebaseapp.com",
+databaseURL:"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
+projectId:"isp-billing-system-27cf8",
+storageBucket:"isp-billing-system-27cf8.firebasestorage.app",
+messagingSenderId:"643339508063",
+appId:"1:643339508063:web:232e6769f7128b6e323eea",
+measurementId:"G-J0QK9KKPC6"
 };
 
-
 const app=initializeApp(firebaseConfig);
-
 const auth=getAuth(app);
-
 const db=getDatabase(app);
-
 const provider=new GoogleAuthProvider();
 
 provider.setCustomParameters({
@@ -941,213 +386,163 @@ prompt:"select_account"
 });
 
 
+/*
+IMPORTANT FIX #1
+Keep the Google user globally.
+*/
+
+let currentUser=null;
+
 let dealerId=null;
 let dealer=null;
+
 let customers={};
-let packages={};
 let bills={};
 let payments={};
 
 
-/* ================= UI ================= */
+/* UI */
 
-function hideScreens(){
+function hideAll(){
+document.getElementById("loginScreen").classList.add("hidden");
+document.getElementById("licenseScreen").classList.add("hidden");
+document.getElementById("appScreen").classList.add("hidden");
+}
 
-document.getElementById("loginScreen")
-.classList.add("hidden");
+function showLogin(){
+hideAll();
+document.getElementById("loginScreen").classList.remove("hidden");
+}
 
-document.getElementById("licenseScreen")
-.classList.add("hidden");
+function showLicense(message=""){
+hideAll();
+document.getElementById("licenseScreen").classList.remove("hidden");
+document.getElementById("licenseStatus").innerText=message;
+}
 
-document.getElementById("appScreen")
-.classList.add("hidden");
-
+function showApp(){
+hideAll();
+document.getElementById("appScreen").classList.remove("hidden");
 }
 
 
-function loginUI(){
+/* GOOGLE LOGIN */
 
-hideScreens();
-
-document.getElementById("loginScreen")
-.classList.remove("hidden");
-
-}
-
-
-function licenseUI(msg=""){
-
-hideScreens();
-
-document.getElementById("licenseScreen")
-.classList.remove("hidden");
-
-document.getElementById("licenseStatus")
-innerText=msg;
-
-}
-
-
-function appUI(){
-
-hideScreens();
-
-document.getElementById("appScreen")
-.classList.remove("hidden");
-
-}
-
-
-/* ================= GOOGLE ================= */
-
-document.getElementById("googleBtn")
-.onclick=async()=>{
+document.getElementById("googleBtn").onclick=async()=>{
 
 const btn=document.getElementById("googleBtn");
-
 const error=document.getElementById("loginError");
 
 btn.disabled=true;
 btn.innerText="Connecting...";
-
 error.innerText="";
 
 try{
 
-await signInWithPopup(
-auth,
-provider
-);
+const result=await signInWithPopup(auth,provider);
+
+/*
+IMPORTANT:
+Save result immediately.
+*/
+
+currentUser=result.user;
+
+console.log("Logged in:",currentUser.email);
+
+await locateDealer(currentUser);
 
 }catch(e){
 
 console.error(e);
 
-error.innerText=
-e.code+" : "+e.message;
+error.innerText=e.message;
 
 btn.disabled=false;
-btn.innerText="🇬 Continue with Google";
+btn.innerText="🇬🇧 Continue with Google";
 
 }
 
 };
 
 
-/* ================= AUTH ================= */
+/* AUTH STATE */
 
-onAuthStateChanged(
-auth,
-async user=>{
+onAuthStateChanged(auth,async(user)=>{
+
+currentUser=user||null;
 
 if(!user){
-
-loginUI();
-
+showLogin();
 return;
-
 }
 
-document.getElementById("topEmail")
-.innerText=user.email||"";
+document.getElementById("topEmail").innerText=user.email||"";
 
 await locateDealer(user);
 
 });
 
 
-/* ================= DEALER FIND ================= */
+/* FIND DEALER */
 
 async function locateDealer(user){
 
 try{
 
-const snap=
-await get(ref(db,"dealers"));
+const snap=await get(ref(db,"dealers"));
 
 if(!snap.exists()){
 
-licenseUI(
-"No dealer records found. Contact Super Admin."
+showLicense(
+"No dealer account found. Contact Super Admin."
 );
 
 return;
-
 }
-
 
 const all=snap.val();
 
-
-/*
-FIRST:
-Find by UID
-*/
-
-let found=
-Object.entries(all).find(
-([id,d])=>
-d.uid &&
-d.uid===user.uid
+let found=Object.entries(all).find(
+([id,d])=>d.uid===user.uid
 );
-
-
-/*
-SECOND:
-Find by Gmail
-*/
 
 if(!found){
 
-found=
-Object.entries(all).find(
+found=Object.entries(all).find(
 ([id,d])=>
 d.email &&
-d.email.toLowerCase()===
-user.email.toLowerCase()
+d.email.toLowerCase()===user.email.toLowerCase()
 );
 
 }
-
-
-/*
-Dealer found
-*/
 
 if(found){
 
 dealerId=found[0];
 dealer=found[1];
 
-
-/*
-Existing dealer:
-automatically verify
-*/
-
-if(validLicense(dealer)){
+if(isValidLicense(dealer)){
 
 openDealer();
 
 }else{
 
-licenseUI(
-"Your license needs verification."
+showLicense(
+"License is inactive or expired. Enter a valid license."
 );
 
 }
 
 return;
-
 }
 
-
 /*
-Dealer not connected:
-License required
+No linked dealer:
+Stay on license screen.
 */
 
-licenseUI(
+showLicense(
 "Enter the License Key issued by Super Admin."
 );
 
@@ -1155,22 +550,20 @@ licenseUI(
 
 console.error(e);
 
-licenseUI(
-"Firebase error: "+e.message
-);
+showLicense("Firebase error: "+e.message);
 
 }
 
 }
 
 
-/* ================= LICENSE ================= */
+/* LICENSE VALIDATION */
 
-function validLicense(d){
+function isValidLicense(d){
 
 if(!d)return false;
 
-if(d.status!=="active")
+if(d.status && d.status!=="active")
 return false;
 
 if(
@@ -1184,153 +577,116 @@ return true;
 }
 
 
-document.getElementById("licenseBtn")
-.onclick=async()=>{
+/*
+IMPORTANT FIX #1
+License verification now uses:
+currentUser || auth.currentUser
+*/
 
-const btn=
-document.getElementById("licenseBtn");
+document.getElementById("licenseBtn").onclick=async()=>{
 
-const status=
-document.getElementById("licenseStatus");
+const status=document.getElementById("licenseStatus");
+const btn=document.getElementById("licenseBtn");
 
-const key=
-document.getElementById("licenseInput")
-.value
-.trim()
-.toUpperCase();
+const user=currentUser||auth.currentUser;
 
-const user=auth.currentUser;
-
+const key=document.getElementById("licenseInput")
+.value.trim().toUpperCase();
 
 if(!user){
 
-status.innerText=
-"Please sign in with Google first.";
-
+status.className="text-sm text-red-400 text-center mt-4";
+status.innerText="Google session missing. Please login again.";
 return;
 
 }
 
 if(!key){
 
-status.innerText=
-"Enter License Key.";
-
+status.className="text-sm text-yellow-400 text-center mt-4";
+status.innerText="Enter License Key.";
 return;
 
 }
 
-
 btn.disabled=true;
 btn.innerText="Verifying...";
-status.className=
-"text-sm mt-4 text-yellow-400";
-status.innerText=
-"Checking license...";
+status.className="text-sm text-yellow-400 text-center mt-4";
+status.innerText="Checking license...";
 
 
 try{
 
-const snap=
-await get(ref(db,"dealers"));
+const snap=await get(ref(db,"dealers"));
 
-if(!snap.exists()){
-
-status.innerText=
-"No dealers found.";
-
-btn.disabled=false;
-btn.innerText="Verify License";
-
-return;
-
-}
-
+if(!snap.exists())
+throw new Error("No dealer records found.");
 
 const all=snap.val();
 
-
-const found=
-Object.entries(all).find(
+const found=Object.entries(all).find(
 ([id,d])=>
 d.licenseKey &&
-d.licenseKey.toUpperCase()===key
+String(d.licenseKey).toUpperCase()===key
 );
-
 
 if(!found){
 
-status.className=
-"text-sm mt-4 text-red-400";
-
-status.innerText=
-"❌ Invalid License Key.";
+status.className="text-sm text-red-400 text-center mt-4";
+status.innerText="❌ Invalid License Key.";
 
 btn.disabled=false;
 btn.innerText="Verify License";
-
 return;
 
 }
-
 
 const [id,d]=found;
 
 
-/*
-License belongs to this email
-*/
+/* EMAIL SECURITY */
 
 if(
 d.email &&
-d.email.toLowerCase() !==
-user.email.toLowerCase()
+d.email.toLowerCase()!==user.email.toLowerCase()
 ){
 
-status.className=
-"text-sm mt-4 text-red-400";
-
-status.innerText=
-"❌ This license belongs to another Gmail.";
+status.className="text-sm text-red-400 text-center mt-4";
+status.innerText="❌ This license belongs to another Gmail.";
 
 btn.disabled=false;
 btn.innerText="Verify License";
-
 return;
 
 }
 
 
-if(d.status!=="active"){
+/* STATUS */
 
-status.className=
-"text-sm mt-4 text-red-400";
+if(d.status && d.status!=="active"){
 
-status.innerText=
-"🔴 Dealer account suspended.";
+status.className="text-sm text-red-400 text-center mt-4";
+status.innerText="🔴 Dealer account is suspended.";
 
 btn.disabled=false;
 btn.innerText="Verify License";
-
 return;
 
 }
 
+
+/* EXPIRY */
 
 if(
 d.licenseExpiry &&
 new Date(d.licenseExpiry)<new Date()
 ){
 
-status.className=
-"text-sm mt-4 text-red-400";
-
-status.innerText=
-"⏰ License expired.";
+status.className="text-sm text-red-400 text-center mt-4";
+status.innerText="⏰ License expired.";
 
 btn.disabled=false;
 btn.innerText="Verify License";
-
 return;
 
 }
@@ -1338,6 +694,7 @@ return;
 
 /*
 LINK GOOGLE UID
+WITHOUT SIGNING OUT
 */
 
 await update(
@@ -1346,11 +703,9 @@ ref(db,"dealers/"+id),
 uid:user.uid,
 email:user.email,
 licenseVerified:true,
-licenseVerifiedAt:
-new Date().toISOString()
+licenseVerifiedAt:new Date().toISOString()
 }
 );
-
 
 dealerId=id;
 
@@ -1361,36 +716,19 @@ email:user.email,
 licenseVerified:true
 };
 
-
-status.className=
-"text-sm mt-4 text-green-400";
-
-status.innerText=
-"✅ License verified!";
-
-
-/*
-DO NOT SIGN OUT.
-DO NOT REDIRECT TO GOOGLE.
-OPEN APP DIRECTLY.
-*/
+status.className="text-sm text-green-400 text-center mt-4";
+status.innerText="✅ License verified successfully.";
 
 setTimeout(()=>{
-
 openDealer();
-
-},500);
-
+},400);
 
 }catch(e){
 
 console.error(e);
 
-status.className=
-"text-sm mt-4 text-red-400";
-
-status.innerText=
-"Firebase error: "+e.message;
+status.className="text-sm text-red-400 text-center mt-4";
+status.innerText="Firebase error: "+e.message;
 
 btn.disabled=false;
 btn.innerText="Verify License";
@@ -1400,239 +738,127 @@ btn.innerText="Verify License";
 };
 
 
-/* ================= OPEN DEALER ================= */
+/* OPEN DEALER */
 
 function openDealer(){
 
-if(!dealer)return;
+if(!dealer){
+showLicense("Dealer account not found.");
+return;
+}
 
-if(!validLicense(dealer)){
+if(!isValidLicense(dealer)){
 
-licenseUI(
-"License inactive or expired."
-);
-
+showLicense("License inactive or expired.");
 return;
 
 }
 
+showApp();
 
-appUI();
+document.getElementById("topName").innerText=dealer.name||"Dealer";
+document.getElementById("welcomeName").innerText=dealer.name||"Dealer";
+document.getElementById("sideLicense").innerText=dealer.licenseKey||"-";
+document.getElementById("sideExpiry").innerText=
+"Expiry: "+(dealer.licenseExpiry||"Unlimited");
 
-
-document.getElementById("topName")
-.innerText=dealer.name||"Dealer";
-
-document.getElementById("welcomeName")
-.innerText=dealer.name||"Dealer";
-
-document.getElementById("sideLicense")
-.innerText=
-dealer.licenseKey||"-";
-
-document.getElementById("sideExpiry")
-innerText=
-"Expiry: "+
-(dealer.licenseExpiry||"Unlimited");
-
-document.getElementById("heroExpiry")
-innerText=
-"Expires: "+
-(dealer.licenseExpiry||"Unlimited");
-
+document.getElementById("heroExpiry").innerText=
+"Expires: "+(dealer.licenseExpiry||"Unlimited");
 
 loadData();
 
 }
 
 
-/* ================= LOAD DATA ================= */
+/* LOAD DATA */
 
 async function loadData(){
 
 if(!dealerId)return;
 
-const base=
-"dealers/"+dealerId;
+const base="dealers/"+dealerId;
 
-
-const [c,p,b,pay]=
-await Promise.all([
-
+const [c,b,p]=await Promise.all([
 get(ref(db,base+"/customers")),
-
-get(ref(db,base+"/packages")),
-
 get(ref(db,base+"/bills")),
-
 get(ref(db,base+"/payments"))
-
 ]);
 
-
-customers=
-c.exists()?c.val():{};
-
-packages=
-p.exists()?p.val():{};
-
-bills=
-b.exists()?b.val():{};
-
-payments=
-pay.exists()?pay.val():{};
-
+customers=c.exists()?c.val():{};
+bills=b.exists()?b.val():{};
+payments=p.exists()?p.val():{};
 
 renderCustomers();
-
-renderPackages();
-
 renderBills();
-
 renderPayments();
-
-dashboard();
-
-alerts();
+updateDashboard();
+renderAlerts();
 
 }
 
 
-/* ================= NAV ================= */
+/* NAVIGATION */
 
-const pageNames={
-
+const titles={
 dashboard:"Dashboard",
 customers:"Customers",
-packages:"Packages",
 billing:"Billing",
 payments:"Payments",
 speed:"Speed Test",
 alerts:"Alerts"
-
 };
 
+document.querySelectorAll(".nav").forEach(nav=>{
 
-function goPage(page){
+nav.onclick=()=>{
 
-document
-.querySelectorAll('[id^="page-"]')
+const page=nav.dataset.page;
+
+document.querySelectorAll('[id^="page-"]')
 .forEach(x=>x.classList.add("hidden"));
 
-document
-.getElementById("page-"+page)
+document.getElementById("page-"+page)
 .classList.remove("hidden");
 
-document.getElementById("pageTitle")
-.innerText=pageNames[page];
-
+document.getElementById("pageTitle").innerText=titles[page];
 
 document.querySelectorAll(".nav")
-.forEach(x=>{
+.forEach(n=>n.classList.remove("active"));
 
-x.classList.toggle(
-"active",
-x.dataset.page===page
-);
+nav.classList.add("active");
+
+};
 
 });
 
-}
 
+/* ADD CUSTOMER */
 
-document.querySelectorAll(".nav")
-.forEach(x=>
-x.onclick=()=>
-goPage(x.dataset.page)
-);
+document.getElementById("addCustomer").onclick=async()=>{
 
-
-document.querySelectorAll(".mobileNav")
-.forEach(x=>
-x.onclick=()=>
-goPage(x.dataset.page)
-);
-
-
-/* ================= CUSTOMERS ================= */
-
-document.getElementById("addCustomer")
-.onclick=async()=>{
-
-const name=
-document.getElementById("cName")
-.value.trim();
+const name=document.getElementById("cName").value.trim();
 
 if(!name){
-
 alert("Customer name required.");
-
 return;
-
 }
 
-
-const limit=
-Number(dealer.customerLimit||999999);
-
-
-if(
-Object.keys(customers).length>=limit
-){
-
-alert(
-"Customer limit reached: "+limit
-);
-
-return;
-
-}
-
-
-const id=
-"CUST-"+Date.now();
-
-
-const customer={
-
-id,
-
-name,
-
-phone:
-document.getElementById("cPhone").value.trim(),
-
-username:
-document.getElementById("cUsername").value.trim(),
-
-package:
-document.getElementById("cPackage").value.trim(),
-
-monthlyFee:
-Number(
-document.getElementById("cFee").value||0
-),
-
-expiryDate:
-document.getElementById("cExpiry").value,
-
-status:"active",
-
-createdAt:
-new Date().toISOString()
-
-};
-
+const id="CUST-"+Date.now();
 
 await set(
-ref(
-db,
-"dealers/"+dealerId+
-"/customers/"+id
-),
-customer
+ref(db,"dealers/"+dealerId+"/customers/"+id),
+{
+id:id,
+name:name,
+phone:document.getElementById("cPhone").value.trim(),
+username:document.getElementById("cUsername").value.trim(),
+package:document.getElementById("cPackage").value.trim(),
+monthlyFee:Number(document.getElementById("cFee").value||0),
+expiryDate:document.getElementById("cExpiry").value,
+status:"active",
+createdAt:new Date().toISOString()
+}
 );
-
 
 [
 "cName",
@@ -1641,10 +867,9 @@ customer
 "cPackage",
 "cFee",
 "cExpiry"
-].forEach(id=>
-document.getElementById(id).value=""
-);
-
+].forEach(id=>{
+document.getElementById(id).value="";
+});
 
 await loadData();
 
@@ -1653,60 +878,42 @@ alert("✅ Customer added");
 };
 
 
-document.getElementById("searchCustomer")
-.oninput=renderCustomers;
+/* CUSTOMER TABLE */
 
+document.getElementById("searchCustomer").oninput=renderCustomers;
 
 function renderCustomers(){
 
-const search=
-document.getElementById("searchCustomer")
+const search=document.getElementById("searchCustomer")
 .value.toLowerCase();
 
 let html="";
+let options='<option value="">Select Customer</option>';
 
-let options=
-`<option value="">
-Select Customer
-</option>`;
+Object.entries(customers).forEach(([id,c])=>{
 
-
-Object.entries(customers)
-.forEach(([id,c])=>{
-
-const txt=
-(
-c.name+" "+
+const text=(
+(c.name||"")+" "+
 (c.phone||"")+" "+
 (c.username||"")+" "+
 (c.package||"")
 ).toLowerCase();
 
-
-if(!txt.includes(search))return;
-
+if(!text.includes(search))return;
 
 html+=`
-
 <tr class="border-b border-white/5">
 
 <td class="p-3">
-
 <b>${esc(c.name)}</b>
-
 <div class="text-[10px] text-slate-500">
 ${esc(c.username||"")}
 </div>
-
 </td>
 
-<td class="p-3">
-${esc(c.phone||"-")}
-</td>
+<td class="p-3">${esc(c.phone||"-")}</td>
 
-<td class="p-3">
-${esc(c.package||"-")}
-</td>
+<td class="p-3">${esc(c.package||"-")}</td>
 
 <td class="p-3">
 Rs ${Number(c.monthlyFee||0).toLocaleString()}
@@ -1718,275 +925,147 @@ ${esc(c.expiryDate||"-")}
 
 <td class="p-3">
 
-<span class="${
-c.status==="active"
-?"text-green-400"
-:"text-red-400"
-}">
-● ${esc(c.status||"")}
-</span>
-
-</td>
-
-<td class="p-3">
-
 <button
-onclick="wa('${id}')"
-class="bg-green-500/10
-text-green-400 px-3 py-2
-rounded-lg text-xs">
-
-WhatsApp
-
+onclick="sendBillWhatsApp('${id}')"
+class="bg-green-500/10 text-green-400 px-3 py-2 rounded-lg text-xs">
+📱 Send Bill
 </button>
 
 </td>
 
 </tr>
-
 `;
 
-
 options+=`
-
 <option value="${id}">
 ${esc(c.name)}
 </option>
-
 `;
 
 });
 
-
-document.getElementById("customerTable")
-.innerHTML=
+document.getElementById("customerTable").innerHTML=
 html||
 `<tr>
-<td colspan="7"
-class="text-center p-6
-text-slate-500">
+<td colspan="6" class="text-center p-6 text-slate-500">
 No customers found.
 </td>
 </tr>`;
 
-
-document.getElementById("billCustomer")
-.innerHTML=options;
-
-document.getElementById("payCustomer")
-.innerHTML=options;
+document.getElementById("billCustomer").innerHTML=options;
+document.getElementById("payCustomer").innerHTML=options;
 
 }
 
 
-/* ================= WHATSAPP ================= */
+/*
+IMPORTANT FIX #2
+Send customer's latest bill directly to WhatsApp.
+*/
 
-window.wa=function(id){
+window.sendBillWhatsApp=function(customerId){
 
-const c=customers[id];
+const customer=customers[customerId];
 
-if(!c||!c.phone){
-
-alert("Phone number missing.");
-
+if(!customer){
+alert("Customer not found.");
 return;
+}
 
+if(!customer.phone){
+alert("Customer phone number is missing.");
+return;
 }
 
 
-let phone=
-c.phone.replace(/\D/g,"");
+/* Find latest bill */
 
+const customerBills=Object.values(bills)
+.filter(b=>b.customerId===customerId)
+.sort(
+(a,b)=>
+new Date(b.createdAt||0)-
+new Date(a.createdAt||0)
+);
 
-if(phone.startsWith("0"))
+const bill=customerBills[0];
+
+const amount=bill
+?Number(bill.amount||0)
+:Number(customer.monthlyFee||0);
+
+const dueDate=bill
+?(bill.dueDate||"N/A")
+:(customer.expiryDate||"N/A");
+
+let phone=String(customer.phone)
+.replace(/\D/g,"");
+
+if(phone.startsWith("0")){
 phone="92"+phone.substring(1);
+}
 
+if(phone.length<10){
+alert("Invalid Pakistan phone number.");
+return;
+}
 
-const msg=
-`Assalam-o-Alaikum ${c.name},
+const dealerName=dealer?.name||"ISP Provider";
 
-Your ISP package expiry date is ${c.expiryDate||"soon"}.
+const message=
+`🌐 ${dealerName}
 
-Please renew your internet service.
+Assalam-o-Alaikum ${customer.name},
 
-Thank you.`;
+🧾 *INTERNET BILL*
 
+📦 Package: ${customer.package||"Internet Package"}
+💰 Amount: Rs ${amount.toLocaleString()}
+📅 Due Date: ${dueDate}
 
-window.open(
+Please pay your internet bill before the due date to avoid service interruption.
+
+Thank you for choosing ${dealerName} ❤️`;
+
+const url=
 "https://wa.me/"+
 phone+
 "?text="+
-encodeURIComponent(msg),
-"_blank"
-);
+encodeURIComponent(message);
+
+window.open(url,"_blank");
 
 };
 
 
-/* ================= PACKAGES ================= */
+/* CREATE BILL */
 
-document.getElementById("addPackage")
-.onclick=async()=>{
+document.getElementById("createBill").onclick=async()=>{
 
-const name=
-document.getElementById("pName")
-.value.trim();
-
-if(!name)return;
-
-
-const id="PKG-"+Date.now();
-
-
-await set(
-ref(
-db,
-"dealers/"+dealerId+
-"/packages/"+id
-),
-{
-
-id,
-
-name,
-
-speed:
-document.getElementById("pSpeed")
-.value.trim(),
-
-price:
-Number(
-document.getElementById("pPrice")
-.value||0
-),
-
-createdAt:
-new Date().toISOString()
-
-}
-);
-
-
-[
-"pName",
-"pSpeed",
-"pPrice"
-].forEach(id=>
-document.getElementById(id).value=""
-);
-
-
-await loadData();
-
-};
-
-
-function renderPackages(){
-
-let html="";
-
-
-Object.values(packages)
-.forEach(p=>{
-
-html+=`
-
-<div class="card p-5">
-
-<div class="text-3xl">
-⚡
-</div>
-
-<h3 class="font-black text-lg mt-3">
-${esc(p.name)}
-</h3>
-
-<p class="text-cyan-400 mt-1">
-${esc(p.speed||"")}
-</p>
-
-<p class="text-2xl font-black mt-3">
-Rs ${Number(p.price||0).toLocaleString()}
-</p>
-
-<p class="text-xs text-slate-500">
-Monthly
-</p>
-
-</div>
-
-`;
-
-});
-
-
-document.getElementById("packageList")
-.innerHTML=
-html||
-`<p class="text-slate-500">
-No packages yet.
-</p>`;
-
-}
-
-
-/* ================= BILL ================= */
-
-document.getElementById("createBill")
-.onclick=async()=>{
-
-const customerId=
-document.getElementById("billCustomer")
-.value;
-
-const amount=
-Number(
-document.getElementById("billAmount")
-.value||0
-);
+const customerId=document.getElementById("billCustomer").value;
+const amount=Number(document.getElementById("billAmount").value||0);
+const dueDate=document.getElementById("billDue").value;
 
 if(!customerId||amount<=0){
-
 alert("Select customer and amount.");
-
 return;
-
 }
-
 
 const id="BILL-"+Date.now();
 
-
 await set(
-ref(
-db,
-"dealers/"+dealerId+
-"/bills/"+id
-),
+ref(db,"dealers/"+dealerId+"/bills/"+id),
 {
-
-id,
-
-customerId,
-
-amount,
-
-dueDate:
-document.getElementById("billDue")
-.value,
-
+id:id,
+customerId:customerId,
+amount:amount,
+dueDate:dueDate,
 status:"unpaid",
-
-createdAt:
-new Date().toISOString()
-
+createdAt:new Date().toISOString()
 }
 );
 
-
-document.getElementById("billAmount")
-.value="";
-
+document.getElementById("billAmount").value="";
 
 await loadData();
 
@@ -1995,10 +1074,11 @@ alert("✅ Bill created");
 };
 
 
+/* BILL LIST */
+
 function renderBills(){
 
 let html="";
-
 
 Object.values(bills)
 .reverse()
@@ -2006,21 +1086,17 @@ Object.values(bills)
 
 const c=customers[b.customerId];
 
-
 html+=`
-
 <div class="card p-5 mb-3">
 
-<div class="flex justify-between">
+<div class="flex justify-between gap-4">
 
 <div>
-
 <b>${esc(c?.name||"Customer")}</b>
 
 <p class="text-xs text-slate-500 mt-1">
 Due: ${esc(b.dueDate||"-")}
 </p>
-
 </div>
 
 <div class="text-right">
@@ -2029,89 +1105,56 @@ Due: ${esc(b.dueDate||"-")}
 Rs ${Number(b.amount||0).toLocaleString()}
 </p>
 
-<p class="text-yellow-400 text-xs mt-1">
-● ${esc(b.status)}
-</p>
+<button
+onclick="sendBillWhatsApp('${b.customerId}')"
+class="bg-green-500/10 text-green-400 px-3 py-2 rounded-lg text-xs mt-2">
+📱 Send Bill WhatsApp
+</button>
 
 </div>
 
 </div>
 
 </div>
-
 `;
 
 });
 
-
-document.getElementById("billList")
-.innerHTML=
+document.getElementById("billList").innerHTML=
 html||
-`<p class="text-slate-500">
-No bills.
-</p>`;
+'<p class="text-slate-500">No bills.</p>';
 
 }
 
 
-/* ================= PAYMENT ================= */
+/* PAYMENT */
 
-document.getElementById("addPayment")
-.onclick=async()=>{
+document.getElementById("addPayment").onclick=async()=>{
 
-const customerId=
-document.getElementById("payCustomer")
-.value;
-
-const amount=
-Number(
-document.getElementById("payAmount")
-.value||0
-);
-
+const customerId=document.getElementById("payCustomer").value;
+const amount=Number(document.getElementById("payAmount").value||0);
+const method=document.getElementById("payMethod").value;
 
 if(!customerId||amount<=0){
-
 alert("Select customer and amount.");
-
 return;
-
 }
-
 
 const id="PAY-"+Date.now();
 
-
 await set(
-ref(
-db,
-"dealers/"+dealerId+
-"/payments/"+id
-),
+ref(db,"dealers/"+dealerId+"/payments/"+id),
 {
-
-id,
-
-customerId,
-
-amount,
-
-method:
-document.getElementById("payMethod")
-.value,
-
+id:id,
+customerId:customerId,
+amount:amount,
+method:method,
 status:"paid",
-
-date:
-new Date().toISOString()
-
+date:new Date().toISOString()
 }
 );
 
-
-document.getElementById("payAmount")
-.value="";
-
+document.getElementById("payAmount").value="";
 
 await loadData();
 
@@ -2124,149 +1167,83 @@ function renderPayments(){
 
 let html="";
 
-
 Object.values(payments)
 .reverse()
 .forEach(p=>{
 
 const c=customers[p.customerId];
 
-
 html+=`
-
-<div class="card p-5 mb-3">
-
-<div class="flex justify-between">
+<div class="card p-5 mb-3 flex justify-between">
 
 <div>
-
 <b>${esc(c?.name||"Customer")}</b>
-
 <p class="text-xs text-slate-500">
 ${esc(p.method||"")}
 </p>
-
 </div>
 
 <div class="text-right">
-
-<p class="text-xl font-black
-text-green-400">
+<p class="text-xl font-black text-green-400">
 Rs ${Number(p.amount||0).toLocaleString()}
 </p>
-
-<p class="text-xs text-green-400">
-● PAID
-</p>
-
+<p class="text-xs text-green-400">● PAID</p>
 </div>
 
 </div>
-
-</div>
-
 `;
 
 });
 
-
-document.getElementById("paymentList")
-.innerHTML=
+document.getElementById("paymentList").innerHTML=
 html||
-`<p class="text-slate-500">
-No payments.
-</p>`;
+'<p class="text-slate-500">No payments.</p>';
 
 }
 
 
-/* ================= DASHBOARD ================= */
+/* DASHBOARD */
 
-function dashboard(){
+function updateDashboard(){
 
-const list=
-Object.values(customers);
+const list=Object.values(customers);
+const billList=Object.values(bills);
+const paymentList=Object.values(payments);
 
-const billList=
-Object.values(bills);
+document.getElementById("sCustomers").innerText=list.length;
 
-const payList=
-Object.values(payments);
+document.getElementById("sActive").innerText=
+list.filter(c=>c.status==="active").length;
 
-const now=new Date();
+document.getElementById("sUnpaid").innerText=
+billList.filter(b=>b.status==="unpaid").length;
 
-
-document.getElementById("sCustomers")
-.innerText=list.length;
-
-
-document.getElementById("sActive")
-.innerText=
-list.filter(
-c=>c.status==="active"
-).length;
-
-
-document.getElementById("sExpired")
-.innerText=
-list.filter(
-c=>
-c.expiryDate &&
-new Date(c.expiryDate)<now
-).length;
-
-
-document.getElementById("sUnpaid")
-.innerText=
-billList.filter(
-b=>b.status==="unpaid"
-).length;
-
-
-const total=
-payList.reduce(
-(a,p)=>a+Number(p.amount||0),
-0
+const total=paymentList.reduce(
+(sum,p)=>sum+Number(p.amount||0),0
 );
 
-
-document.getElementById("sCollected")
-.innerText=
+document.getElementById("sCollected").innerText=
 "Rs "+total.toLocaleString();
 
 }
 
 
-/* ================= ALERTS ================= */
+/* ALERTS */
 
-function alerts(){
+function renderAlerts(){
 
 const now=new Date();
-
 let html="";
 
-let count=0;
-
-
-Object.entries(customers)
-.forEach(([id,c])=>{
+Object.entries(customers).forEach(([id,c])=>{
 
 if(!c.expiryDate)return;
 
-
-const expiry=
-new Date(c.expiryDate);
-
-
 const days=Math.ceil(
-(expiry-now)/86400000
+(new Date(c.expiryDate)-now)/86400000
 );
 
-
 if(days<=7){
-
-count++;
-
 
 const label=
 days<0
@@ -2275,204 +1252,120 @@ days<0
 ?"🟠 TODAY"
 :"🟡 "+days+" DAYS LEFT";
 
-
 html+=`
-
-<div class="card p-5 mb-3">
-
-<div class="flex justify-between gap-4">
+<div class="card p-5 mb-3 flex justify-between">
 
 <div>
-
 <b>${esc(c.name)}</b>
-
 <p class="text-xs text-slate-500 mt-1">
 Expiry: ${esc(c.expiryDate)}
 </p>
-
 </div>
 
 <div class="text-right">
 
-<p class="text-sm">
-${label}
-</p>
+<p>${label}</p>
 
 <button
-onclick="wa('${id}')"
-class="bg-green-500/10
-text-green-400
-px-3 py-2 rounded-lg
-text-xs mt-2">
-
-WhatsApp
-
+onclick="sendBillWhatsApp('${id}')"
+class="bg-green-500/10 text-green-400 px-3 py-2 rounded-lg text-xs mt-2">
+📱 Send Bill
 </button>
 
 </div>
 
 </div>
-
-</div>
-
 `;
 
 }
 
 });
 
-
-document.getElementById("alertCount")
-.innerText=count;
-
-
-document.getElementById("dashboardAlerts")
-.innerHTML=
+document.getElementById("allAlerts").innerHTML=
 html||
-`<p class="text-slate-500">
-No expiry alerts 🎉
-</p>`;
-
-
-document.getElementById("allAlerts")
-.innerHTML=
-html||
-`<p class="text-slate-500">
-No expiry alerts 🎉
-</p>`;
+'<p class="text-slate-500">No expiry alerts 🎉</p>';
 
 }
 
 
-/* ================= SPEED TEST ================= */
+/* SPEED TEST */
 
-document.getElementById("speedBtn")
-.onclick=async()=>{
+document.getElementById("speedBtn").onclick=async()=>{
 
-const btn=
-document.getElementById("speedBtn");
-
-const status=
-document.getElementById("speedStatus");
-
+const btn=document.getElementById("speedBtn");
+const status=document.getElementById("speedStatus");
 
 btn.disabled=true;
-
-btn.innerText=
-"⚡ TESTING...";
-
-status.innerText=
-"Measuring latency...";
-
-
-/* LATENCY */
+btn.innerText="⚡ TESTING...";
+status.innerText="Testing latency...";
 
 try{
 
 const start=performance.now();
 
 await fetch(
-location.href+
-"?ping="+Date.now(),
+location.href+"?ping="+Date.now(),
 {
-cache:"no-store",
-method:"HEAD"
-}
-);
-
-const latency=
-Math.round(
-performance.now()-start
-);
-
-document.getElementById("latency")
-.innerText=
-latency+" ms";
-
-}catch{
-
-document.getElementById("latency")
-.innerText="-- ms";
-
-}
-
-
-/*
-DOWNLOAD TEST
-
-This downloads a public file.
-The result depends on browser/network/CDN.
-*/
-
-try{
-
-status.innerText=
-"Testing download speed...";
-
-
-const testUrl=
-"https://speed.cloudflare.com/__down?bytes=5000000";
-
-const start=performance.now();
-
-const response=
-await fetch(
-testUrl+
-"&x="+Date.now(),
-{
+method:"HEAD",
 cache:"no-store"
 }
 );
 
-const data=
-await response.blob();
+document.getElementById("latency").innerText=
+Math.round(performance.now()-start)+" ms";
 
-const seconds=
-(performance.now()-start)/1000;
+}catch{
 
-const bits=
-data.size*8;
-
-const mbps=
-(bits/seconds)/1000000;
-
-
-document.getElementById("downloadSpeed")
-.innerText=
-mbps.toFixed(2)+" Mbps";
-
-
-}catch(e){
-
-console.error(e);
-
-document.getElementById("downloadSpeed")
-.innerText="Failed";
+document.getElementById("latency").innerText="-- ms";
 
 }
 
+try{
 
-status.innerText=
-"Test completed.";
+status.innerText="Testing download...";
+
+const start=performance.now();
+
+const response=await fetch(
+"https://speed.cloudflare.com/__down?bytes=5000000&x="+Date.now(),
+{cache:"no-store"}
+);
+
+const blob=await response.blob();
+
+const seconds=(performance.now()-start)/1000;
+
+const mbps=(blob.size*8/seconds)/1000000;
+
+document.getElementById("downloadSpeed").innerText=
+mbps.toFixed(2)+" Mbps";
+
+}catch{
+
+document.getElementById("downloadSpeed").innerText="Failed";
+
+}
+
+status.innerText="Test completed.";
 
 btn.disabled=false;
-
-btn.innerText=
-"⚡ START SPEED TEST";
+btn.innerText="⚡ START SPEED TEST";
 
 };
 
 
-/* ================= LOGOUT ================= */
+/* LOGOUT */
 
-document.getElementById("sideLogout")
-.onclick=()=>signOut(auth);
+document.getElementById("sideLogout").onclick=()=>{
+signOut(auth);
+};
 
-document.getElementById("licenseLogout")
-.onclick=()=>signOut(auth);
+document.getElementById("licenseLogout").onclick=()=>{
+signOut(auth);
+};
 
 
-/* ================= ESCAPE ================= */
+/* ESCAPE */
 
 function esc(v){
 
