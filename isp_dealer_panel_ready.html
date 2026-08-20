@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ISP Billing — Dealer Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f4f7fb;color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 8px 30px #0f172a0d}
+.sidebar{width:250px;min-height:100vh;position:fixed;inset:0 auto 0 0;background:#0f172a;color:#fff;z-index:50}
+.main{margin-left:250px;min-height:100vh}.navbtn{width:100%;text-align:left;border:0;background:transparent;padding:11px 13px;border-radius:11px;margin-bottom:4px;color:#cbd5e1}
+.navbtn:hover,.navbtn.active{background:#2563eb;color:#fff}.input{width:100%;border:1px solid #dbe1ea;border-radius:11px;padding:10px 12px;outline:0;background:#fff}
+.input:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb18}.btn{border:0;border-radius:11px;padding:9px 14px;font-weight:700}.primary{background:#2563eb;color:#fff}.success{background:#16a34a;color:#fff}.danger{background:#dc2626;color:#fff}.dark{background:#0f172a;color:#fff}.gray{background:#eef2f7;color:#334155}.orange{background:#f97316;color:#fff}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800}.bg-green{background:#dcfce7;color:#166534}.bg-red{background:#fee2e2;color:#991b1b}.bg-orange{background:#ffedd5;color:#9a3412}.bg-blue{background:#dbeafe;color:#1d4ed8}
+.modal{position:fixed;inset:0;background:#020617aa;display:flex;align-items:center;justify-content:center;padding:16px;z-index:100}.hidden{display:none!important}table{min-width:980px}
+@media(max-width:800px){.sidebar{width:100%;min-height:auto;position:relative}.main{margin-left:0}.sidebar-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}.navbtn{margin:0}}
+</style>
+</head>
+<body>
+
+<div id="loading" class="fixed inset-0 bg-white z-[999] flex items-center justify-center">
+<div class="text-center"><div class="text-5xl">🌐</div><b class="text-xl">Checking session...</b><div class="text-gray-500 text-sm mt-2">Please wait</div></div>
+</div>
+
+<div id="login" class="hidden min-h-screen items-center justify-center p-5">
+<div class="card w-full max-w-md p-7">
+<div class="text-center"><div class="text-6xl">🌐</div><h1 class="text-3xl font-black mt-2">ISP Billing</h1><p class="text-gray-500">Dealer Management System</p></div>
+<div id="loginMsg" class="hidden mt-4 p-3 rounded-xl text-sm"></div>
+<button id="google" class="btn dark w-full mt-5">Continue with Google</button>
+<p class="text-xs text-gray-400 text-center mt-4">Use your registered dealer Gmail.</p>
+</div></div>
+
+<div id="license" class="hidden min-h-screen items-center justify-center p-5">
+<div class="card w-full max-w-md p-7">
+<div class="text-center"><div class="text-5xl">🔐</div><h1 class="text-2xl font-black mt-2">License Verification</h1><p class="text-gray-500 mt-1">Enter your Super Admin license key.</p></div>
+<div id="licenseInfo" class="bg-blue-50 text-blue-700 p-3 rounded-xl text-sm mt-5"></div>
+<input id="licenseKey" class="input mt-4 uppercase" placeholder="LICENSE-XXXX-XXXX">
+<button id="verify" class="btn primary w-full mt-3">Verify License</button>
+<div id="licenseMsg" class="text-sm text-center mt-3"></div>
+<button id="licenseLogout" class="btn gray w-full mt-4">Logout</button>
+</div></div>
+
+<div id="app" class="hidden">
+<aside class="sidebar p-4">
+<div class="mb-6"><div class="text-2xl font-black">🌐 ISP Billing</div><div class="text-xs text-slate-400">Dealer Panel</div></div>
+<div class="sidebar-nav">
+<button class="navbtn active" data-page="dashboard">📊 Dashboard</button>
+<button class="navbtn" data-page="customers">👥 Customers</button>
+<button class="navbtn" data-page="packages">📦 Packages</button>
+<button class="navbtn" data-page="bills">🧾 Bills</button>
+<button class="navbtn" data-page="payments">💰 Payments</button>
+<button class="navbtn" data-page="recovery">🔄 Recovery</button>
+<button class="navbtn" data-page="profile">⚙️ Profile</button>
+</div>
+<div class="mt-7 pt-5 border-t border-slate-700"><b id="sideName"></b><div id="sideEmail" class="text-xs text-slate-400 mt-1"></div><button id="logout" class="btn danger w-full mt-4">Logout</button></div>
+</aside>
+
+<main class="main">
+<header class="bg-white border-b p-4 sticky top-0 z-40">
+<div class="flex justify-between items-center gap-3"><div><h2 id="title" class="text-xl font-black">Dashboard</h2><p id="statusText" class="text-xs text-gray-500"></p></div><div class="text-right"><b id="topName"></b><div id="expiryText" class="text-xs text-gray-500"></div></div></div>
+</header>
+<div class="p-4 md:p-6">
+
+<section id="page-dashboard" class="page">
+<div id="expiryAlert" class="hidden card p-4 mb-5 bg-orange-50 border-orange-300 text-orange-700"><b>⚠️ License Alert</b><div id="expiryAlertText" class="text-sm mt-1"></div></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="card p-5"><div class="text-gray-500 text-sm">Customers</div><b id="sCustomers" class="text-3xl block mt-2">0</b></div>
+<div class="card p-5"><div class="text-gray-500 text-sm">Customer Limit</div><b id="sLimit" class="text-3xl block mt-2">0</b></div>
+<div class="card p-5"><div class="text-gray-500 text-sm">Unpaid Bills</div><b id="sUnpaid" class="text-3xl block mt-2">0</b></div>
+<div class="card p-5"><div class="text-gray-500 text-sm">Active Packages</div><b id="sPackages" class="text-3xl block mt-2">0</b></div>
+</div>
+<div class="grid lg:grid-cols-2 gap-5 mt-5">
+<div class="card p-5"><h3 class="font-black text-lg">Quick Actions</h3><div class="grid grid-cols-2 gap-3 mt-4">
+<button class="btn primary" onclick="openCustomer()">➕ Customer</button><button class="btn success" onclick="openPackage()">📦 Package</button><button class="btn dark" onclick="showPage('bills')">🧾 Bills</button><button class="btn gray" onclick="showPage('payments')">💰 Payment</button></div></div>
+<div class="card p-5"><h3 class="font-black text-lg">Dealer Information</h3><div class="mt-4 space-y-2 text-sm"><div><b>Name:</b> <span id="iName"></span></div><div><b>Company:</b> <span id="iCompany"></span></div><div><b>Email:</b> <span id="iEmail"></span></div><div><b>License:</b> <code id="iLicense"></code></div><div><b>Expiry:</b> <span id="iExpiry"></span></div></div></div>
+</div></section>
+
+<section id="page-customers" class="page hidden">
+<div class="flex justify-between items-center gap-3 mb-5"><div><h2 class="text-2xl font-black">Customers</h2><p class="text-gray-500 text-sm">Add, edit, suspend and manage customers.</p></div><button class="btn primary" onclick="openCustomer()">➕ Add Customer</button></div>
+<div class="card p-4"><input id="customerSearch" class="input mb-4" placeholder="Search name, phone, username..."><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b text-left"><th class="p-3">Customer</th><th class="p-3">Phone</th><th class="p-3">Username</th><th class="p-3">Package</th><th class="p-3">Expiry</th><th class="p-3">Status</th><th class="p-3">Actions</th></tr></thead><tbody id="customersTable"></tbody></table></div></div>
+</section>
+
+<section id="page-packages" class="page hidden">
+<div class="flex justify-between items-center mb-5"><div><h2 class="text-2xl font-black">Packages</h2><p class="text-gray-500 text-sm">Manage internet packages.</p></div><button class="btn primary" onclick="openPackage()">➕ Add Package</button></div>
+<div id="packagesGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</section>
+
+<section id="page-bills" class="page hidden">
+<div class="flex justify-between items-center mb-5"><div><h2 class="text-2xl font-black">Bills</h2><p class="text-gray-500 text-sm">Create bills and send them through WhatsApp.</p></div><button class="btn primary" onclick="openBill()">➕ Create Bill</button></div>
+<div class="card p-4 overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b text-left"><th class="p-3">Bill</th><th class="p-3">Customer</th><th class="p-3">Amount</th><th class="p-3">Due</th><th class="p-3">Status</th><th class="p-3">Actions</th></tr></thead><tbody id="billsTable"></tbody></table></div>
+</section>
+
+<section id="page-payments" class="page hidden">
+<div class="flex justify-between items-center mb-5"><div><h2 class="text-2xl font-black">Payments</h2><p class="text-gray-500 text-sm">Record customer payments.</p></div><button class="btn success" onclick="openPayment()">➕ Record Payment</button></div>
+<div class="card p-4 overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b text-left"><th class="p-3">ID</th><th class="p-3">Customer</th><th class="p-3">Amount</th><th class="p-3">Method</th><th class="p-3">Date</th></tr></thead><tbody id="paymentsTable"></tbody></table></div>
+</section>
+
+<section id="page-recovery" class="page hidden"><div class="max-w-2xl"><h2 class="text-2xl font-black mb-5">Account Recovery</h2><div class="card p-5">
+<select id="rMethod" class="input"><option>Bank Account</option><option>Easypaisa</option><option>JazzCash</option><option>Other</option></select>
+<input id="rPhone" class="input mt-3" placeholder="Registered mobile number"><textarea id="rMessage" class="input mt-3" rows="5" placeholder="Recovery issue..."></textarea>
+<button id="recoveryBtn" class="btn primary w-full mt-4">Send Recovery Request</button><div id="recoveryMsg" class="text-center text-sm mt-3"></div>
+</div></div></section>
+
+<section id="page-profile" class="page hidden"><div class="max-w-2xl"><h2 class="text-2xl font-black mb-5">Dealer Profile</h2><div class="card p-5 space-y-4 text-sm">
+<div><span class="text-gray-500">Name</span><div id="pNameView" class="font-bold"></div></div><div><span class="text-gray-500">Company</span><div id="pCompanyView" class="font-bold"></div></div><div><span class="text-gray-500">Email</span><div id="pEmailView" class="font-bold"></div></div><div><span class="text-gray-500">Phone</span><div id="pPhoneView" class="font-bold"></div></div><div><span class="text-gray-500">License</span><div id="pLicenseView" class="font-mono"></div></div><div><span class="text-gray-500">Expiry</span><div id="pExpiryView" class="font-bold"></div></div>
+</div></div></section>
+
+</div></main></div>
+
+<!-- CUSTOMER MODAL -->
+<div id="customerModal" class="modal hidden"><div class="card w-full max-w-2xl p-6 max-h-[95vh] overflow-y-auto">
+<div class="flex justify-between items-center"><h2 id="customerModalTitle" class="text-xl font-black">Add Customer</h2><button class="btn gray" onclick="closeCustomer()">✕</button></div>
+<input id="cId" type="hidden"><div class="grid md:grid-cols-2 gap-3 mt-5"><input id="cName" class="input" placeholder="Customer Name"><input id="cPhone" class="input" placeholder="03XXXXXXXXX"><input id="cUsername" class="input" placeholder="Username"><input id="cAddress" class="input" placeholder="Address"><select id="cPackage" class="input"></select><input id="cExpiry" type="date" class="input"><select id="cStatus" class="input"><option>Active</option><option>Suspended</option></select></div>
+<button class="btn primary w-full mt-4" onclick="saveCustomer()">Save Customer</button><div id="customerErr" class="text-red-600 text-sm text-center mt-3"></div>
+</div></div>
+
+<!-- PACKAGE MODAL -->
+<div id="packageModal" class="modal hidden"><div class="card w-full max-w-md p-6"><div class="flex justify-between items-center"><h2 id="packageModalTitle" class="text-xl font-black">Add Package</h2><button class="btn gray" onclick="closePackage()">✕</button></div>
+<input id="pkgId" type="hidden"><input id="pkgName" class="input mt-5" placeholder="Package Name"><input id="pkgSpeed" class="input mt-3" placeholder="Speed e.g. 20 Mbps"><input id="pkgPrice" type="number" class="input mt-3" placeholder="Monthly Price"><select id="pkgStatus" class="input mt-3"><option>Active</option><option>Inactive</option></select>
+<button class="btn success w-full mt-4" onclick="savePackage()">Save Package</button><div id="packageErr" class="text-red-600 text-sm text-center mt-3"></div></div></div>
+
+<!-- BILL MODAL -->
+<div id="billModal" class="modal hidden"><div class="card w-full max-w-md p-6"><div class="flex justify-between items-center"><h2 class="text-xl font-black">Create Bill</h2><button class="btn gray" onclick="closeBill()">✕</button></div>
+<select id="billCustomer" class="input mt-5"></select><input id="billAmount" type="number" class="input mt-3" placeholder="Amount"><input id="billDue" type="date" class="input mt-3"><input id="billMonth" class="input mt-3" placeholder="Month e.g. August 2026"><select id="billStatus" class="input mt-3"><option>Unpaid</option><option>Paid</option></select>
+<button class="btn primary w-full mt-4" onclick="saveBill()">Create Bill</button><div id="billErr" class="text-red-600 text-sm text-center mt-3"></div></div></div>
+
+<!-- PAYMENT MODAL -->
+<div id="paymentModal" class="modal hidden"><div class="card w-full max-w-md p-6"><div class="flex justify-between items-center"><h2 class="text-xl font-black">Record Payment</h2><button class="btn gray" onclick="closePayment()">✕</button></div>
+<select id="payCustomer" class="input mt-5"></select><input id="payAmount" type="number" class="input mt-3" placeholder="Amount"><select id="payMethod" class="input mt-3"><option>Cash</option><option>Bank</option><option>Easypaisa</option><option>JazzCash</option><option>Other</option></select><input id="payDate" type="date" class="input mt-3">
+<button class="btn success w-full mt-4" onclick="savePayment()">Save Payment</button><div id="payErr" class="text-red-600 text-sm text-center mt-3"></div></div></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getDatabase,ref,get,set,update,remove} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
+ authDomain:"isp-billing-system-27cf8.firebaseapp.com",
+ databaseURL:"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
+ projectId:"isp-billing-system-27cf8",
+ storageBucket:"isp-billing-system-27cf8.firebasestorage.app",
+ messagingSenderId:"643339508063",
+ appId:"1:643339508063:web:232e6769f7128b6e323eea"
+};
+
+const firebaseApp=initializeApp(firebaseConfig),auth=getAuth(firebaseApp),db=getDatabase(firebaseApp);
+const provider=new GoogleAuthProvider();
+provider.setCustomParameters({prompt:"select_account"});
+
+let user=null,dealer=null,dealerId=null;
+let customers={},packages={},bills={},payments={};
+
+const $=id=>document.getElementById(id);
+const norm=v=>String(v??"").trim().toLowerCase();
+const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+const entries=o=>o&&typeof o==="object"?Object.entries(o):[];
+const today=()=>new Date().toISOString().slice(0,10);
+
+function own(obj){
+ return entries(obj).filter(([id,x])=>{
+  if(!x||typeof x!=="object")return false;
+  return String(x.dealerId||"")===String(dealerId)||norm(x.dealerEmail)===norm(dealer?.email||user?.email);
+ });
+}
+async function obj(path){
+ const s=await get(ref(db,path)); const v=s.exists()?s.val():{};
+ return v&&typeof v==="object"?v:{};
+}
+function msg(el,text,type="red"){
+ $(el).className="mt-3 p-3 rounded-xl text-sm "+(type==="green"?"bg-green-50 text-green-700":"bg-red-50 text-red-700");
+ $(el).textContent=text;
+ $(el).classList.remove("hidden");
+}
+
+$("google").onclick=async()=>{
+ try{$("google").disabled=true;$("google").textContent="Signing in...";await signInWithPopup(auth,provider)}
+ catch(e){msg("loginMsg",(e.code||"Error")+": "+e.message);$("google").disabled=false;$("google").textContent="Continue with Google"}
+};
+
+async function findDealer(email){
+ const ds=await obj("dealers");
+ for(const [id,d] of entries(ds)) if(d&&norm(d.email)===norm(email)) return {id,dealer:d};
+ const ls=await obj("licenses");
+ for(const [key,l] of entries(ls)){
+  if(!l||norm(l.dealerEmail)!==norm(email))continue;
+  const did=l.dealerId||l.dealerID;
+  if(did){
+   const s=await get(ref(db,"dealers/"+did));
+   if(s.exists())return {id:did,dealer:s.val()};
+  }
+ }
+ return null;
+}
+async function findLicense(key){
+ const ls=await obj("licenses");
+ for(const [id,l] of entries(ls)){
+  if(!l||typeof l!=="object")continue;
+  const stored=String(l.key||l.licenseKey||l.code||id).trim().toUpperCase();
+  if(stored!==key)continue;
+  const email=norm(l.dealerEmail||l.email);
+  if(email&&email!==norm(user?.email))continue;
+  if(l.dealerId&&String(l.dealerId)!==String(dealerId))continue;
+  return {id,data:l};
+ }
+ return null;
+}
+function expiryValue(l){
+ return l?.expiryDate||l?.licenseExpiry||l?.expiry||dealer?.licenseExpiry||"";
+}
+function licenseGood(l){
+ if(!l)return false;
+ const st=norm(l.status||"active");
+ if(st&&st!=="active")return false;
+ const ex=expiryValue(l);
+ if(ex&&new Date(ex+"T23:59:59")<new Date())return false;
+ return true;
+}
+async function currentLicense(){
+ const key=localStorage.getItem("dealer_license_"+dealerId);
+ if(!key)return null;
+ return await findLicense(key);
+}
+function showLicense(){
+ $("loading").classList.add("hidden");$("app").classList.add("hidden");$("login").classList.add("hidden");$("license").classList.remove("hidden");
+ $("licenseInfo").textContent="Logged in as "+(user?.email||"")+". Enter the license assigned by Super Admin.";
+}
+onAuthStateChanged(auth,async u=>{
+ try{
+  if(!u){user=null;dealer=null;dealerId=null;$("loading").classList.add("hidden");$("app").classList.add("hidden");$("license").classList.add("hidden");$("login").classList.remove("hidden");$("login").classList.add("flex");return}
+  user=u;
+  const found=await findDealer(u.email);
+  if(!found){$("loading").classList.add("hidden");$("login").classList.add("hidden");showLicense();$("licenseMsg").textContent="❌ No dealer record found for this Gmail.";return}
+  dealer=found.dealer;dealerId=found.id;
+  const lic=await currentLicense();
+  if(lic&&licenseGood(lic)){
+   await enterApp(); return;
+  }
+  localStorage.removeItem("dealer_license_"+dealerId);
+  showLicense();
+ }catch(e){console.error(e);$("loading").classList.add("hidden");alert("Firebase error: "+e.message)}
+});
+
+$("verify").onclick=async()=>{
+ const key=$("licenseKey").value.trim().toUpperCase();
+ if(!key){$("licenseMsg").textContent="Enter license key.";return}
+ $("verify").disabled=true;$("licenseMsg").textContent="Checking license...";
+ try{
+  if(!user){$("licenseMsg").textContent="Please login again.";return}
+  const fresh=await findDealer(user.email);
+  if(!fresh){$("licenseMsg").textContent="Dealer not found.";return}
+  dealer=fresh.dealer;dealerId=fresh.id;
+  const result=await findLicense(key);
+  if(!result){$("licenseMsg").textContent="❌ Invalid license or license belongs to another dealer.";return}
+  if(!licenseGood(result.data)){
+   const st=norm(result.data.status||"active");
+   $("licenseMsg").textContent=st!=="active"?"❌ License suspended.":"❌ License expired.";
+   return;
+  }
+  localStorage.setItem("dealer_license_"+dealerId,key);
+  $("licenseMsg").textContent="✅ License verified.";
+  await enterApp();
+ }catch(e){$("licenseMsg").textContent="Firebase error: "+e.message}
+ finally{$("verify").disabled=false}
+};
+
+async function enterApp(){
+ $("license").classList.add("hidden");$("login").classList.add("hidden");$("app").classList.remove("hidden");$("loading").classList.add("hidden");
+ await load();render();showPage("dashboard");
+}
+async function load(){
+ [customers,packages,bills,payments]=await Promise.all([obj("customers"),obj("packages"),obj("bills"),obj("payments")]);
+}
+function render(){
+ renderDealer();renderStats();renderCustomers();renderPackages();renderBills();renderPayments();renderExpiry();
+}
+function renderDealer(){
+ const name=dealer?.name||dealer?.company||"Dealer",email=dealer?.email||user?.email||"";
+ $("sideName").textContent=name;$("sideEmail").textContent=email;$("topName").textContent=name;
+ $("statusText").textContent="Status: "+(dealer?.status||"Active");$("expiryText").textContent="License expiry: "+(dealer?.licenseExpiry||"-");
+ $("iName").textContent=dealer?.name||"-";$("iCompany").textContent=dealer?.company||"-";$("iEmail").textContent=email;$("iLicense").textContent=dealer?.licenseKey||localStorage.getItem("dealer_license_"+dealerId)||"-";$("iExpiry").textContent=dealer?.licenseExpiry||"-";
+ $("pNameView").textContent=dealer?.name||"-";$("pCompanyView").textContent=dealer?.company||"-";$("pEmailView").textContent=email;$("pPhoneView").textContent=dealer?.phone||"-";$("pLicenseView").textContent=dealer?.licenseKey||localStorage.getItem("dealer_license_"+dealerId)||"-";$("pExpiryView").textContent=dealer?.licenseExpiry||"-";
+}
+function renderStats(){
+ const cs=own(customers),ps=own(packages),bs=own(bills);
+ $("sCustomers").textContent=cs.length;$("sLimit").textContent=dealer?.customerLimit||100;$("sUnpaid").textContent=bs.filter(x=>norm(x[1].status)==="unpaid").length;$("sPackages").textContent=ps.filter(x=>norm(x[1].status||"active")==="active").length;
+}
+function renderExpiry(){
+ const ex=dealer?.licenseExpiry;if(!ex){$("expiryAlert").classList.add("hidden");return}
+ const d=Math.ceil((new Date(ex+"T23:59:59")-new Date())/86400000);
+ if(d<=7){$("expiryAlert").classList.remove("hidden");$("expiryAlertText").textContent=d<0?"License expired.":d===0?"License expires today.":"License expires in "+d+" day(s)."}else $("expiryAlert").classList.add("hidden");
+}
+const titles={dashboard:"Dashboard",customers:"Customers",packages:"Packages",bills:"Bills",payments:"Payments",recovery:"Account Recovery",profile:"Profile"};
+window.showPage=p=>{document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$("page-"+p).classList.remove("hidden");document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===p));$("title").textContent=titles[p]||"Dashboard";scrollTo(0,0)};
+document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+function packageName(c){return packages[c.packageId]?.name||c.package||"-"}
+function renderCustomers(){
+ const q=norm($("customerSearch").value);let h="";
+ for(const [id,c] of own(customers)){
+  const text=norm((c.name||"")+" "+(c.phone||"")+" "+(c.username||""));if(q&&!text.includes(q))continue;
+  const active=norm(c.status||"active")==="active";
+  h+=`<tr class="border-b"><td class="p-3"><b>${esc(c.name)}</b><div class="text-xs text-gray-500">${esc(c.address||"")}</div></td><td class="p-3">${esc(c.phone)}</td><td class="p-3">${esc(c.username)}</td><td class="p-3">${esc(packageName(c))}</td><td class="p-3">${esc(c.expiryDate||"-")}</td><td class="p-3"><span class="badge ${active?"bg-green":"bg-red"}">${active?"Active":"Suspended"}</span></td><td class="p-3"><div class="flex gap-1 flex-wrap"><button class="btn ${active?"orange":"success"} text-xs" onclick="toggleCustomer('${esc(id)}')">${active?"Suspend":"Activate"}</button><button class="btn primary text-xs" onclick="editCustomer('${esc(id)}')">Edit</button><button class="btn success text-xs" onclick="customerWA('${esc(id)}')">WA</button><button class="btn danger text-xs" onclick="deleteCustomer('${esc(id)}')">Delete</button></div></td></tr>`;
+ }
+ $("customersTable").innerHTML=h||`<tr><td colspan="7" class="p-6 text-center text-gray-500">No customers found.</td></tr>`;
+}
+$("customerSearch").oninput=renderCustomers;
+function fillCustomerSelect(id,activeOnly=true){
+ const s=$(id);s.innerHTML='<option value="">Select Customer</option>';
+ for(const [cid,c] of own(customers)){if(activeOnly&&norm(c.status||"active")!=="active")continue;s.innerHTML+=`<option value="${esc(cid)}">${esc(c.name||cid)} — ${esc(c.phone||"")}</option>`}
+}
+function fillPackageSelect(){
+ $("cPackage").innerHTML='<option value="">Select Package</option>';
+ for(const [id,p] of own(packages))if(norm(p.status||"active")==="active")$("cPackage").innerHTML+=`<option value="${esc(id)}">${esc(p.name)} — Rs ${Number(p.price||0).toLocaleString()}</option>`;
+}
+window.openCustomer=()=>{fillPackageSelect();$("cId").value="";$("cName").value="";$("cPhone").value="";$("cUsername").value="";$("cAddress").value="";$("cExpiry").value="";$("cStatus").value="Active";$("customerModalTitle").textContent="Add Customer";$("customerErr").textContent="";$("customerModal").classList.remove("hidden")};
+window.closeCustomer=()=>$("customerModal").classList.add("hidden");
+window.editCustomer=id=>{const c=customers[id];if(!c)return;fillPackageSelect();$("cId").value=id;$("cName").value=c.name||"";$("cPhone").value=c.phone||"";$("cUsername").value=c.username||"";$("cAddress").value=c.address||"";$("cPackage").value=c.packageId||"";$("cExpiry").value=c.expiryDate||"";$("cStatus").value=c.status||"Active";$("customerModalTitle").textContent="Edit Customer";$("customerErr").textContent="";$("customerModal").classList.remove("hidden")};
+window.saveCustomer=async()=>{
+ const id=$("cId").value||"CUST-"+Date.now(),name=$("cName").value.trim(),phone=$("cPhone").value.trim(),username=$("cUsername").value.trim(),address=$("cAddress").value.trim(),packageId=$("cPackage").value,status=$("cStatus").value;
+ if(!name||!phone||!username||!packageId){$("customerErr").textContent="Name, phone, username and package are required.";return}
+ const limit=Number(dealer?.customerLimit||100);if(!customers[id]&&own(customers).length>=limit){$("customerErr").textContent="Customer limit reached: "+limit;return}
+ const p=packages[packageId];if(!p){$("customerErr").textContent="Package not found.";return}
+ const old=customers[id]||{};let expiry=$("cExpiry").value;
+ if(!expiry){const d=new Date();d.setMonth(d.getMonth()+1);expiry=d.toISOString().slice(0,10)}
+ const data={...old,id,dealerId,dealerEmail:dealer.email,name,phone,username,address,packageId,package:p.name||"",monthlyFee:Number(p.price||0),expiryDate:expiry,status,lastPayment:old.lastPayment||0,createdAt:old.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+ try{await set(ref(db,"customers/"+id),data);await load();render();closeCustomer();alert("✅ Customer saved.")}catch(e){$("customerErr").textContent=e.message}
+};
+window.toggleCustomer=async id=>{const c=customers[id];if(!c)return;const next=norm(c.status||"active")==="active"?"Suspended":"Active";try{await update(ref(db,"customers/"+id),{status:next,updatedAt:new Date().toISOString()});await load();render()}catch(e){alert(e.message)}};
+window.deleteCustomer=async id=>{if(!customers[id]||!confirm("Delete this customer?"))return;try{await remove(ref(db,"customers/"+id));await load();render()}catch(e){alert(e.message)}};
+window.customerWA=id=>{const c=customers[id];if(!c)return;let p=String(c.phone||"").replace(/\D/g,"");if(p.startsWith("0"))p="92"+p.slice(1);if(!p){alert("Phone missing.");return}const text=`Hello ${c.name||"Customer"},\n\nISP Account Details\nUsername: ${c.username||"-"}\nPackage: ${c.package||"-"}\nMonthly Fee: Rs ${c.monthlyFee||0}\nExpiry: ${c.expiryDate||"-"}\nStatus: ${c.status||"-"}\n\nThank you.`;open("https://wa.me/"+p+"?text="+encodeURIComponent(text),"_blank")};
+
+function renderPackages(){let h="";for(const [id,p] of own(packages)){const a=norm(p.status||"active")==="active";h+=`<div class="card p-5"><div class="flex justify-between gap-2"><div><b class="text-lg">${esc(p.name)}</b><div class="text-blue-600 font-bold">${esc(p.speed||"-")}</div></div><span class="badge ${a?"bg-green":"bg-red"}">${esc(p.status||"Active")}</span></div><div class="text-3xl font-black mt-4">Rs ${Number(p.price||0).toLocaleString()}</div><div class="text-gray-500 text-sm">Monthly</div><div class="flex gap-2 mt-4"><button class="btn primary text-xs" onclick="editPackage('${esc(id)}')">Edit</button><button class="btn danger text-xs" onclick="deletePackage('${esc(id)}')">Delete</button></div></div>`}$("packagesGrid").innerHTML=h||`<div class="card p-6 text-gray-500">No packages yet.</div>`}
+window.openPackage=()=>{$("pkgId").value="";$("pkgName").value="";$("pkgSpeed").value="";$("pkgPrice").value="";$("pkgStatus").value="Active";$("packageModalTitle").textContent="Add Package";$("packageErr").textContent="";$("packageModal").classList.remove("hidden")};
+window.closePackage=()=>$("packageModal").classList.add("hidden");
+window.editPackage=id=>{const p=packages[id];if(!p)return;$("pkgId").value=id;$("pkgName").value=p.name||"";$("pkgSpeed").value=p.speed||"";$("pkgPrice").value=p.price||"";$("pkgStatus").value=p.status||"Active";$("packageModalTitle").textContent="Edit Package";$("packageModal").classList.remove("hidden")};
+window.savePackage=async()=>{const id=$("pkgId").value||"PKG-"+Date.now(),name=$("pkgName").value.trim(),speed=$("pkgSpeed").value.trim(),price=Number($("pkgPrice").value||0),status=$("pkgStatus").value;if(!name||!speed||price<=0){$("packageErr").textContent="Name, speed and price required.";return}try{await set(ref(db,"packages/"+id),{...(packages[id]||{}),id,dealerId,dealerEmail:dealer.email,name,speed,price,status,createdAt:packages[id]?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()});await load();render();closePackage();alert("✅ Package saved.")}catch(e){$("packageErr").textContent=e.message}};
+window.deletePackage=async id=>{if(!packages[id]||!confirm("Delete this package?"))return;try{await remove(ref(db,"packages/"+id));await load();render()}catch(e){alert(e.message)}};
+
+function renderBills(){let h="";for(const [id,b] of own(bills)){const c=customers[b.customerId]||{};const paid=norm(b.status)==="paid";h+=`<tr class="border-b"><td class="p-3"><b>${esc(b.id||id)}</b><div class="text-xs text-gray-500">${esc(b.month||"")}</div></td><td class="p-3">${esc(c.name||b.customerId||"-")}</td><td class="p-3">Rs ${Number(b.amount||0).toLocaleString()}</td><td class="p-3">${esc(b.dueDate||"-")}</td><td class="p-3"><span class="badge ${paid?"bg-green":"bg-orange"}">${esc(b.status||"Unpaid")}</span></td><td class="p-3"><div class="flex gap-1 flex-wrap"><button class="btn success text-xs" onclick="billWA('${esc(id)}')">WhatsApp</button>${!paid?`<button class="btn primary text-xs" onclick="markPaid('${esc(id)}')">Mark Paid</button>`:""}</div></td></tr>`}$("billsTable").innerHTML=h||`<tr><td colspan="6" class="p-6 text-center text-gray-500">No bills.</td></tr>`}
+window.openBill=()=>{fillCustomerSelect("billCustomer",false);$("billAmount").value="";$("billDue").value=today();$("billMonth").value=new Date().toLocaleString("en",{month:"long",year:"numeric"});$("billStatus").value="Unpaid";$("billErr").textContent="";$("billModal").classList.remove("hidden")};
+window.closeBill=()=>$("billModal").classList.add("hidden");
+window.saveBill=async()=>{const customerId=$("billCustomer").value,amount=Number($("billAmount").value||0),dueDate=$("billDue").value,month=$("billMonth").value.trim(),status=$("billStatus").value;if(!customerId||amount<=0||!dueDate){$("billErr").textContent="Customer, amount and due date required.";return}const id="BILL-"+Date.now();try{await set(ref(db,"bills/"+id),{id,dealerId,dealerEmail:dealer.email,customerId,amount,dueDate,month,status,createdAt:new Date().toISOString()});await load();render();closeBill();alert("✅ Bill created.")}catch(e){$("billErr").textContent=e.message}};
+window.markPaid=async id=>{if(!bills[id])return;try{await update(ref(db,"bills/"+id),{status:"Paid",paidAt:new Date().toISOString()});await load();render()}catch(e){alert(e.message)}};
+window.billWA=id=>{const b=bills[id],c=customers[b?.customerId]||{};if(!b)return;let p=String(c.phone||b.phone||"").replace(/\D/g,"");if(p.startsWith("0"))p="92"+p.slice(1);if(!p){alert("Customer phone missing.");return}const text=`ISP BILL\n\nCustomer: ${c.name||"-"}\nBill: ${b.id||id}\nAmount: Rs ${b.amount||0}\nDue Date: ${b.dueDate||"-"}\nMonth: ${b.month||"-"}\nStatus: ${b.status||"Unpaid"}\n\nPlease pay before the due date.\nThank you.`;open("https://wa.me/"+p+"?text="+encodeURIComponent(text),"_blank")};
+
+function renderPayments(){let h="";for(const [id,p] of own(payments)){const c=customers[p.customerId]||{};h+=`<tr class="border-b"><td class="p-3">${esc(p.id||id)}</td><td class="p-3">${esc(c.name||p.customerId||"-")}</td><td class="p-3">Rs ${Number(p.amount||0).toLocaleString()}</td><td class="p-3">${esc(p.method||"-")}</td><td class="p-3">${esc(p.date||"-")}</td></tr>`}$("paymentsTable").innerHTML=h||`<tr><td colspan="5" class="p-6 text-center text-gray-500">No payments.</td></tr>`}
+window.openPayment=()=>{fillCustomerSelect("payCustomer",false);$("payAmount").value="";$("payMethod").value="Cash";$("payDate").value=today();$("payErr").textContent="";$("paymentModal").classList.remove("hidden")};
+window.closePayment=()=>$("paymentModal").classList.add("hidden");
+window.savePayment=async()=>{const customerId=$("payCustomer").value,amount=Number($("payAmount").value||0),method=$("payMethod").value,date=$("payDate").value;if(!customerId||amount<=0||!date){$("payErr").textContent="Customer, amount and date required.";return}const id="PAY-"+Date.now();try{await set(ref(db,"payments/"+id),{id,dealerId,dealerEmail:dealer.email,customerId,amount,method,date,status:"Recorded",createdAt:new Date().toISOString()});const c=customers[customerId];if(c)await update(ref(db,"customers/"+customerId),{lastPayment:amount,lastPaymentDate:date});await load();render();closePayment();alert("✅ Payment recorded.")}catch(e){$("payErr").textContent=e.message}};
+
+$("recoveryBtn").onclick=async()=>{const method=$("rMethod").value,phone=$("rPhone").value.trim(),message=$("rMessage").value.trim();if(!phone||!message){$("recoveryMsg").textContent="Phone and message required.";return}try{const id="REC-"+Date.now();await set(ref(db,"recoveryRequests/"+id),{id,dealerId,dealerEmail:dealer.email,method,registeredPhone:phone,message,status:"Pending",createdAt:new Date().toISOString()});$("recoveryMsg").textContent="✅ Recovery request sent.";$("rPhone").value="";$("rMessage").value=""}catch(e){$("recoveryMsg").textContent=e.message}};
+
+async function logout(){if(dealerId)localStorage.removeItem("dealer_license_"+dealerId);await signOut(auth)}
+$("logout").onclick=logout;$("licenseLogout").onclick=logout;
+
+setInterval(async()=>{
+ if(!user||!dealerId)return;
+ try{
+  const fresh=await findDealer(user.email);if(!fresh)return;
+  dealer=fresh.dealer;dealerId=fresh.id;
+  const lic=await currentLicense();
+  if(!lic||!licenseGood(lic)){localStorage.removeItem("dealer_license_"+dealerId);$("app").classList.add("hidden");showLicense()}
+  else renderDealer();
+ }catch(e){console.warn(e)}
+},30000);
+</script>
+</body>
+</html>
