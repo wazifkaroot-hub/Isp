@@ -834,7 +834,8 @@ import {
  ref,
  get,
  set,
- remove
+ remove,
+ update
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -877,11 +878,6 @@ const db=getDatabase(app);
 
 const provider=new GoogleAuthProvider();
 
-/*
-Do NOT force select_account every time.
-This helps keep the existing Google session.
-*/
-
 provider.setCustomParameters({
  prompt:"none"
 });
@@ -889,6 +885,7 @@ provider.setCustomParameters({
 
 let currentUser=null;
 let dealer=null;
+let dealerId=null;
 
 let customers={};
 let packages={};
@@ -928,12 +925,6 @@ return String(v??"")
 
 }
 
-
-/*
-Important fix:
-Always convert Firebase objects
-to arrays before looping.
-*/
 
 function entries(obj){
 
@@ -1008,6 +999,7 @@ if(!user){
 
 currentUser=null;
 dealer=null;
+dealerId=null;
 
 $("authLoading")
 .classList.add("hidden");
@@ -1052,7 +1044,8 @@ return;
 }
 
 
-dealer=found;
+dealer=found.dealer;
+dealerId=found.id;
 
 
 /*
@@ -1149,11 +1142,11 @@ FIND DEALER
 
 async function findDealer(email){
 
+// First check dealers node
 const snap=
 await get(ref(db,"dealers"));
 
-if(!snap.exists())
-return null;
+if(snap.exists()){
 
 const data=snap.val();
 
@@ -1169,9 +1162,51 @@ normalize(email)
 ){
 
 return {
-...value,
-__id:id
+id:id,
+dealer:value
 };
+
+}
+
+}
+
+}
+
+// If not found in dealers, check licenses node
+const licenseSnap=
+await get(ref(db,"licenses"));
+
+if(licenseSnap.exists()){
+
+const data=licenseSnap.val();
+
+for(const [key,value] of entries(data)){
+
+if(!value||
+typeof value!=="object")
+continue;
+
+if(
+normalize(value.dealerEmail)===
+normalize(email)
+){
+
+// Now get the full dealer record
+const dealerSnap=
+await get(
+ref(db,"dealers/"+value.dealerId)
+);
+
+if(dealerSnap.exists()){
+
+return {
+id:value.dealerId,
+dealer:dealerSnap.val()
+};
+
+}
+
+}
 
 }
 
@@ -1230,7 +1265,7 @@ License verified once.
 */
 
 return localStorage.getItem(
-"dealer_license_"+dealer.__id
+"dealer_license_"+dealerId
 )==normalize(dealer.licenseKey);
 
 }
@@ -1338,7 +1373,8 @@ return;
 }
 
 
-dealer=fresh;
+dealer=fresh.dealer;
+dealerId=fresh.id;
 
 // Check if license key exists in dealer record
 if(!dealer.licenseKey || dealer.licenseKey === ""){
@@ -1397,7 +1433,7 @@ Save only verification state.
 */
 
 localStorage.setItem(
-"dealer_license_"+dealer.__id,
+"dealer_license_"+dealerId,
 key
 );
 
@@ -1431,16 +1467,14 @@ esc(e.message)+
 
 /*
 LICENSE WATCHER
-
-If Super Admin changes status,
-dealer gets locked automatically.
 */
 
 setInterval(
 async()=>{
 
 if(!currentUser||
-!dealer)
+!dealer||
+!dealerId)
 return;
 
 try{
@@ -1453,7 +1487,8 @@ currentUser.email
 if(!fresh)
 return;
 
-dealer=fresh;
+dealer=fresh.dealer;
+dealerId=fresh.id;
 
 
 if(!licenseIsValid()){
@@ -1475,10 +1510,10 @@ console.warn(e);
 
 function lockDealer(){
 
-if(dealer){
+if(dealerId){
 
 localStorage.removeItem(
-"dealer_license_"+dealer.__id
+"dealer_license_"+dealerId
 );
 
 }
@@ -1498,10 +1533,10 @@ showLicenseStatus();
 
 async function logout(){
 
-if(dealer){
+if(dealerId){
 
 localStorage.removeItem(
-"dealer_license_"+dealer.__id
+"dealer_license_"+dealerId
 );
 
 }
@@ -1588,7 +1623,7 @@ item.ownerId||
 
 if(
 String(owner)===
-String(dealer.__id)
+String(dealerId)
 )
 return true;
 
@@ -2119,8 +2154,7 @@ const customer={
 
 id,
 
-dealerId:
-dealer.__id,
+dealerId:dealerId,
 
 dealerEmail:
 dealer.email,
@@ -2425,8 +2459,7 @@ const pkg={
 
 id,
 
-dealerId:
-dealer.__id,
+dealerId:dealerId,
 
 dealerEmail:
 dealer.email,
@@ -2762,8 +2795,7 @@ const request={
 
 id,
 
-dealerId:
-dealer.__id,
+dealerId:dealerId,
 
 dealerEmail:
 dealer.email,
@@ -2841,13 +2873,6 @@ expiring.length+
 }
 
 }
-
-
-/*
-Do not show alert before Firebase
-has loaded. This fixes the old
-3-second startup problem.
-*/
 
 
 </script>
