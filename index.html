@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ISP Billing — Dealer Panel</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -15,66 +15,75 @@ body{
   background:#f4f7fb;
   color:#172033
 }
-button,input,select,textarea{
-  font:inherit
-}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
 .card{
-  background:white;
-  border:1px solid #e7ebf2;
+  background:#fff;
+  border:1px solid #e5e7eb;
   border-radius:20px;
-  box-shadow:0 10px 35px rgba(15,23,42,.06)
+  box-shadow:0 10px 35px rgba(15,23,42,.07)
 }
+
 .sidebar{
   width:250px;
   min-height:100vh;
   position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
+  inset:0 auto 0 0;
   background:#0f172a;
-  color:white;
+  color:#fff;
   z-index:50
 }
+
 .main{
   margin-left:250px;
   min-height:100vh
 }
+
 .navbtn{
   width:100%;
   text-align:left;
+  border:0;
+  background:transparent;
   padding:12px 14px;
   border-radius:12px;
   margin-bottom:5px;
   color:#cbd5e1
 }
-.navbtn:hover,.navbtn.active{
+
+.navbtn:hover,
+.navbtn.active{
   background:#2563eb;
-  color:white
+  color:#fff
 }
+
 .input{
   width:100%;
   border:1px solid #dbe1ea;
   border-radius:12px;
   padding:11px 13px;
   outline:none;
-  background:white
+  background:#fff
 }
+
 .input:focus{
   border-color:#2563eb;
   box-shadow:0 0 0 3px #2563eb18
 }
+
 .btn{
   border:0;
   border-radius:12px;
   padding:10px 15px;
-  font-weight:700;
-  cursor:pointer
+  font-weight:700
 }
-.btn-primary{background:#2563eb;color:white}
-.btn-success{background:#16a34a;color:white}
-.btn-danger{background:#dc2626;color:white}
-.btn-dark{background:#0f172a;color:white}
+
+.btn-primary{background:#2563eb;color:#fff}
+.btn-success{background:#16a34a;color:#fff}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-dark{background:#0f172a;color:#fff}
 .btn-gray{background:#eef2f7;color:#334155}
+
 .badge{
   display:inline-block;
   padding:5px 9px;
@@ -82,35 +91,43 @@ button,input,select,textarea{
   font-size:12px;
   font-weight:700
 }
+
 .green{background:#dcfce7;color:#166534}
 .red{background:#fee2e2;color:#991b1b}
 .orange{background:#ffedd5;color:#9a3412}
 .blue{background:#dbeafe;color:#1d4ed8}
+
 .modal{
   position:fixed;
   inset:0;
-  background:#02061799;
+  background:#020617aa;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:18px;
   z-index:100
 }
+
 .hidden{display:none!important}
 table{min-width:900px}
+
 @media(max-width:800px){
   .sidebar{
     width:100%;
-    height:auto;
-    min-height:0;
+    min-height:auto;
     position:relative
   }
-  .main{margin-left:0}
+
+  .main{
+    margin-left:0
+  }
+
   .sidebar-nav{
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:5px
   }
+
   .navbtn{margin:0}
 }
 </style>
@@ -118,71 +135,75 @@ table{min-width:900px}
 
 <body>
 
-<!-- AUTH LOADING -->
+<!-- SESSION LOADING -->
 <div id="authLoading"
 class="fixed inset-0 bg-white z-[999] flex items-center justify-center">
-<div class="text-center">
-<div class="text-5xl mb-4">🌐</div>
-<div class="font-bold text-xl">Checking session...</div>
-<div class="text-gray-500 mt-2">Please wait</div>
-</div>
+  <div class="text-center">
+    <div class="text-5xl mb-4">🌐</div>
+    <div class="font-bold text-xl">Checking session...</div>
+    <div class="text-gray-500 mt-2">Please wait</div>
+  </div>
 </div>
 
 <!-- LOGIN -->
-<div id="loginPage" class="hidden min-h-screen flex items-center justify-center p-5">
-<div class="card w-full max-w-md p-7">
+<div id="loginPage"
+class="hidden min-h-screen flex items-center justify-center p-5">
 
-<div class="text-center">
-<div class="text-6xl mb-3">🌐</div>
-<h1 class="text-3xl font-black">ISP Billing</h1>
-<p class="text-gray-500 mt-2">Dealer Management System</p>
-</div>
+  <div class="card w-full max-w-md p-7">
 
-<div id="loginMessage"
-class="hidden mt-5 rounded-xl p-3 text-sm"></div>
+    <div class="text-center">
+      <div class="text-6xl mb-3">🌐</div>
+      <h1 class="text-3xl font-black">ISP Billing</h1>
+      <p class="text-gray-500 mt-2">Dealer Management System</p>
+    </div>
 
-<button id="googleLogin"
-class="btn btn-dark w-full mt-6">
-Continue with Google
-</button>
+    <div id="loginMessage"
+    class="hidden mt-5 rounded-xl p-3 text-sm"></div>
 
-<p class="text-xs text-gray-400 text-center mt-4">
-Use your registered dealer Gmail.
-</p>
+    <button id="googleLogin"
+    class="btn btn-dark w-full mt-6">
+      Continue with Google
+    </button>
 
-</div>
+    <p class="text-xs text-gray-400 text-center mt-4">
+      Use your registered dealer Gmail.
+    </p>
+
+  </div>
 </div>
 
 <!-- LICENSE -->
-<div id="licensePage" class="hidden min-h-screen flex items-center justify-center p-5">
-<div class="card w-full max-w-md p-7">
+<div id="licensePage"
+class="hidden min-h-screen flex items-center justify-center p-5">
 
-<div class="text-center">
-<div class="text-5xl mb-3">🔐</div>
-<h1 class="text-2xl font-black">License Verification</h1>
-<p class="text-gray-500 mt-2">
-Enter the license key provided by Super Admin.
-</p>
-</div>
+  <div class="card w-full max-w-md p-7">
 
-<input id="licenseInput"
-class="input mt-6 uppercase"
-placeholder="ISP-XXXX-XXXX-XXXX">
+    <div class="text-center">
+      <div class="text-5xl mb-3">🔐</div>
+      <h1 class="text-2xl font-black">License Verification</h1>
+      <p class="text-gray-500 mt-2">
+        Enter the license key provided by Super Admin.
+      </p>
+    </div>
 
-<button id="verifyLicense"
-class="btn btn-primary w-full mt-3">
-Verify License
-</button>
+    <input id="licenseInput"
+    class="input mt-6 uppercase"
+    placeholder="ISP-001-DEMO">
 
-<div id="licenseMessage"
-class="text-sm mt-4 text-center"></div>
+    <button id="verifyLicense"
+    class="btn btn-primary w-full mt-3">
+      Verify License
+    </button>
 
-<button id="licenseLogout"
-class="btn btn-gray w-full mt-4">
-Logout
-</button>
+    <div id="licenseMessage"
+    class="text-sm mt-4 text-center"></div>
 
-</div>
+    <button id="licenseLogout"
+    class="btn btn-gray w-full mt-4">
+      Logout
+    </button>
+
+  </div>
 </div>
 
 <!-- APP -->
@@ -190,46 +211,87 @@ Logout
 
 <aside class="sidebar p-4">
 
-<div class="mb-6">
-<div class="text-2xl font-black">🌐 ISP Billing</div>
-<div class="text-xs text-slate-400 mt-1">Dealer Panel</div>
-</div>
+  <div class="mb-6">
+    <div class="text-2xl font-black">🌐 ISP Billing</div>
+    <div class="text-xs text-slate-400 mt-1">Dealer Panel</div>
+  </div>
 
-<div class="sidebar-nav">
+  <div class="sidebar-nav">
 
-<button class="navbtn active" data-page="dashboard">📊 Dashboard</button>
-<button class="navbtn" data-page="customers">👥 Customers</button>
-<button class="navbtn" data-page="packages">📦 Packages</button>
-<button class="navbtn" data-page="bills">🧾 Bills</button>
-<button class="navbtn" data-page="payments">💰 Payments</button>
-<button class="navbtn" data-page="recovery">🔄 Recovery</button>
-<button class="navbtn" data-page="profile">⚙️ Profile</button>
+    <button class="navbtn active" data-page="dashboard">
+      📊 Dashboard
+    </button>
 
-</div>
+    <button class="navbtn" data-page="customers">
+      👥 Customers
+    </button>
 
-<div class="mt-8 pt-5 border-t border-slate-700">
-<div id="sideDealerName" class="font-bold"></div>
-<div id="sideDealerEmail" class="text-xs text-slate-400 mt-1"></div>
-<button id="logoutBtn" class="btn bg-red-500 text-white w-full mt-4">
-Logout
-</button>
-</div>
+    <button class="navbtn" data-page="packages">
+      📦 Packages
+    </button>
+
+    <button class="navbtn" data-page="bills">
+      🧾 Bills
+    </button>
+
+    <button class="navbtn" data-page="payments">
+      💰 Payments
+    </button>
+
+    <button class="navbtn" data-page="recovery">
+      🔄 Recovery
+    </button>
+
+    <button class="navbtn" data-page="profile">
+      ⚙️ Profile
+    </button>
+
+  </div>
+
+  <div class="mt-8 pt-5 border-t border-slate-700">
+
+    <div id="sideDealerName" class="font-bold"></div>
+
+    <div id="sideDealerEmail"
+    class="text-xs text-slate-400 mt-1"></div>
+
+    <button id="logoutBtn"
+    class="btn bg-red-500 text-white w-full mt-4">
+      Logout
+    </button>
+
+  </div>
 
 </aside>
 
 <main class="main">
 
 <header class="bg-white border-b p-4 sticky top-0 z-40">
-<div class="flex justify-between items-center gap-3">
-<div>
-<h2 id="pageTitle" class="text-xl font-black">Dashboard</h2>
-<p id="dealerStatusText" class="text-xs text-gray-500"></p>
-</div>
-<div class="text-right">
-<div id="topDealerName" class="font-bold"></div>
-<div id="licenseExpiryText" class="text-xs text-gray-500"></div>
-</div>
-</div>
+
+  <div class="flex justify-between items-center gap-3">
+
+    <div>
+      <h2 id="pageTitle"
+      class="text-xl font-black">
+        Dashboard
+      </h2>
+
+      <p id="dealerStatusText"
+      class="text-xs text-gray-500"></p>
+    </div>
+
+    <div class="text-right">
+
+      <div id="topDealerName"
+      class="font-bold"></div>
+
+      <div id="licenseExpiryText"
+      class="text-xs text-gray-500"></div>
+
+    </div>
+
+  </div>
+
 </header>
 
 <div class="p-4 md:p-6">
@@ -237,295 +299,394 @@ Logout
 <!-- DASHBOARD -->
 <section id="page-dashboard" class="page">
 
-<div id="expiryAlert"
-class="hidden card p-4 mb-5 border-orange-300 bg-orange-50">
-<div class="font-black text-orange-700">⚠️ License Expiry Alert</div>
-<div id="expiryAlertText" class="text-sm text-orange-700 mt-1"></div>
-</div>
+  <div id="expiryAlert"
+  class="hidden card p-4 mb-5 border-orange-300 bg-orange-50">
 
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="font-black text-orange-700">
+      ⚠️ Expiry Alert
+    </div>
 
-<div class="card p-5">
-<div class="text-gray-500 text-sm">Customers</div>
-<div id="statCustomers" class="text-3xl font-black mt-2">0</div>
-</div>
+    <div id="expiryAlertText"
+    class="text-sm text-orange-700 mt-1"></div>
 
-<div class="card p-5">
-<div class="text-gray-500 text-sm">Customer Limit</div>
-<div id="statLimit" class="text-3xl font-black mt-2">0</div>
-</div>
+  </div>
 
-<div class="card p-5">
-<div class="text-gray-500 text-sm">Unpaid Bills</div>
-<div id="statUnpaid" class="text-3xl font-black mt-2">0</div>
-</div>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-<div class="card p-5">
-<div class="text-gray-500 text-sm">Active Packages</div>
-<div id="statPackages" class="text-3xl font-black mt-2">0</div>
-</div>
+    <div class="card p-5">
+      <div class="text-gray-500 text-sm">Customers</div>
+      <div id="statCustomers"
+      class="text-3xl font-black mt-2">0</div>
+    </div>
 
-</div>
+    <div class="card p-5">
+      <div class="text-gray-500 text-sm">Customer Limit</div>
+      <div id="statLimit"
+      class="text-3xl font-black mt-2">0</div>
+    </div>
 
-<div class="grid lg:grid-cols-2 gap-5 mt-5">
+    <div class="card p-5">
+      <div class="text-gray-500 text-sm">Unpaid Bills</div>
+      <div id="statUnpaid"
+      class="text-3xl font-black mt-2">0</div>
+    </div>
 
-<div class="card p-5">
-<h3 class="font-black text-lg">Quick Actions</h3>
+    <div class="card p-5">
+      <div class="text-gray-500 text-sm">Active Packages</div>
+      <div id="statPackages"
+      class="text-3xl font-black mt-2">0</div>
+    </div>
 
-<div class="grid grid-cols-2 gap-3 mt-4">
-<button class="btn btn-primary"
-onclick="openCustomerModal()">
-➕ Customer
-</button>
+  </div>
 
-<button class="btn btn-success"
-onclick="openPackageModal()">
-📦 Package
-</button>
+  <div class="grid lg:grid-cols-2 gap-5 mt-5">
 
-<button class="btn btn-dark"
-onclick="showPage('bills')">
-🧾 Bills
-</button>
+    <div class="card p-5">
 
-<button class="btn btn-gray"
-onclick="showPage('recovery')">
-🔄 Recovery
-</button>
-</div>
-</div>
+      <h3 class="font-black text-lg">
+        Quick Actions
+      </h3>
 
-<div class="card p-5">
-<h3 class="font-black text-lg">Dealer Information</h3>
+      <div class="grid grid-cols-2 gap-3 mt-4">
 
-<div class="mt-4 space-y-2 text-sm">
-<div><b>Name:</b> <span id="infoName"></span></div>
-<div><b>Company:</b> <span id="infoCompany"></span></div>
-<div><b>Email:</b> <span id="infoEmail"></span></div>
-<div><b>License:</b> <code id="infoLicense"></code></div>
-<div><b>Expiry:</b> <span id="infoExpiry"></span></div>
-</div>
+        <button class="btn btn-primary"
+        onclick="openCustomerModal()">
+          ➕ Customer
+        </button>
 
-</div>
+        <button class="btn btn-success"
+        onclick="openPackageModal()">
+          📦 Package
+        </button>
 
-</div>
+        <button class="btn btn-dark"
+        onclick="showPage('bills')">
+          🧾 Bills
+        </button>
+
+        <button class="btn btn-gray"
+        onclick="showPage('recovery')">
+          🔄 Recovery
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="card p-5">
+
+      <h3 class="font-black text-lg">
+        Dealer Information
+      </h3>
+
+      <div class="mt-4 space-y-2 text-sm">
+
+        <div>
+          <b>Name:</b>
+          <span id="infoName"></span>
+        </div>
+
+        <div>
+          <b>Company:</b>
+          <span id="infoCompany"></span>
+        </div>
+
+        <div>
+          <b>Email:</b>
+          <span id="infoEmail"></span>
+        </div>
+
+        <div>
+          <b>License:</b>
+          <code id="infoLicense"></code>
+        </div>
+
+        <div>
+          <b>Expiry:</b>
+          <span id="infoExpiry"></span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
 <!-- CUSTOMERS -->
 <section id="page-customers" class="page hidden">
 
-<div class="flex justify-between items-center mb-5 gap-3">
-<div>
-<h2 class="text-2xl font-black">Customers</h2>
-<p class="text-gray-500 text-sm">Manage your internet customers.</p>
-</div>
+  <div class="flex justify-between items-center mb-5 gap-3">
 
-<button class="btn btn-primary"
-onclick="openCustomerModal()">
-➕ Add Customer
-</button>
-</div>
+    <div>
+      <h2 class="text-2xl font-black">
+        Customers
+      </h2>
 
-<div class="card p-4">
+      <p class="text-gray-500 text-sm">
+        Manage your internet customers.
+      </p>
+    </div>
 
-<input id="customerSearch"
-class="input mb-4"
-placeholder="Search name, phone or username...">
+    <button class="btn btn-primary"
+    onclick="openCustomerModal()">
+      ➕ Add Customer
+    </button>
 
-<div class="overflow-x-auto">
-<table class="w-full text-sm">
-<thead>
-<tr class="border-b text-left">
-<th class="p-3">Customer</th>
-<th class="p-3">Phone</th>
-<th class="p-3">Username</th>
-<th class="p-3">Package</th>
-<th class="p-3">Expiry</th>
-<th class="p-3">Status</th>
-<th class="p-3">Action</th>
-</tr>
-</thead>
-<tbody id="customerTable"></tbody>
-</table>
-</div>
+  </div>
 
-</div>
+  <div class="card p-4">
+
+    <input id="customerSearch"
+    class="input mb-4"
+    placeholder="Search name, phone or username...">
+
+    <div class="overflow-x-auto">
+
+      <table class="w-full text-sm">
+
+        <thead>
+          <tr class="border-b text-left">
+            <th class="p-3">Customer</th>
+            <th class="p-3">Phone</th>
+            <th class="p-3">Username</th>
+            <th class="p-3">Package</th>
+            <th class="p-3">Expiry</th>
+            <th class="p-3">Status</th>
+            <th class="p-3">Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="customerTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
 </section>
 
 <!-- PACKAGES -->
-<section id="page-packages" class="page hidden">
+<section id="page-packages"
+class="page hidden">
 
-<div class="flex justify-between items-center mb-5">
-<div>
-<h2 class="text-2xl font-black">Packages</h2>
-<p class="text-gray-500 text-sm">Create your own internet packages.</p>
-</div>
+  <div class="flex justify-between items-center mb-5">
 
-<button class="btn btn-primary"
-onclick="openPackageModal()">
-➕ Add Package
-</button>
-</div>
+    <div>
+      <h2 class="text-2xl font-black">
+        Packages
+      </h2>
 
-<div id="packageGrid"
-class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-</div>
+      <p class="text-gray-500 text-sm">
+        Create your own internet packages.
+      </p>
+    </div>
+
+    <button class="btn btn-primary"
+    onclick="openPackageModal()">
+      ➕ Add Package
+    </button>
+
+  </div>
+
+  <div id="packageGrid"
+  class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  </div>
 
 </section>
 
 <!-- BILLS -->
-<section id="page-bills" class="page hidden">
+<section id="page-bills"
+class="page hidden">
 
-<div class="mb-5">
-<h2 class="text-2xl font-black">Bills</h2>
-<p class="text-gray-500 text-sm">Generate and send customer bills.</p>
-</div>
+  <div class="mb-5">
+    <h2 class="text-2xl font-black">Bills</h2>
+    <p class="text-gray-500 text-sm">
+      Customer billing and WhatsApp.
+    </p>
+  </div>
 
-<div class="card p-4">
+  <div class="card p-4">
 
-<div class="overflow-x-auto">
-<table class="w-full text-sm">
-<thead>
-<tr class="border-b text-left">
-<th class="p-3">Bill</th>
-<th class="p-3">Customer</th>
-<th class="p-3">Amount</th>
-<th class="p-3">Due Date</th>
-<th class="p-3">Status</th>
-<th class="p-3">WhatsApp</th>
-</tr>
-</thead>
-<tbody id="billTable"></tbody>
-</table>
-</div>
+    <div class="overflow-x-auto">
 
-</div>
+      <table class="w-full text-sm">
+
+        <thead>
+          <tr class="border-b text-left">
+            <th class="p-3">Bill</th>
+            <th class="p-3">Customer</th>
+            <th class="p-3">Amount</th>
+            <th class="p-3">Due Date</th>
+            <th class="p-3">Status</th>
+            <th class="p-3">WhatsApp</th>
+          </tr>
+        </thead>
+
+        <tbody id="billTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
 </section>
 
 <!-- PAYMENTS -->
-<section id="page-payments" class="page hidden">
+<section id="page-payments"
+class="page hidden">
 
-<div class="mb-5">
-<h2 class="text-2xl font-black">Payments</h2>
-<p class="text-gray-500 text-sm">Payment history.</p>
-</div>
+  <div class="mb-5">
+    <h2 class="text-2xl font-black">
+      Payments
+    </h2>
+  </div>
 
-<div class="card p-4 overflow-x-auto">
-<table class="w-full text-sm">
-<thead>
-<tr class="border-b text-left">
-<th class="p-3">Payment</th>
-<th class="p-3">Phone</th>
-<th class="p-3">Amount</th>
-<th class="p-3">Status</th>
-</tr>
-</thead>
-<tbody id="paymentTable"></tbody>
-</table>
-</div>
+  <div class="card p-4 overflow-x-auto">
+
+    <table class="w-full text-sm">
+
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-3">Payment</th>
+          <th class="p-3">Phone</th>
+          <th class="p-3">Amount</th>
+          <th class="p-3">Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="paymentTable"></tbody>
+
+    </table>
+
+  </div>
 
 </section>
 
 <!-- RECOVERY -->
-<section id="page-recovery" class="page hidden">
+<section id="page-recovery"
+class="page hidden">
 
-<div class="max-w-2xl">
+  <div class="max-w-2xl">
 
-<div class="mb-5">
-<h2 class="text-2xl font-black">Account Recovery</h2>
-<p class="text-gray-500 text-sm">
-Submit a recovery request to Super Admin.
-</p>
-</div>
+    <div class="mb-5">
+      <h2 class="text-2xl font-black">
+        Account Recovery
+      </h2>
 
-<div class="card p-5">
+      <p class="text-gray-500 text-sm">
+        Submit recovery request to Super Admin.
+      </p>
+    </div>
 
-<label class="font-bold text-sm">Recovery Method</label>
+    <div class="card p-5">
 
-<select id="recoveryMethod" class="input mt-2">
-<option value="Bank Account">Bank Account</option>
-<option value="Easypaisa">Easypaisa</option>
-<option value="JazzCash">JazzCash</option>
-<option value="Other">Other</option>
-</select>
+      <label class="font-bold text-sm">
+        Recovery Method
+      </label>
 
-<label class="font-bold text-sm block mt-4">
-Registered Mobile Number
-</label>
+      <select id="recoveryMethod"
+      class="input mt-2">
 
-<input id="recoveryPhone"
-class="input mt-2"
-placeholder="03XXXXXXXXX">
+        <option>Bank Account</option>
+        <option>Easypaisa</option>
+        <option>JazzCash</option>
+        <option>Other</option>
 
-<label class="font-bold text-sm block mt-4">
-Message
-</label>
+      </select>
 
-<textarea id="recoveryMessage"
-class="input mt-2"
-rows="5"
-placeholder="Explain your recovery/account issue..."></textarea>
+      <label class="font-bold text-sm block mt-4">
+        Registered Mobile Number
+      </label>
 
-<div class="mt-4 p-3 rounded-xl bg-blue-50 text-blue-700 text-sm">
-📸 If a screenshot is required, send it from your registered number.
-<br>
-No screenshot upload is required here.
-</div>
+      <input id="recoveryPhone"
+      class="input mt-2"
+      placeholder="03XXXXXXXXX">
 
-<button id="submitRecovery"
-class="btn btn-primary w-full mt-4">
-Send Recovery Request
-</button>
+      <label class="font-bold text-sm block mt-4">
+        Message
+      </label>
 
-<div id="recoveryResult"
-class="text-sm text-center mt-3"></div>
+      <textarea id="recoveryMessage"
+      class="input mt-2"
+      rows="5"
+      placeholder="Explain your recovery issue..."></textarea>
 
-</div>
-</div>
+      <div class="mt-4 p-3 rounded-xl bg-blue-50 text-blue-700 text-sm">
+        📸 If screenshot is required, send it from your registered number.
+      </div>
+
+      <button id="submitRecovery"
+      class="btn btn-primary w-full mt-4">
+        Send Recovery Request
+      </button>
+
+      <div id="recoveryResult"
+      class="text-sm text-center mt-3"></div>
+
+    </div>
+
+  </div>
 
 </section>
 
 <!-- PROFILE -->
-<section id="page-profile" class="page hidden">
+<section id="page-profile"
+class="page hidden">
 
-<div class="max-w-2xl">
-<h2 class="text-2xl font-black mb-5">Dealer Profile</h2>
+  <div class="max-w-2xl">
 
-<div class="card p-5 space-y-4">
+    <h2 class="text-2xl font-black mb-5">
+      Dealer Profile
+    </h2>
 
-<div>
-<div class="text-xs text-gray-500">Name</div>
-<div id="profileName" class="font-bold"></div>
-</div>
+    <div class="card p-5 space-y-4">
 
-<div>
-<div class="text-xs text-gray-500">Company</div>
-<div id="profileCompany" class="font-bold"></div>
-</div>
+      <div>
+        <div class="text-xs text-gray-500">Name</div>
+        <div id="profileName"
+        class="font-bold"></div>
+      </div>
 
-<div>
-<div class="text-xs text-gray-500">Email</div>
-<div id="profileEmail" class="font-bold"></div>
-</div>
+      <div>
+        <div class="text-xs text-gray-500">Company</div>
+        <div id="profileCompany"
+        class="font-bold"></div>
+      </div>
 
-<div>
-<div class="text-xs text-gray-500">Phone</div>
-<div id="profilePhone" class="font-bold"></div>
-</div>
+      <div>
+        <div class="text-xs text-gray-500">Email</div>
+        <div id="profileEmail"
+        class="font-bold"></div>
+      </div>
 
-<div>
-<div class="text-xs text-gray-500">License</div>
-<div id="profileLicense" class="font-mono"></div>
-</div>
+      <div>
+        <div class="text-xs text-gray-500">Phone</div>
+        <div id="profilePhone"
+        class="font-bold"></div>
+      </div>
 
-<div>
-<div class="text-xs text-gray-500">License Expiry</div>
-<div id="profileExpiry" class="font-bold"></div>
-</div>
+      <div>
+        <div class="text-xs text-gray-500">License</div>
+        <div id="profileLicense"
+        class="font-mono"></div>
+      </div>
 
-</div>
-</div>
+      <div>
+        <div class="text-xs text-gray-500">
+          License Expiry
+        </div>
+
+        <div id="profileExpiry"
+        class="font-bold"></div>
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
@@ -534,192 +695,294 @@ class="text-sm text-center mt-3"></div>
 </div>
 
 <!-- CUSTOMER MODAL -->
-<div id="customerModal" class="modal hidden">
+<div id="customerModal"
+class="modal hidden">
 
 <div class="card w-full max-w-2xl p-6 max-h-[95vh] overflow-y-auto">
 
-<div class="flex justify-between items-center">
-<h2 class="text-xl font-black">Add Customer</h2>
-<button class="btn btn-gray" onclick="closeCustomerModal()">✕</button>
-</div>
+  <div class="flex justify-between items-center">
 
-<div class="grid md:grid-cols-2 gap-3 mt-5">
+    <h2 class="text-xl font-black">
+      Add Customer
+    </h2>
 
-<input id="cName" class="input" placeholder="Customer Name">
-<input id="cPhone" class="input" placeholder="Phone">
-<input id="cUsername" class="input" placeholder="Username">
-<input id="cAddress" class="input" placeholder="Address">
+    <button class="btn btn-gray"
+    onclick="closeCustomerModal()">
+      ✕
+    </button>
 
-<select id="cPackage" class="input">
-<option value="">Select Package</option>
-</select>
+  </div>
 
-<select id="cStatus" class="input">
-<option value="Active">Active</option>
-<option value="Suspended">Suspended</option>
-</select>
+  <div class="grid md:grid-cols-2 gap-3 mt-5">
 
-</div>
+    <input id="cName"
+    class="input"
+    placeholder="Customer Name">
 
-<button class="btn btn-primary w-full mt-4"
-onclick="saveCustomer()">
-Save Customer
-</button>
+    <input id="cPhone"
+    class="input"
+    placeholder="Phone">
 
-<div id="customerModalError"
-class="text-red-500 text-sm mt-3 text-center"></div>
+    <input id="cUsername"
+    class="input"
+    placeholder="Username">
+
+    <input id="cAddress"
+    class="input"
+    placeholder="Address">
+
+    <select id="cPackage"
+    class="input">
+      <option value="">
+        Select Package
+      </option>
+    </select>
+
+    <select id="cStatus"
+    class="input">
+      <option>Active</option>
+      <option>Suspended</option>
+    </select>
+
+  </div>
+
+  <button class="btn btn-primary w-full mt-4"
+  onclick="saveCustomer()">
+    Save Customer
+  </button>
+
+  <div id="customerModalError"
+  class="text-red-500 text-sm mt-3 text-center"></div>
 
 </div>
 </div>
 
 <!-- PACKAGE MODAL -->
-<div id="packageModal" class="modal hidden">
+<div id="packageModal"
+class="modal hidden">
 
 <div class="card w-full max-w-md p-6">
 
-<div class="flex justify-between items-center">
-<h2 class="text-xl font-black">Create Package</h2>
-<button class="btn btn-gray" onclick="closePackageModal()">✕</button>
+  <div class="flex justify-between items-center">
+
+    <h2 class="text-xl font-black">
+      Create Package
+    </h2>
+
+    <button class="btn btn-gray"
+    onclick="closePackageModal()">
+      ✕
+    </button>
+
+  </div>
+
+  <input id="pName"
+  class="input mt-5"
+  placeholder="Package Name">
+
+  <input id="pSpeed"
+  class="input mt-3"
+  placeholder="Speed e.g. 10 Mbps">
+
+  <input id="pPrice"
+  type="number"
+  class="input mt-3"
+  placeholder="Monthly Price">
+
+  <select id="pStatus"
+  class="input mt-3">
+    <option>Active</option>
+    <option>Inactive</option>
+  </select>
+
+  <button class="btn btn-success w-full mt-4"
+  onclick="savePackage()">
+    Create Package
+  </button>
+
+  <div id="packageModalError"
+  class="text-red-500 text-sm mt-3 text-center"></div>
+
+</div>
 </div>
 
-<input id="pName"
-class="input mt-5"
-placeholder="Package Name">
-
-<input id="pSpeed"
-class="input mt-3"
-placeholder="Speed e.g. 10 Mbps">
-
-<input id="pPrice"
-type="number"
-class="input mt-3"
-placeholder="Monthly Price">
-
-<select id="pStatus" class="input mt-3">
-<option value="Active">Active</option>
-<option value="Inactive">Inactive</option>
-</select>
-
-<button class="btn btn-success w-full mt-4"
-onclick="savePackage()">
-Create Package
-</button>
-
-<div id="packageModalError"
-class="text-red-500 text-sm mt-3 text-center"></div>
-
-</div>
-</div>
 
 <script type="module">
 
 import {
-initializeApp
-} from
+ initializeApp
+}
+from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-getAuth,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-signOut
-} from
+ getAuth,
+ GoogleAuthProvider,
+ signInWithPopup,
+ onAuthStateChanged,
+ signOut
+}
+from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
-getDatabase,
-ref,
-get,
-set,
-update,
-remove
-} from
+ getDatabase,
+ ref,
+ get,
+ set,
+ remove
+}
+from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
+/* FIREBASE */
+
 const firebaseConfig={
-apiKey:"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
-authDomain:"isp-billing-system-27cf8.firebaseapp.com",
-databaseURL:"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
-projectId:"isp-billing-system-27cf8",
-storageBucket:"isp-billing-system-27cf8.firebasestorage.app",
-messagingSenderId:"643339508063",
-appId:"1:643339508063:web:232e6769f7128b6e323eea",
-measurementId:"G-J0QK9KKPC6"
+
+apiKey:
+"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
+
+authDomain:
+"isp-billing-system-27cf8.firebaseapp.com",
+
+databaseURL:
+"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
+
+projectId:
+"isp-billing-system-27cf8",
+
+storageBucket:
+"isp-billing-system-27cf8.firebasestorage.app",
+
+messagingSenderId:
+"643339508063",
+
+appId:
+"1:643339508063:web:232e6769f7128b6e323eea",
+
+measurementId:
+"G-J0QK9KKPC6"
+
 };
+
 
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getDatabase(app);
+
 const provider=new GoogleAuthProvider();
 
+
+/*
+Do NOT force select_account every time.
+This helps keep the existing Google session.
+*/
+
 provider.setCustomParameters({
-prompt:"select_account"
+ prompt:"none"
 });
 
 
 let currentUser=null;
 let dealer=null;
+
 let customers={};
 let packages={};
 let bills={};
 let payments={};
 
 
-/* HELPERS */
-
 const $=id=>document.getElementById(id);
 
+
 function today(){
-return new Date().toISOString().slice(0,10);
+
+return new Date()
+.toISOString()
+.slice(0,10);
+
 }
 
+
+function normalize(v){
+
+return String(v??"")
+.toLowerCase()
+.trim();
+
+}
+
+
 function esc(v){
+
 return String(v??"")
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
 .replace(/"/g,"&quot;")
 .replace(/'/g,"&#039;");
+
 }
 
-function normalize(v){
-return String(v||"").toLowerCase().trim();
+
+/*
+Important fix:
+Always convert Firebase objects
+to arrays before looping.
+*/
+
+function entries(obj){
+
+if(!obj||typeof obj!=="object")
+return [];
+
+return Object.entries(obj);
+
 }
 
-function showLoginMessage(msg,type="error"){
+
+function showLoginMessage(msg){
+
 const box=$("loginMessage");
-box.classList.remove("hidden");
+
 box.className=
-"mt-5 rounded-xl p-3 text-sm "+
-(type==="success"
-?"bg-green-50 text-green-700"
-:"bg-red-50 text-red-700");
+"mt-5 rounded-xl p-3 text-sm bg-red-50 text-red-700";
+
+box.classList.remove("hidden");
+
 box.innerText=msg;
+
 }
 
 
-/* AUTH */
+/* GOOGLE LOGIN */
 
 $("googleLogin").onclick=async()=>{
 
 try{
 
 $("googleLogin").disabled=true;
-$("googleLogin").innerText="Signing in...";
+$("googleLogin").innerText=
+"Signing in...";
 
-await signInWithPopup(auth,provider);
+await signInWithPopup(
+auth,
+new GoogleAuthProvider()
+);
 
 }catch(e){
 
 console.error(e);
 
 showLoginMessage(
-e.code+" : "+e.message
+(e.code||"Error")+
+": "+
+(e.message||"Login failed")
 );
 
 $("googleLogin").disabled=false;
+
 $("googleLogin").innerText=
 "Continue with Google";
 
@@ -729,57 +992,80 @@ $("googleLogin").innerText=
 
 
 /*
-IMPORTANT:
-We don't show login page while Firebase
-is restoring an existing session.
+AUTH SESSION
 */
 
-onAuthStateChanged(auth,async user=>{
+onAuthStateChanged(
+auth,
+async user=>{
 
 try{
 
 if(!user){
 
 currentUser=null;
+dealer=null;
 
-$("authLoading").classList.add("hidden");
-$("app").classList.add("hidden");
-$("licensePage").classList.add("hidden");
-$("loginPage").classList.remove("hidden");
+$("authLoading")
+.classList.add("hidden");
+
+$("app")
+.classList.add("hidden");
+
+$("licensePage")
+.classList.add("hidden");
+
+$("loginPage")
+.classList.remove("hidden");
 
 return;
 
 }
+
 
 currentUser=user;
 
-$("authLoading").classList.remove("hidden");
-$("loginPage").classList.add("hidden");
+$("loginPage")
+.classList.add("hidden");
 
 
-const dealerResult=
+const found=
 await findDealer(user.email);
 
 
-if(!dealerResult){
+if(!found){
 
-$("authLoading").classList.add("hidden");
-$("licensePage").classList.remove("hidden");
+$("authLoading")
+.classList.add("hidden");
+
+$("licensePage")
+.classList.remove("hidden");
 
 $("licenseMessage").innerHTML=
-'<span class="text-orange-600">No dealer license found. Enter your license key.</span>';
+'<span class="text-orange-600">No dealer record found for this Gmail.</span>';
 
 return;
 
 }
 
-dealer=dealerResult;
+
+dealer=found;
+
+
+/*
+Check current Firebase license.
+*/
 
 if(!licenseIsValid()){
 
-$("authLoading").classList.add("hidden");
-$("app").classList.add("hidden");
-$("licensePage").classList.remove("hidden");
+$("authLoading")
+.classList.add("hidden");
+
+$("app")
+.classList.add("hidden");
+
+$("licensePage")
+.classList.remove("hidden");
 
 showLicenseStatus();
 
@@ -788,21 +1074,35 @@ return;
 }
 
 
-/* VALIDATED DEALER */
+/*
+Everything valid.
+*/
 
-$("licensePage").classList.add("hidden");
-$("loginPage").classList.add("hidden");
-$("app").classList.remove("hidden");
-$("authLoading").classList.add("hidden");
+$("licensePage")
+.classList.add("hidden");
+
+$("loginPage")
+.classList.add("hidden");
+
+$("app")
+.classList.remove("hidden");
+
+$("authLoading")
+.classList.add("hidden");
 
 await loadAll();
+
 renderAll();
+
+checkCustomerExpiry();
+
 
 }catch(e){
 
 console.error(e);
 
-$("authLoading").classList.add("hidden");
+$("authLoading")
+.classList.add("hidden");
 
 alert(
 "Firebase error: "+
@@ -815,28 +1115,28 @@ alert(
 
 
 /*
-Find dealer by email.
-
-This supports both:
-dealers/DEALER-ID/email
-and a legacy structure where
-email may be elsewhere.
+FIND DEALER
 */
 
 async function findDealer(email){
 
-const snap=await get(ref(db,"dealers"));
+const snap=
+await get(ref(db,"dealers"));
 
-if(!snap.exists()) return null;
+if(!snap.exists())
+return null;
 
-const data=snap.val()||{};
+const data=snap.val();
 
-for(const [id,value] of Object.entries(data)){
+for(const [id,value] of entries(data)){
 
-if(!value||typeof value!=="object") continue;
+if(!value||
+typeof value!=="object")
+continue;
 
 if(
-normalize(value.email)===normalize(email)
+normalize(value.email)===
+normalize(email)
 ){
 
 return {
@@ -849,72 +1149,117 @@ __id:id
 }
 
 return null;
+
 }
 
 
 /*
-If dealer was previously verified,
-store only verification state locally.
-
-The license itself is still checked
-against Firebase every session.
+LICENSE
 */
 
 function licenseIsValid(){
 
-if(!dealer) return false;
+if(!dealer||!currentUser)
+return false;
+
 
 if(
 normalize(dealer.email)!==
 normalize(currentUser.email)
-){
+)
 return false;
+
+
+if(
+dealer.status &&
+normalize(dealer.status)!=="active"
+)
+return false;
+
+
+if(!dealer.licenseKey)
+return false;
+
+
+if(!dealer.licenseExpiry)
+return false;
+
+
+const expiry=
+new Date(
+dealer.licenseExpiry+
+"T23:59:59"
+);
+
+
+if(expiry<new Date())
+return false;
+
+
+/*
+License verified once.
+*/
+
+return localStorage.getItem(
+"dealer_license_"+dealer.__id
+)==normalize(dealer.licenseKey);
+
 }
+
+
+function showLicenseStatus(){
+
+if(!dealer)
+return;
+
 
 if(
 dealer.status &&
 normalize(dealer.status)!=="active"
 ){
-return false;
-}
 
-if(!dealer.licenseKey){
-return false;
-}
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ License suspended by Super Admin.</span>';
 
-if(!dealer.licenseExpiry){
-return false;
-}
-
-const expiry=
-new Date(dealer.licenseExpiry+"T23:59:59");
-
-if(expiry<new Date()){
-return false;
-}
-
-const verified=
-localStorage.getItem(
-"isp_license_verified_"+dealer.__id
-);
-
-return verified===dealer.licenseKey;
+return;
 
 }
 
 
-/* LICENSE VERIFY */
+if(
+dealer.licenseExpiry &&
+new Date(
+dealer.licenseExpiry+
+"T23:59:59"
+)<new Date()
+){
 
-$("verifyLicense").onclick=async()=>{
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ License expired.</span>';
+
+return;
+
+}
+
+
+$("licenseMessage").innerHTML=
+'<span class="text-blue-600">Enter your license key.</span>';
+
+}
+
+
+/*
+VERIFY LICENSE
+*/
+
+$("verifyLicense").onclick=
+async()=>{
 
 const key=
-$("licenseInput")
-.value
-.trim()
-.toUpperCase();
+normalize(
+$("licenseInput").value
+).toUpperCase();
 
-$("licenseMessage").innerText=
-"Checking...";
 
 if(!key){
 
@@ -925,40 +1270,30 @@ return;
 
 }
 
+
+$("licenseMessage").innerText=
+"Checking license...";
+
+
 try{
 
-/*
-Re-read dealer from Firebase.
-This prevents an old local license from
-remaining active after Super Admin suspends it.
-*/
-
 const fresh=
-await findDealer(currentUser.email);
+await findDealer(
+currentUser.email
+);
+
 
 if(!fresh){
 
 $("licenseMessage").innerHTML=
-'<span class="text-red-600">Dealer account not found.</span>';
+'<span class="text-red-600">Dealer not found.</span>';
 
 return;
 
 }
+
 
 dealer=fresh;
-
-
-if(
-normalize(dealer.email)!==
-normalize(currentUser.email)
-){
-
-$("licenseMessage").innerHTML=
-'<span class="text-red-600">❌ This license belongs to another Gmail.</span>';
-
-return;
-
-}
 
 
 if(
@@ -967,7 +1302,7 @@ normalize(dealer.status)!=="active"
 ){
 
 $("licenseMessage").innerHTML=
-'<span class="text-red-600">❌ License is suspended by Super Admin.</span>';
+'<span class="text-red-600">❌ License suspended.</span>';
 
 return;
 
@@ -975,8 +1310,7 @@ return;
 
 
 if(
-normalize(dealer.licenseKey)!==
-normalize(key)
+normalize(dealer.licenseKey)!==key
 ){
 
 $("licenseMessage").innerHTML=
@@ -989,35 +1323,49 @@ return;
 
 if(
 !dealer.licenseExpiry ||
-new Date(dealer.licenseExpiry+"T23:59:59")<new Date()
+new Date(
+dealer.licenseExpiry+
+"T23:59:59"
+)<new Date()
 ){
 
 $("licenseMessage").innerHTML=
-'<span class="text-red-600">❌ License has expired.</span>';
+'<span class="text-red-600">❌ License expired.</span>';
 
 return;
 
 }
 
 
+/*
+Save only verification state.
+*/
+
 localStorage.setItem(
-"isp_license_verified_"+dealer.__id,
-dealer.licenseKey
+"dealer_license_"+dealer.__id,
+key
 );
 
 
-$("licensePage").classList.add("hidden");
-$("app").classList.remove("hidden");
+$("licensePage")
+.classList.add("hidden");
+
+$("app")
+.classList.remove("hidden");
 
 await loadAll();
+
 renderAll();
+
+checkCustomerExpiry();
+
 
 }catch(e){
 
 console.error(e);
 
 $("licenseMessage").innerHTML=
-'<span class="text-red-600">Firebase error: '+
+'<span class="text-red-600">'+
 esc(e.message)+
 '</span>';
 
@@ -1026,59 +1374,32 @@ esc(e.message)+
 };
 
 
-function showLicenseStatus(){
-
-if(!dealer)return;
-
-if(
-dealer.status &&
-normalize(dealer.status)!=="active"
-){
-
-$("licenseMessage").innerHTML=
-'<span class="text-red-600">❌ Your license is suspended by Super Admin.</span>';
-
-return;
-
-}
-
-if(
-dealer.licenseExpiry &&
-new Date(dealer.licenseExpiry+"T23:59:59")<new Date()
-){
-
-$("licenseMessage").innerHTML=
-'<span class="text-red-600">❌ Your license has expired.</span>';
-
-return;
-
-}
-
-$("licenseMessage").innerHTML=
-'<span class="text-blue-600">Please verify your license key.</span>';
-
-}
-
-
 /*
-Check license every 30 seconds.
+LICENSE WATCHER
 
-If Super Admin suspends dealer,
-dashboard is locked without logout.
+If Super Admin changes status,
+dealer gets locked automatically.
 */
 
-setInterval(async()=>{
+setInterval(
+async()=>{
 
-if(!currentUser||!dealer)return;
+if(!currentUser||
+!dealer)
+return;
 
 try{
 
 const fresh=
-await findDealer(currentUser.email);
+await findDealer(
+currentUser.email
+);
 
-if(!fresh)return;
+if(!fresh)
+return;
 
 dealer=fresh;
+
 
 if(!licenseIsValid()){
 
@@ -1092,17 +1413,26 @@ console.warn(e);
 
 }
 
-},30000);
+},
+30000
+);
 
 
 function lockDealer(){
 
+if(dealer){
+
 localStorage.removeItem(
-"isp_license_verified_"+dealer.__id
+"dealer_license_"+dealer.__id
 );
 
-$("app").classList.add("hidden");
-$("licensePage").classList.remove("hidden");
+}
+
+$("app")
+.classList.add("hidden");
+
+$("licensePage")
+.classList.remove("hidden");
 
 showLicenseStatus();
 
@@ -1111,43 +1441,55 @@ showLicenseStatus();
 
 /* LOGOUT */
 
-$("logoutBtn").onclick=async()=>{
+async function logout(){
+
+if(dealer){
+
 localStorage.removeItem(
-"isp_license_verified_"+(dealer?.__id||"")
+"dealer_license_"+dealer.__id
 );
+
+}
+
 await signOut(auth);
-};
-
-$("licenseLogout").onclick=async()=>{
-localStorage.removeItem(
-"isp_license_verified_"+(dealer?.__id||"")
-);
-await signOut(auth);
-};
-
-
-/* LOAD DATA */
-
-async function safeObject(path){
-
-const snap=await get(ref(db,path));
-
-if(!snap.exists()) return {};
-
-const value=snap.val();
-
-return value && typeof value==="object"
-?value:{};
 
 }
 
 
-async function loadAll(){
+$("logoutBtn").onclick=logout;
+$("licenseLogout").onclick=logout;
+
 
 /*
-Only use data under the current dealer
-where possible.
+SAFE FIREBASE READ
 */
+
+async function safeObject(path){
+
+const snap=
+await get(ref(db,path));
+
+if(!snap.exists())
+return {};
+
+const value=snap.val();
+
+if(
+!value||
+typeof value!=="object"
+)
+return {};
+
+return value;
+
+}
+
+
+/*
+LOAD DATA
+*/
+
+async function loadAll(){
 
 customers=
 await safeObject("customers");
@@ -1164,17 +1506,22 @@ await safeObject("payments");
 }
 
 
-function ownRecord(obj){
+/*
+ONLY CURRENT DEALER RECORDS
+*/
 
-return Object.entries(obj).filter(
+function ownRecords(obj){
+
+return entries(obj)
+.filter(
 ([id,item])=>{
 
-if(!item||typeof item!=="object")
+if(
+!item||
+typeof item!=="object"
+)
 return false;
 
-/*
-Support multiple possible dealer fields.
-*/
 
 const owner=
 item.dealerId||
@@ -1183,18 +1530,29 @@ item.dealer||
 item.ownerId||
 "";
 
-return (
-String(owner)===String(dealer.__id) ||
-normalize(item.dealerEmail)===normalize(dealer.email) ||
-normalize(item.email)===normalize(dealer.email)
-);
+
+if(
+String(owner)===
+String(dealer.__id)
+)
+return true;
+
+
+if(
+normalize(item.dealerEmail)===
+normalize(dealer.email)
+)
+return true;
+
+
+return false;
 
 });
 
 }
 
 
-/* RENDER */
+/* RENDER ALL */
 
 function renderAll(){
 
@@ -1209,23 +1567,31 @@ renderExpiryAlert();
 }
 
 
+/* DEALER INFO */
+
 function renderDealerInfo(){
 
-$("sideDealerName").innerText=
-dealer.name||"Dealer";
+const name=
+dealer.name||
+"Dealer";
+
+
+$("sideDealerName").innerText=name;
 
 $("sideDealerEmail").innerText=
-dealer.email||currentUser.email;
+dealer.email||
+currentUser.email;
 
-$("topDealerName").innerText=
-dealer.name||"Dealer";
+$("topDealerName").innerText=name;
 
 $("dealerStatusText").innerText=
-"Status: "+(dealer.status||"Active");
+"Status: "+
+(dealer.status||"Active");
 
 $("licenseExpiryText").innerText=
 "License expiry: "+
 (dealer.licenseExpiry||"-");
+
 
 $("infoName").innerText=
 dealer.name||"-";
@@ -1241,6 +1607,7 @@ dealer.licenseKey||"-";
 
 $("infoExpiry").innerText=
 dealer.licenseExpiry||"-";
+
 
 $("profileName").innerText=
 dealer.name||"-";
@@ -1263,29 +1630,33 @@ dealer.licenseExpiry||"-";
 }
 
 
+/* STATS */
+
 function renderStats(){
 
 const myCustomers=
-ownRecord(customers);
+ownRecords(customers);
 
 const myPackages=
-ownRecord(packages);
+ownRecords(packages);
 
 const myBills=
-ownRecord(bills);
+ownRecords(bills);
 
-const activePackages=
-myPackages.filter(
-([id,p])=>
-normalize(p.status||"active")===
-"active"
-);
 
 const unpaid=
 myBills.filter(
 ([id,b])=>
 normalize(b.status)==="unpaid"
 );
+
+
+const activePackages=
+myPackages.filter(
+([id,p])=>
+normalize(p.status||"active")==="active"
+);
+
 
 $("statCustomers").innerText=
 myCustomers.length;
@@ -1302,50 +1673,54 @@ activePackages.length;
 }
 
 
+/* EXPIRY */
+
 function renderExpiryAlert(){
 
-if(!dealer.licenseExpiry)return;
+if(!dealer.licenseExpiry)
+return;
 
-const exp=
-new Date(dealer.licenseExpiry+"T23:59:59");
-
-const now=new Date();
-
-const diff=
-Math.ceil(
-(exp-now)/86400000
+const expiry=
+new Date(
+dealer.licenseExpiry+
+"T23:59:59"
 );
+
+const diff=Math.ceil(
+(expiry-new Date())/
+86400000
+);
+
 
 if(diff<=7){
 
-$("expiryAlert").classList.remove("hidden");
+$("expiryAlert")
+.classList.remove("hidden");
 
-if(diff<0){
-
-$("expiryAlertText").innerText=
-"Your license has expired.";
-
-}else if(diff===0){
 
 $("expiryAlertText").innerText=
-"Your license expires today.";
+diff<0
+?"License has expired."
+:diff===0
+?"License expires today."
+:"License expires in "+
+diff+
+" day(s).";
 
 }else{
 
-$("expiryAlertText").innerText=
-"Your license expires in "+
-diff+" day(s).";
+$("expiryAlert")
+.classList.add("hidden");
 
 }
 
 }
 
-}
 
-
-/* PAGE NAVIGATION */
+/* NAVIGATION */
 
 const titles={
+
 dashboard:"Dashboard",
 customers:"Customers",
 packages:"Packages",
@@ -1353,23 +1728,32 @@ bills:"Bills",
 payments:"Payments",
 recovery:"Account Recovery",
 profile:"Profile"
+
 };
+
 
 window.showPage=function(page){
 
-document.querySelectorAll(".page")
-.forEach(x=>x.classList.add("hidden"));
+document
+.querySelectorAll(".page")
+.forEach(
+x=>x.classList.add("hidden")
+);
 
 $("page-"+page)
 .classList.remove("hidden");
 
-document.querySelectorAll(".navbtn")
-.forEach(x=>{
+
+document
+.querySelectorAll(".navbtn")
+.forEach(
+x=>
 x.classList.toggle(
 "active",
 x.dataset.page===page
+)
 );
-});
+
 
 $("pageTitle").innerText=
 titles[page]||"Dashboard";
@@ -1378,44 +1762,64 @@ window.scrollTo(0,0);
 
 };
 
-document.querySelectorAll(".navbtn")
-.forEach(btn=>{
-btn.onclick=()=>showPage(btn.dataset.page);
-});
+
+document
+.querySelectorAll(".navbtn")
+.forEach(
+btn=>
+btn.onclick=()=>
+showPage(btn.dataset.page)
+);
 
 
-/* CUSTOMERS */
+/* CUSTOMER SEARCH */
+
+$("customerSearch").oninput=
+renderCustomers;
+
+
+/* CUSTOMER */
 
 function renderCustomers(){
 
 const search=
-normalize($("customerSearch").value);
-
-const rows=
-ownRecord(customers);
+normalize(
+$("customerSearch").value
+);
 
 let html="";
 
-for(const [id,c] of rows){
 
-const text=normalize(
+for(
+const [id,c]
+of ownRecords(customers)
+){
+
+const searchable=
+normalize(
 (c.name||"")+" "+
 (c.phone||"")+" "+
 (c.username||"")
 );
 
-if(search&&!text.includes(search))
+
+if(
+search&&
+!searchable.includes(search)
+)
 continue;
+
 
 const pkg=
 packages[c.packageId]||
-packages[c.package]||
 null;
+
 
 const pkgName=
 pkg?.name||
 c.package||
 "-";
+
 
 html+=`
 
@@ -1429,18 +1833,27 @@ ${esc(c.address||"")}
 </span>
 </td>
 
-<td class="p-3">${esc(c.phone||"-")}</td>
+<td class="p-3">
+${esc(c.phone||"-")}
+</td>
 
-<td class="p-3">${esc(c.username||"-")}</td>
+<td class="p-3">
+${esc(c.username||"-")}
+</td>
 
-<td class="p-3">${esc(pkgName)}</td>
+<td class="p-3">
+${esc(pkgName)}
+</td>
 
-<td class="p-3">${esc(c.expiryDate||"-")}</td>
+<td class="p-3">
+${esc(c.expiryDate||"-")}
+</td>
 
 <td class="p-3">
 <span class="badge ${
 normalize(c.status)==="active"
-?"green":"red"
+?"green"
+:"red"
 }">
 ${esc(c.status||"Active")}
 </span>
@@ -1452,13 +1865,13 @@ ${esc(c.status||"Active")}
 
 <button
 class="btn btn-success text-xs"
-onclick="sendCustomerWhatsApp('${id}')">
+onclick="sendCustomerWhatsApp('${esc(id)}')">
 WhatsApp
 </button>
 
 <button
 class="btn btn-danger text-xs"
-onclick="deleteCustomer('${id}')">
+onclick="deleteCustomer('${esc(id)}')">
 Delete
 </button>
 
@@ -1467,30 +1880,75 @@ Delete
 </td>
 
 </tr>
+
 `;
 
 }
 
+
 $("customerTable").innerHTML=
 html||
-`<tr><td colspan="7"
+`
+<tr>
+<td colspan="7"
 class="p-6 text-center text-gray-500">
 No customers found.
-</td></tr>`;
+</td>
+</tr>
+`;
 
 }
 
-$("customerSearch").oninput=
-renderCustomers;
+
+/*
+PACKAGE SELECT
+*/
+
+function populatePackageSelect(){
+
+const select=$("cPackage");
+
+select.innerHTML=
+'<option value="">Select Package</option>';
 
 
-window.openCustomerModal=function(){
+for(
+const [id,p]
+of ownRecords(packages)
+){
+
+if(
+normalize(p.status||"active")!=="active"
+)
+continue;
+
+
+select.innerHTML+=`
+
+<option value="${esc(id)}">
+${esc(p.name||"Package")}
+ — Rs ${Number(p.price||0).toLocaleString()}
+</option>
+
+`;
+
+}
+
+}
+
+
+/* OPEN CUSTOMER */
+
+window.openCustomerModal=()=>{
 
 const count=
-ownRecord(customers).length;
+ownRecords(customers).length;
 
 const limit=
-Number(dealer.customerLimit||100);
+Number(
+dealer.customerLimit||100
+);
+
 
 if(count>=limit){
 
@@ -1503,53 +1961,51 @@ return;
 
 }
 
+
 populatePackageSelect();
 
 $("customerModalError").innerText="";
-$("customerModal").classList.remove("hidden");
+
+$("customerModal")
+.classList.remove("hidden");
 
 };
 
-window.closeCustomerModal=function(){
-$("customerModal").classList.add("hidden");
-};
+
+window.closeCustomerModal=()=>
+$("customerModal")
+.classList.add("hidden");
 
 
-function populatePackageSelect(){
+/* SAVE CUSTOMER */
 
-const select=$("cPackage");
+window.saveCustomer=async()=>{
 
-select.innerHTML=
-'<option value="">Select Package</option>';
+const name=
+$("cName").value.trim();
 
-for(const [id,p] of ownRecord(packages)){
+const phone=
+$("cPhone").value.trim();
+
+const username=
+$("cUsername").value.trim();
+
+const address=
+$("cAddress").value.trim();
+
+const packageId=
+$("cPackage").value;
+
+const status=
+$("cStatus").value;
+
 
 if(
-normalize(p.status||"active")!=="active"
-)continue;
-
-select.innerHTML+=`
-<option value="${esc(id)}">
-${esc(p.name||"Package")}
- — ${esc(p.price||0)}
-</option>
-`;
-
-}
-
-}
-
-
-window.saveCustomer=async function(){
-
-const name=$("cName").value.trim();
-const phone=$("cPhone").value.trim();
-const username=$("cUsername").value.trim();
-const address=$("cAddress").value.trim();
-const packageId=$("cPackage").value;
-const status=$("cStatus").value;
-
-if(!name||!phone||!username||!packageId){
+!name||
+!phone||
+!username||
+!packageId
+){
 
 $("customerModalError").innerText=
 "Name, phone, username and package are required.";
@@ -1558,11 +2014,15 @@ return;
 
 }
 
+
 const count=
-ownRecord(customers).length;
+ownRecords(customers).length;
 
 const limit=
-Number(dealer.customerLimit||100);
+Number(
+dealer.customerLimit||100
+);
+
 
 if(count>=limit){
 
@@ -1573,22 +2033,24 @@ return;
 
 }
 
-const pkg=packages[packageId];
+
+const pkg=
+packages[packageId];
+
 
 if(!pkg){
 
 $("customerModalError").innerText=
-"Selected package not found.";
+"Package not found.";
 
 return;
 
 }
 
+
 const id=
 "CUST-"+Date.now();
 
-const start=
-today();
 
 const expiry=
 new Date();
@@ -1597,12 +2059,16 @@ expiry.setMonth(
 expiry.getMonth()+1
 );
 
+
 const customer={
 
 id,
 
-dealerId:dealer.__id,
-dealerEmail:dealer.email,
+dealerId:
+dealer.__id,
+
+dealerEmail:
+dealer.email,
 
 name,
 phone,
@@ -1611,23 +2077,31 @@ address,
 
 packageId,
 
-package:pkg.name||"",
-monthlyFee:Number(pkg.price||0),
+package:
+pkg.name||"",
 
-startDate:start,
+monthlyFee:
+Number(pkg.price||0),
+
+startDate:
+today(),
 
 expiryDate:
-expiry.toISOString().slice(0,10),
+expiry
+.toISOString()
+.slice(0,10),
 
 status,
 
 lastPayment:0,
+
 lastMessage:false,
 
 createdAt:
 new Date().toISOString()
 
 };
+
 
 try{
 
@@ -1636,35 +2110,53 @@ ref(db,"customers/"+id),
 customer
 );
 
-alert("✅ Customer added.");
+
+alert("✅ Customer added successfully.");
 
 closeCustomerModal();
 
-["cName","cPhone","cUsername","cAddress"]
-.forEach(id=>$(id).value="");
+
+[
+"cName",
+"cPhone",
+"cUsername",
+"cAddress"
+].forEach(
+x=>$(x).value=""
+);
 
 $("cPackage").value="";
 
+
 await loadAll();
+
 renderAll();
+
 
 }catch(e){
 
-console.error(e);
-
 $("customerModalError").innerText=
-"Firebase error: "+e.message;
+"Firebase error: "+
+e.message;
 
 }
 
 };
 
 
-window.deleteCustomer=async function(id){
+/* DELETE CUSTOMER */
 
-if(!customers[id])return;
+window.deleteCustomer=
+async id=>{
 
-if(!confirm("Delete this customer?"))return;
+if(!customers[id])
+return;
+
+if(
+!confirm("Delete this customer?")
+)
+return;
+
 
 try{
 
@@ -1673,67 +2165,75 @@ ref(db,"customers/"+id)
 );
 
 await loadAll();
+
 renderAll();
 
 }catch(e){
 
-alert("Firebase error: "+e.message);
+alert(
+"Firebase error: "+
+e.message
+);
 
 }
 
 };
 
 
-window.sendCustomerWhatsApp=function(id){
+/* CUSTOMER WHATSAPP */
 
-const c=customers[id];
+window.sendCustomerWhatsApp=
+id=>{
 
-if(!c)return;
+const c=
+customers[id];
 
-const message=
-`Hello ${c.name||"Customer"},
+if(!c)
+return;
 
-Your ISP bill/account details:
 
-Package: ${c.package||"-"}
-Monthly Fee: ${c.monthlyFee||0}
-Expiry Date: ${c.expiryDate||"-"}
-Status: ${c.status||"-"}
-
-Thank you.`;
-
-const phone=
+let phone=
 String(c.phone||"")
 .replace(/\D/g,"");
 
+
 if(!phone){
 
-alert("Customer phone number missing.");
+alert("Customer phone missing.");
 
 return;
 
 }
 
-/*
-Pakistan numbers:
-03001234567 -> 923001234567
-*/
-
-let finalPhone=phone;
 
 if(
-phone.startsWith("0")&&
-phone.length>=10
+phone.startsWith("0")
 ){
 
-finalPhone=
-"92"+phone.substring(1);
+phone=
+"92"+
+phone.slice(1);
 
 }
 
+
+const message=
+`Hello ${c.name||"Customer"},
+
+ISP Account Details
+
+Username: ${c.username||"-"}
+Package: ${c.package||"-"}
+Monthly Fee: Rs ${c.monthlyFee||0}
+Expiry Date: ${c.expiryDate||"-"}
+Status: ${c.status||"-"}
+
+Thank you.`;
+
+
 window.open(
 "https://wa.me/"+
-finalPhone+
+phone+
 "?text="+
 encodeURIComponent(message),
 "_blank"
@@ -1746,18 +2246,22 @@ encodeURIComponent(message),
 
 function renderPackages(){
 
-const grid=$("packageGrid");
-
 let html="";
 
-for(const [id,p] of ownRecord(packages)){
+
+for(
+const [id,p]
+of ownRecords(packages)
+){
 
 html+=`
 
 <div class="card p-5">
 
 <div class="flex justify-between">
+
 <div>
+
 <h3 class="font-black text-lg">
 ${esc(p.name||"Package")}
 </h3>
@@ -1765,14 +2269,17 @@ ${esc(p.name||"Package")}
 <div class="text-blue-600 font-bold mt-1">
 ${esc(p.speed||"-")}
 </div>
+
 </div>
 
 <span class="badge ${
 normalize(p.status)==="active"
-?"green":"red"
+?"green"
+:"red"
 }">
 ${esc(p.status||"Active")}
 </span>
+
 </div>
 
 <div class="text-3xl font-black mt-4">
@@ -1783,66 +2290,91 @@ Rs ${Number(p.price||0).toLocaleString()}
 Monthly
 </div>
 
-<div class="flex gap-2 mt-4">
-
 <button
-class="btn btn-danger text-xs"
-onclick="deletePackage('${id}')">
+class="btn btn-danger text-xs mt-4"
+onclick="deletePackage('${esc(id)}')">
 Delete
 </button>
 
 </div>
 
+`;
+
+}
+
+
+$("packageGrid").innerHTML=
+html||
+`
+<div class="card p-6 text-gray-500">
+No packages created yet.
 </div>
 `;
 
 }
 
-grid.innerHTML=
-html||
-`<div class="card p-6 text-gray-500">
-No packages created yet.
-</div>`;
 
-}
-
-
-window.openPackageModal=function(){
+window.openPackageModal=()=>{
 
 $("packageModalError").innerText="";
-$("packageModal").classList.remove("hidden");
+
+$("packageModal")
+.classList.remove("hidden");
 
 };
 
-window.closePackageModal=function(){
-$("packageModal").classList.add("hidden");
-};
+
+window.closePackageModal=()=>
+$("packageModal")
+.classList.add("hidden");
 
 
-window.savePackage=async function(){
+/* SAVE PACKAGE */
 
-const name=$("pName").value.trim();
-const speed=$("pSpeed").value.trim();
-const price=Number($("pPrice").value||0);
-const status=$("pStatus").value;
+window.savePackage=async()=>{
 
-if(!name||!speed||price<=0){
+const name=
+$("pName").value.trim();
+
+const speed=
+$("pSpeed").value.trim();
+
+const price=
+Number(
+$("pPrice").value||0
+);
+
+const status=
+$("pStatus").value;
+
+
+if(
+!name||
+!speed||
+price<=0
+){
 
 $("packageModalError").innerText=
-"Package name, speed and valid price required.";
+"Package name, speed and price required.";
 
 return;
 
 }
 
-const id="PKG-"+Date.now();
+
+const id=
+"PKG-"+Date.now();
+
 
 const pkg={
 
 id,
 
-dealerId:dealer.__id,
-dealerEmail:dealer.email,
+dealerId:
+dealer.__id,
+
+dealerEmail:
+dealer.email,
 
 name,
 speed,
@@ -1854,6 +2386,7 @@ new Date().toISOString()
 
 };
 
+
 try{
 
 await set(
@@ -1861,34 +2394,47 @@ ref(db,"packages/"+id),
 pkg
 );
 
+
 alert("✅ Package created.");
 
 closePackageModal();
+
 
 $("pName").value="";
 $("pSpeed").value="";
 $("pPrice").value="";
 
+
 await loadAll();
+
 renderAll();
+
 
 }catch(e){
 
 $("packageModalError").innerText=
-"Firebase error: "+e.message;
+"Firebase error: "+
+e.message;
 
 }
 
 };
 
 
-window.deletePackage=async function(id){
+/* DELETE PACKAGE */
 
-if(!packages[id])return;
+window.deletePackage=
+async id=>{
 
-if(!confirm(
-"Delete this package? Customers already using it may keep old package data."
-))return;
+if(!packages[id])
+return;
+
+
+if(
+!confirm("Delete this package?")
+)
+return;
+
 
 try{
 
@@ -1897,11 +2443,15 @@ ref(db,"packages/"+id)
 );
 
 await loadAll();
+
 renderAll();
 
 }catch(e){
 
-alert("Firebase error: "+e.message);
+alert(
+"Firebase error: "+
+e.message
+);
 
 }
 
@@ -1914,10 +2464,15 @@ function renderBills(){
 
 let html="";
 
-for(const [id,b] of ownRecord(bills)){
 
-const customer=
+for(
+const [id,b]
+of ownRecords(bills)
+){
+
+const c=
 customers[b.customerId]||{};
+
 
 html+=`
 
@@ -1925,14 +2480,17 @@ html+=`
 
 <td class="p-3">
 <b>${esc(b.id||id)}</b>
+
 <br>
+
 <span class="text-xs text-gray-500">
 ${esc(b.month||"")}
 </span>
+
 </td>
 
 <td class="p-3">
-${esc(customer.name||b.customerId||"-")}
+${esc(c.name||b.customerId||"-")}
 </td>
 
 <td class="p-3">
@@ -1944,71 +2502,88 @@ ${esc(b.dueDate||"-")}
 </td>
 
 <td class="p-3">
+
 <span class="badge ${
 normalize(b.status)==="paid"
-?"green":"orange"
+?"green"
+:"orange"
 }">
 ${esc(b.status||"Unpaid")}
 </span>
+
 </td>
 
 <td class="p-3">
 
 <button
 class="btn btn-success text-xs"
-onclick="sendBillWhatsApp('${id}')">
+onclick="sendBillWhatsApp('${esc(id)}')">
 Send WhatsApp
 </button>
 
 </td>
 
 </tr>
+
 `;
 
 }
 
+
 $("billTable").innerHTML=
 html||
-`<tr><td colspan="6"
+`
+<tr>
+<td colspan="6"
 class="p-6 text-center text-gray-500">
 No bills found.
-</td></tr>`;
+</td>
+</tr>
+`;
 
 }
 
 
-window.sendBillWhatsApp=function(id){
+/* BILL WHATSAPP */
 
-const b=bills[id];
+window.sendBillWhatsApp=
+id=>{
 
-if(!b)return;
+const b=
+bills[id];
+
+if(!b)
+return;
+
 
 const c=
 customers[b.customerId]||{};
 
-const phone=
-String(c.phone||b.phone||"")
+
+let phone=
+String(
+c.phone||b.phone||""
+)
 .replace(/\D/g,"");
+
 
 if(!phone){
 
-alert("Customer phone number missing.");
+alert("Customer phone missing.");
 
 return;
 
 }
 
-let finalPhone=phone;
 
-if(
-phone.startsWith("0")&&
-phone.length>=10
-){
+if(phone.startsWith("0")){
 
-finalPhone=
-"92"+phone.substring(1);
+phone=
+"92"+
+phone.slice(1);
 
 }
+
 
 const message=
 `ISP BILL
@@ -2023,9 +2598,10 @@ Status: ${b.status||"Unpaid"}
 Please pay before the due date.
 Thank you.`;
 
+
 window.open(
 "https://wa.me/"+
-finalPhone+
+phone+
 "?text="+
 encodeURIComponent(message),
 "_blank"
@@ -2040,7 +2616,11 @@ function renderPayments(){
 
 let html="";
 
-for(const [id,p] of ownRecord(payments)){
+
+for(
+const [id,p]
+of ownRecords(payments)
+){
 
 html+=`
 
@@ -2055,33 +2635,46 @@ ${esc(p.phone||"-")}
 </td>
 
 <td class="p-3">
-Rs ${Number(p.amount||p.lastPayment||0).toLocaleString()}
+Rs ${Number(
+p.amount||
+p.lastPayment||
+0
+).toLocaleString()}
 </td>
 
 <td class="p-3">
+
 <span class="badge green">
 ${esc(p.status||"active")}
 </span>
+
 </td>
 
 </tr>
+
 `;
 
 }
 
+
 $("paymentTable").innerHTML=
 html||
-`<tr><td colspan="4"
+`
+<tr>
+<td colspan="4"
 class="p-6 text-center text-gray-500">
 No payments found.
-</td></tr>`;
+</td>
+</tr>
+`;
 
-}
+};
 
 
 /* RECOVERY */
 
-$("submitRecovery").onclick=async()=>{
+$("submitRecovery").onclick=
+async()=>{
 
 const method=
 $("recoveryMethod").value;
@@ -2092,27 +2685,39 @@ $("recoveryPhone").value.trim();
 const message=
 $("recoveryMessage").value.trim();
 
-if(!phone||!message){
+
+if(
+!phone||
+!message
+){
 
 $("recoveryResult").innerHTML=
-'<span class="text-red-600">Registered number and message are required.</span>';
+'<span class="text-red-600">Phone and message required.</span>';
 
 return;
 
 }
 
+
 const id=
 "REC-"+Date.now();
+
 
 const request={
 
 id,
 
-dealerId:dealer.__id,
-dealerEmail:dealer.email,
+dealerId:
+dealer.__id,
+
+dealerEmail:
+dealer.email,
 
 method,
-registeredPhone:phone,
+
+registeredPhone:
+phone,
+
 message,
 
 screenshotUpload:false,
@@ -2124,6 +2729,7 @@ new Date().toISOString()
 
 };
 
+
 try{
 
 await set(
@@ -2131,11 +2737,15 @@ ref(db,"recoveryRequests/"+id),
 request
 );
 
+
 $("recoveryResult").innerHTML=
-'<span class="text-green-600">✅ Recovery request sent successfully.</span>';
+'<span class="text-green-600">✅ Recovery request sent.</span>';
+
 
 $("recoveryPhone").value="";
+
 $("recoveryMessage").value="";
+
 
 }catch(e){
 
@@ -2149,17 +2759,21 @@ esc(e.message)+
 };
 
 
-/* TODAY EXPIRY ALERT FOR CUSTOMERS */
+/* CUSTOMER EXPIRY TODAY */
 
-function customerExpiryAlert(){
+function checkCustomerExpiry(){
 
-const todayDate=today();
+const todayDate=
+today();
+
 
 const expiring=
-ownRecord(customers)
-.filter(([id,c])=>
+ownRecords(customers)
+.filter(
+([id,c])=>
 c.expiryDate===todayDate
 );
+
 
 if(expiring.length){
 
@@ -2174,17 +2788,12 @@ expiring.length+
 }
 
 
-/* START */
+/*
+Do not show alert before Firebase
+has loaded. This fixes the old
+3-second startup problem.
+*/
 
-setTimeout(()=>{
-
-try{
-
-customerExpiryAlert();
-
-}catch(e){}
-
-},3000);
 
 </script>
 
