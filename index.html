@@ -3,3754 +3,2188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>ISP Billing Dealer Panel</title>
+<title>ISP Billing — Dealer Panel</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 *{box-sizing:border-box}
-
 body{
-    margin:0;
-    background:#070b14;
-    color:#f8fafc;
-    font-family:Arial,sans-serif;
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:#f4f7fb;
+  color:#172033
 }
-
+button,input,select,textarea{
+  font:inherit
+}
 .card{
-    background:#0e1625;
-    border:1px solid #1e293b;
-    border-radius:18px;
+  background:white;
+  border:1px solid #e7ebf2;
+  border-radius:20px;
+  box-shadow:0 10px 35px rgba(15,23,42,.06)
 }
-
-input,select{
-    width:100%;
-    padding:12px;
-    background:#080f1c;
-    color:#fff;
-    border:1px solid #26354d;
-    border-radius:10px;
-    outline:none;
+.sidebar{
+  width:250px;
+  min-height:100vh;
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  background:#0f172a;
+  color:white;
+  z-index:50
 }
-
-input:focus,
-select:focus{
-    border-color:#6366f1;
+.main{
+  margin-left:250px;
+  min-height:100vh
 }
-
-button{
-    border-radius:10px;
-    padding:10px 15px;
-    font-weight:700;
-    cursor:pointer;
+.navbtn{
+  width:100%;
+  text-align:left;
+  padding:12px 14px;
+  border-radius:12px;
+  margin-bottom:5px;
+  color:#cbd5e1
 }
-
-.hidden{
-    display:none!important;
+.navbtn:hover,.navbtn.active{
+  background:#2563eb;
+  color:white
 }
-
-.nav{
-    width:100%;
-    text-align:left;
-    padding:12px;
-    border-radius:10px;
-    color:#94a3b8;
-    margin-bottom:5px;
-    background:transparent;
+.input{
+  width:100%;
+  border:1px solid #dbe1ea;
+  border-radius:12px;
+  padding:11px 13px;
+  outline:none;
+  background:white
 }
-
-.nav:hover,
-.nav.active{
-    background:#3730a3;
-    color:#fff;
+.input:focus{
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px #2563eb18
 }
-
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:10px 15px;
+  font-weight:700;
+  cursor:pointer
+}
+.btn-primary{background:#2563eb;color:white}
+.btn-success{background:#16a34a;color:white}
+.btn-danger{background:#dc2626;color:white}
+.btn-dark{background:#0f172a;color:white}
+.btn-gray{background:#eef2f7;color:#334155}
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700
+}
+.green{background:#dcfce7;color:#166534}
+.red{background:#fee2e2;color:#991b1b}
+.orange{background:#ffedd5;color:#9a3412}
+.blue{background:#dbeafe;color:#1d4ed8}
 .modal{
-    position:fixed;
-    inset:0;
-    background:#000b;
-    z-index:999;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+  position:fixed;
+  inset:0;
+  background:#02061799;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:100
 }
-
-.status-active{
-    color:#4ade80;
-}
-
-.status-expired{
-    color:#f87171;
-}
-
-.mobile-nav{
-    overflow-x:auto;
-    white-space:nowrap;
-}
-
-.mobile-nav button{
-    display:inline-block;
-    margin-right:5px;
-}
-
-::-webkit-scrollbar{
-    width:7px;
-    height:7px;
-}
-
-::-webkit-scrollbar-thumb{
-    background:#334155;
-    border-radius:20px;
+.hidden{display:none!important}
+table{min-width:900px}
+@media(max-width:800px){
+  .sidebar{
+    width:100%;
+    height:auto;
+    min-height:0;
+    position:relative
+  }
+  .main{margin-left:0}
+  .sidebar-nav{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:5px
+  }
+  .navbtn{margin:0}
 }
 </style>
 </head>
 
 <body>
 
-<!-- =====================================================
-LOGIN
-===================================================== -->
-
-<div id="loginPage"
-class="min-h-screen flex items-center justify-center p-5">
-
-    <div class="card p-8 w-full max-w-md text-center">
-
-        <div class="text-6xl mb-4">🌐</div>
-
-        <h1 class="text-3xl font-black">
-            ISP BILLING
-        </h1>
-
-        <p class="text-slate-400 mt-2">
-            Dealer Management System
-        </p>
-
-        <button
-        id="googleBtn"
-        class="w-full bg-white text-black mt-7">
-
-            Continue with Google
-
-        </button>
-
-        <p
-        id="loginError"
-        class="text-red-400 text-sm mt-4">
-        </p>
-
-    </div>
-
+<!-- AUTH LOADING -->
+<div id="authLoading"
+class="fixed inset-0 bg-white z-[999] flex items-center justify-center">
+<div class="text-center">
+<div class="text-5xl mb-4">🌐</div>
+<div class="font-bold text-xl">Checking session...</div>
+<div class="text-gray-500 mt-2">Please wait</div>
+</div>
 </div>
 
+<!-- LOGIN -->
+<div id="loginPage" class="hidden min-h-screen flex items-center justify-center p-5">
+<div class="card w-full max-w-md p-7">
 
-<!-- =====================================================
-LICENSE
-===================================================== -->
-
-<div id="licensePage"
-class="hidden min-h-screen flex items-center justify-center p-5">
-
-    <div class="card p-8 w-full max-w-md">
-
-        <div class="text-center">
-
-            <div class="text-6xl">
-                🔐
-            </div>
-
-            <h1 class="text-2xl font-black mt-3">
-                License Verification
-            </h1>
-
-            <p
-            id="licenseAccount"
-            class="text-slate-400 text-sm mt-2">
-            </p>
-
-        </div>
-
-        <input
-        id="licenseInput"
-        class="mt-6"
-        placeholder="ISP-001-DEMO">
-
-        <button
-        id="verifyBtn"
-        class="w-full bg-indigo-600 text-white mt-4">
-
-            Verify License
-
-        </button>
-
-        <p
-        id="licenseError"
-        class="text-red-400 text-sm text-center mt-4">
-        </p>
-
-        <button
-        id="licenseLogout"
-        class="w-full bg-red-600/20 text-red-400 mt-5">
-
-            Logout
-
-        </button>
-
-    </div>
-
+<div class="text-center">
+<div class="text-6xl mb-3">🌐</div>
+<h1 class="text-3xl font-black">ISP Billing</h1>
+<p class="text-gray-500 mt-2">Dealer Management System</p>
 </div>
 
+<div id="loginMessage"
+class="hidden mt-5 rounded-xl p-3 text-sm"></div>
 
-<!-- =====================================================
-APP
-===================================================== -->
+<button id="googleLogin"
+class="btn btn-dark w-full mt-6">
+Continue with Google
+</button>
 
+<p class="text-xs text-gray-400 text-center mt-4">
+Use your registered dealer Gmail.
+</p>
+
+</div>
+</div>
+
+<!-- LICENSE -->
+<div id="licensePage" class="hidden min-h-screen flex items-center justify-center p-5">
+<div class="card w-full max-w-md p-7">
+
+<div class="text-center">
+<div class="text-5xl mb-3">🔐</div>
+<h1 class="text-2xl font-black">License Verification</h1>
+<p class="text-gray-500 mt-2">
+Enter the license key provided by Super Admin.
+</p>
+</div>
+
+<input id="licenseInput"
+class="input mt-6 uppercase"
+placeholder="ISP-XXXX-XXXX-XXXX">
+
+<button id="verifyLicense"
+class="btn btn-primary w-full mt-3">
+Verify License
+</button>
+
+<div id="licenseMessage"
+class="text-sm mt-4 text-center"></div>
+
+<button id="licenseLogout"
+class="btn btn-gray w-full mt-4">
+Logout
+</button>
+
+</div>
+</div>
+
+<!-- APP -->
 <div id="app" class="hidden">
 
-    <!-- SIDEBAR -->
-
-    <aside
-    class="hidden md:block fixed left-0 top-0 bottom-0 w-64
-    bg-[#090e18] border-r border-slate-800 p-4">
-
-        <div class="text-xl font-black mb-8">
-
-            🌐 ISP BILLING
-
-            <div class="text-xs text-green-400 mt-1">
-                DEALER PANEL
-            </div>
-
-        </div>
-
-        <button
-        class="nav active"
-        data-page="dashboard"
-        onclick="openPage('dashboard')">
-
-            📊 Dashboard
-
-        </button>
-
-        <button
-        class="nav"
-        data-page="customers"
-        onclick="openPage('customers')">
-
-            👥 Customers
-
-        </button>
-
-        <button
-        class="nav"
-        data-page="packages"
-        onclick="openPage('packages')">
-
-            📦 Packages
-
-        </button>
-
-        <button
-        class="nav"
-        data-page="bills"
-        onclick="openPage('bills')">
-
-            🧾 Bills
-
-        </button>
-
-        <button
-        class="nav"
-        data-page="payments"
-        onclick="openPage('payments')">
-
-            💰 Payments
-
-        </button>
-
-        <button
-        onclick="logoutDealer()"
-        class="absolute bottom-5 left-4 right-4
-        bg-red-500/20 text-red-400">
-
-            Logout
-
-        </button>
-
-    </aside>
-
-
-    <!-- MAIN -->
-
-    <main class="md:ml-64 p-4 lg:p-8">
-
-        <!-- MOBILE NAV -->
-
-        <div class="mobile-nav md:hidden mb-5">
-
-            <button
-            class="bg-indigo-600"
-            onclick="openPage('dashboard')">
-
-                📊 Dashboard
-
-            </button>
-
-            <button
-            class="bg-slate-800"
-            onclick="openPage('customers')">
-
-                👥 Customers
-
-            </button>
-
-            <button
-            class="bg-slate-800"
-            onclick="openPage('packages')">
-
-                📦 Packages
-
-            </button>
-
-            <button
-            class="bg-slate-800"
-            onclick="openPage('bills')">
-
-                🧾 Bills
-
-            </button>
-
-            <button
-            class="bg-slate-800"
-            onclick="openPage('payments')">
-
-                💰 Payments
-
-            </button>
-
-            <button
-            class="bg-red-600/30"
-            onclick="logoutDealer()">
-
-                Logout
-
-            </button>
-
-        </div>
-
-
-        <!-- HEADER -->
-
-        <div
-        class="flex justify-between items-center mb-6">
-
-            <div>
-
-                <h1
-                id="pageTitle"
-                class="text-2xl font-black">
-
-                    Dashboard
-
-                </h1>
-
-                <p
-                id="userEmail"
-                class="text-xs text-slate-500">
-                </p>
-
-            </div>
-
-            <div class="text-green-400 text-xs">
-                ● ONLINE
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-        DASHBOARD
-        ================================================= -->
-
-        <section id="dashboard">
-
-            <div
-            class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-
-                <div class="card p-5">
-
-                    <p class="text-slate-500 text-xs">
-                        CUSTOMERS
-                    </p>
-
-                    <h2
-                    id="statCustomers"
-                    class="text-3xl font-black mt-2">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card p-5">
-
-                    <p class="text-slate-500 text-xs">
-                        ACTIVE
-                    </p>
-
-                    <h2
-                    id="statActive"
-                    class="text-3xl font-black text-green-400 mt-2">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card p-5">
-
-                    <p class="text-slate-500 text-xs">
-                        UNPAID
-                    </p>
-
-                    <h2
-                    id="statUnpaid"
-                    class="text-3xl font-black text-red-400 mt-2">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card p-5">
-
-                    <p class="text-slate-500 text-xs">
-                        PAYMENTS
-                    </p>
-
-                    <h2
-                    id="statPayments"
-                    class="text-xl font-black text-indigo-400 mt-2">
-                        Rs 0
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="card p-6 mt-5">
-
-                <h2 class="text-xl font-black">
-                    🏢 Dealer Information
-                </h2>
-
-                <div
-                id="dealerInfo"
-                class="grid md:grid-cols-2 gap-4 mt-5">
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-        CUSTOMERS
-        ================================================= -->
-
-        <section id="customers" class="hidden">
-
-            <div class="card p-5">
-
-                <div
-                class="flex justify-between items-center
-                gap-3 flex-wrap">
-
-                    <h2 class="text-xl font-black">
-                        👥 Customers
-                    </h2>
-
-                    <button
-                    onclick="openCustomerModal()"
-                    class="bg-indigo-600 text-white">
-
-                        + Add Customer
-
-                    </button>
-
-                </div>
-
-
-                <input
-                id="customerSearch"
-                oninput="renderCustomers()"
-                class="mt-5"
-                placeholder="Search customer...">
-
-
-                <div
-                id="customerList"
-                class="space-y-4 mt-5">
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-        PACKAGES
-        ================================================= -->
-
-        <section id="packages" class="hidden">
-
-            <div class="card p-5">
-
-                <div
-                class="flex justify-between items-center">
-
-                    <h2 class="text-xl font-black">
-                        📦 Packages
-                    </h2>
-
-                    <button
-                    onclick="openPackageModal()"
-                    class="bg-indigo-600 text-white">
-
-                        + Add Package
-
-                    </button>
-
-                </div>
-
-
-                <div
-                id="packageList"
-                class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-        BILLS
-        ================================================= -->
-
-        <section id="bills" class="hidden">
-
-            <div class="card p-5">
-
-                <div
-                class="flex justify-between items-center
-                gap-3 flex-wrap">
-
-                    <h2 class="text-xl font-black">
-                        🧾 Bills
-                    </h2>
-
-                    <button
-                    onclick="generateBills()"
-                    class="bg-indigo-600 text-white">
-
-                        Generate Bills
-
-                    </button>
-
-                </div>
-
-
-                <div
-                id="billList"
-                class="space-y-3 mt-5">
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-        PAYMENTS
-        ================================================= -->
-
-        <section id="payments" class="hidden">
-
-            <div class="card p-5">
-
-                <h2 class="text-xl font-black">
-                    💰 Payments
-                </h2>
-
-                <div
-                id="paymentList"
-                class="space-y-3 mt-5">
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
+<aside class="sidebar p-4">
+
+<div class="mb-6">
+<div class="text-2xl font-black">🌐 ISP Billing</div>
+<div class="text-xs text-slate-400 mt-1">Dealer Panel</div>
+</div>
+
+<div class="sidebar-nav">
+
+<button class="navbtn active" data-page="dashboard">📊 Dashboard</button>
+<button class="navbtn" data-page="customers">👥 Customers</button>
+<button class="navbtn" data-page="packages">📦 Packages</button>
+<button class="navbtn" data-page="bills">🧾 Bills</button>
+<button class="navbtn" data-page="payments">💰 Payments</button>
+<button class="navbtn" data-page="recovery">🔄 Recovery</button>
+<button class="navbtn" data-page="profile">⚙️ Profile</button>
 
 </div>
 
+<div class="mt-8 pt-5 border-t border-slate-700">
+<div id="sideDealerName" class="font-bold"></div>
+<div id="sideDealerEmail" class="text-xs text-slate-400 mt-1"></div>
+<button id="logoutBtn" class="btn bg-red-500 text-white w-full mt-4">
+Logout
+</button>
+</div>
 
-<!-- =====================================================
-CUSTOMER MODAL
-===================================================== -->
+</aside>
 
-<div
-id="customerModal"
-class="modal hidden">
+<main class="main">
 
-    <div class="card p-6 w-full max-w-lg">
+<header class="bg-white border-b p-4 sticky top-0 z-40">
+<div class="flex justify-between items-center gap-3">
+<div>
+<h2 id="pageTitle" class="text-xl font-black">Dashboard</h2>
+<p id="dealerStatusText" class="text-xs text-gray-500"></p>
+</div>
+<div class="text-right">
+<div id="topDealerName" class="font-bold"></div>
+<div id="licenseExpiryText" class="text-xs text-gray-500"></div>
+</div>
+</div>
+</header>
 
-        <div class="flex justify-between">
+<div class="p-4 md:p-6">
 
-            <h2 class="text-xl font-black">
-                Add Customer
-            </h2>
+<!-- DASHBOARD -->
+<section id="page-dashboard" class="page">
 
-            <button onclick="closeCustomerModal()">
-                ✕
-            </button>
+<div id="expiryAlert"
+class="hidden card p-4 mb-5 border-orange-300 bg-orange-50">
+<div class="font-black text-orange-700">⚠️ License Expiry Alert</div>
+<div id="expiryAlertText" class="text-sm text-orange-700 mt-1"></div>
+</div>
 
-        </div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
+<div class="card p-5">
+<div class="text-gray-500 text-sm">Customers</div>
+<div id="statCustomers" class="text-3xl font-black mt-2">0</div>
+</div>
 
-        <div class="space-y-3 mt-5">
+<div class="card p-5">
+<div class="text-gray-500 text-sm">Customer Limit</div>
+<div id="statLimit" class="text-3xl font-black mt-2">0</div>
+</div>
 
-            <input
-            id="cName"
-            placeholder="Customer Name">
+<div class="card p-5">
+<div class="text-gray-500 text-sm">Unpaid Bills</div>
+<div id="statUnpaid" class="text-3xl font-black mt-2">0</div>
+</div>
 
-            <input
-            id="cPhone"
-            placeholder="Phone 03001234567">
-
-            <input
-            id="cAddress"
-            placeholder="Address">
-
-            <input
-            id="cUsername"
-            placeholder="Username">
-
-            <input
-            id="cEmail"
-            placeholder="Email">
-
-            <select id="cPackage">
-
-                <option value="">
-                    Select Package
-                </option>
-
-            </select>
-
-            <input
-            id="cFee"
-            type="number"
-            placeholder="Monthly Fee">
-
-            <input
-            id="cExpiry"
-            type="date">
-
-        </div>
-
-
-        <button
-        onclick="saveCustomer()"
-        class="w-full bg-indigo-600 text-white mt-5">
-
-            Save Customer
-
-        </button>
-
-    </div>
+<div class="card p-5">
+<div class="text-gray-500 text-sm">Active Packages</div>
+<div id="statPackages" class="text-3xl font-black mt-2">0</div>
+</div>
 
 </div>
 
+<div class="grid lg:grid-cols-2 gap-5 mt-5">
 
-<!-- =====================================================
-PACKAGE MODAL
-===================================================== -->
+<div class="card p-5">
+<h3 class="font-black text-lg">Quick Actions</h3>
 
-<div
-id="packageModal"
-class="modal hidden">
+<div class="grid grid-cols-2 gap-3 mt-4">
+<button class="btn btn-primary"
+onclick="openCustomerModal()">
+➕ Customer
+</button>
 
-    <div class="card p-6 w-full max-w-md">
+<button class="btn btn-success"
+onclick="openPackageModal()">
+📦 Package
+</button>
 
-        <div class="flex justify-between">
+<button class="btn btn-dark"
+onclick="showPage('bills')">
+🧾 Bills
+</button>
 
-            <h2 class="text-xl font-black">
-                Create Package
-            </h2>
+<button class="btn btn-gray"
+onclick="showPage('recovery')">
+🔄 Recovery
+</button>
+</div>
+</div>
 
-            <button onclick="closePackageModal()">
-                ✕
-            </button>
+<div class="card p-5">
+<h3 class="font-black text-lg">Dealer Information</h3>
 
-        </div>
-
-
-        <div class="space-y-3 mt-5">
-
-            <input
-            id="pName"
-            placeholder="Package Name">
-
-            <input
-            id="pSpeed"
-            placeholder="Speed e.g. 10 Mbps">
-
-            <input
-            id="pPrice"
-            type="number"
-            placeholder="Monthly Price">
-
-        </div>
-
-
-        <button
-        onclick="savePackage()"
-        class="w-full bg-indigo-600 text-white mt-5">
-
-            Create Package
-
-        </button>
-
-    </div>
+<div class="mt-4 space-y-2 text-sm">
+<div><b>Name:</b> <span id="infoName"></span></div>
+<div><b>Company:</b> <span id="infoCompany"></span></div>
+<div><b>Email:</b> <span id="infoEmail"></span></div>
+<div><b>License:</b> <code id="infoLicense"></code></div>
+<div><b>Expiry:</b> <span id="infoExpiry"></span></div>
+</div>
 
 </div>
 
+</div>
 
-<!-- =====================================================
-FIREBASE
-===================================================== -->
+</section>
+
+<!-- CUSTOMERS -->
+<section id="page-customers" class="page hidden">
+
+<div class="flex justify-between items-center mb-5 gap-3">
+<div>
+<h2 class="text-2xl font-black">Customers</h2>
+<p class="text-gray-500 text-sm">Manage your internet customers.</p>
+</div>
+
+<button class="btn btn-primary"
+onclick="openCustomerModal()">
+➕ Add Customer
+</button>
+</div>
+
+<div class="card p-4">
+
+<input id="customerSearch"
+class="input mb-4"
+placeholder="Search name, phone or username...">
+
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-3">Customer</th>
+<th class="p-3">Phone</th>
+<th class="p-3">Username</th>
+<th class="p-3">Package</th>
+<th class="p-3">Expiry</th>
+<th class="p-3">Status</th>
+<th class="p-3">Action</th>
+</tr>
+</thead>
+<tbody id="customerTable"></tbody>
+</table>
+</div>
+
+</div>
+</section>
+
+<!-- PACKAGES -->
+<section id="page-packages" class="page hidden">
+
+<div class="flex justify-between items-center mb-5">
+<div>
+<h2 class="text-2xl font-black">Packages</h2>
+<p class="text-gray-500 text-sm">Create your own internet packages.</p>
+</div>
+
+<button class="btn btn-primary"
+onclick="openPackageModal()">
+➕ Add Package
+</button>
+</div>
+
+<div id="packageGrid"
+class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+</div>
+
+</section>
+
+<!-- BILLS -->
+<section id="page-bills" class="page hidden">
+
+<div class="mb-5">
+<h2 class="text-2xl font-black">Bills</h2>
+<p class="text-gray-500 text-sm">Generate and send customer bills.</p>
+</div>
+
+<div class="card p-4">
+
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-3">Bill</th>
+<th class="p-3">Customer</th>
+<th class="p-3">Amount</th>
+<th class="p-3">Due Date</th>
+<th class="p-3">Status</th>
+<th class="p-3">WhatsApp</th>
+</tr>
+</thead>
+<tbody id="billTable"></tbody>
+</table>
+</div>
+
+</div>
+</section>
+
+<!-- PAYMENTS -->
+<section id="page-payments" class="page hidden">
+
+<div class="mb-5">
+<h2 class="text-2xl font-black">Payments</h2>
+<p class="text-gray-500 text-sm">Payment history.</p>
+</div>
+
+<div class="card p-4 overflow-x-auto">
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-3">Payment</th>
+<th class="p-3">Phone</th>
+<th class="p-3">Amount</th>
+<th class="p-3">Status</th>
+</tr>
+</thead>
+<tbody id="paymentTable"></tbody>
+</table>
+</div>
+
+</section>
+
+<!-- RECOVERY -->
+<section id="page-recovery" class="page hidden">
+
+<div class="max-w-2xl">
+
+<div class="mb-5">
+<h2 class="text-2xl font-black">Account Recovery</h2>
+<p class="text-gray-500 text-sm">
+Submit a recovery request to Super Admin.
+</p>
+</div>
+
+<div class="card p-5">
+
+<label class="font-bold text-sm">Recovery Method</label>
+
+<select id="recoveryMethod" class="input mt-2">
+<option value="Bank Account">Bank Account</option>
+<option value="Easypaisa">Easypaisa</option>
+<option value="JazzCash">JazzCash</option>
+<option value="Other">Other</option>
+</select>
+
+<label class="font-bold text-sm block mt-4">
+Registered Mobile Number
+</label>
+
+<input id="recoveryPhone"
+class="input mt-2"
+placeholder="03XXXXXXXXX">
+
+<label class="font-bold text-sm block mt-4">
+Message
+</label>
+
+<textarea id="recoveryMessage"
+class="input mt-2"
+rows="5"
+placeholder="Explain your recovery/account issue..."></textarea>
+
+<div class="mt-4 p-3 rounded-xl bg-blue-50 text-blue-700 text-sm">
+📸 If a screenshot is required, send it from your registered number.
+<br>
+No screenshot upload is required here.
+</div>
+
+<button id="submitRecovery"
+class="btn btn-primary w-full mt-4">
+Send Recovery Request
+</button>
+
+<div id="recoveryResult"
+class="text-sm text-center mt-3"></div>
+
+</div>
+</div>
+
+</section>
+
+<!-- PROFILE -->
+<section id="page-profile" class="page hidden">
+
+<div class="max-w-2xl">
+<h2 class="text-2xl font-black mb-5">Dealer Profile</h2>
+
+<div class="card p-5 space-y-4">
+
+<div>
+<div class="text-xs text-gray-500">Name</div>
+<div id="profileName" class="font-bold"></div>
+</div>
+
+<div>
+<div class="text-xs text-gray-500">Company</div>
+<div id="profileCompany" class="font-bold"></div>
+</div>
+
+<div>
+<div class="text-xs text-gray-500">Email</div>
+<div id="profileEmail" class="font-bold"></div>
+</div>
+
+<div>
+<div class="text-xs text-gray-500">Phone</div>
+<div id="profilePhone" class="font-bold"></div>
+</div>
+
+<div>
+<div class="text-xs text-gray-500">License</div>
+<div id="profileLicense" class="font-mono"></div>
+</div>
+
+<div>
+<div class="text-xs text-gray-500">License Expiry</div>
+<div id="profileExpiry" class="font-bold"></div>
+</div>
+
+</div>
+</div>
+
+</section>
+
+</div>
+</main>
+</div>
+
+<!-- CUSTOMER MODAL -->
+<div id="customerModal" class="modal hidden">
+
+<div class="card w-full max-w-2xl p-6 max-h-[95vh] overflow-y-auto">
+
+<div class="flex justify-between items-center">
+<h2 class="text-xl font-black">Add Customer</h2>
+<button class="btn btn-gray" onclick="closeCustomerModal()">✕</button>
+</div>
+
+<div class="grid md:grid-cols-2 gap-3 mt-5">
+
+<input id="cName" class="input" placeholder="Customer Name">
+<input id="cPhone" class="input" placeholder="Phone">
+<input id="cUsername" class="input" placeholder="Username">
+<input id="cAddress" class="input" placeholder="Address">
+
+<select id="cPackage" class="input">
+<option value="">Select Package</option>
+</select>
+
+<select id="cStatus" class="input">
+<option value="Active">Active</option>
+<option value="Suspended">Suspended</option>
+</select>
+
+</div>
+
+<button class="btn btn-primary w-full mt-4"
+onclick="saveCustomer()">
+Save Customer
+</button>
+
+<div id="customerModalError"
+class="text-red-500 text-sm mt-3 text-center"></div>
+
+</div>
+</div>
+
+<!-- PACKAGE MODAL -->
+<div id="packageModal" class="modal hidden">
+
+<div class="card w-full max-w-md p-6">
+
+<div class="flex justify-between items-center">
+<h2 class="text-xl font-black">Create Package</h2>
+<button class="btn btn-gray" onclick="closePackageModal()">✕</button>
+</div>
+
+<input id="pName"
+class="input mt-5"
+placeholder="Package Name">
+
+<input id="pSpeed"
+class="input mt-3"
+placeholder="Speed e.g. 10 Mbps">
+
+<input id="pPrice"
+type="number"
+class="input mt-3"
+placeholder="Monthly Price">
+
+<select id="pStatus" class="input mt-3">
+<option value="Active">Active</option>
+<option value="Inactive">Inactive</option>
+</select>
+
+<button class="btn btn-success w-full mt-4"
+onclick="savePackage()">
+Create Package
+</button>
+
+<div id="packageModalError"
+class="text-red-500 text-sm mt-3 text-center"></div>
+
+</div>
+</div>
 
 <script type="module">
 
 import {
-    initializeApp
-}
-from
+initializeApp
+} from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
 import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    onAuthStateChanged,
-    signOut,
-    setPersistence,
-    browserLocalPersistence
-}
-from
+getAuth,
+GoogleAuthProvider,
+signInWithPopup,
+onAuthStateChanged,
+signOut
+} from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-
 import {
-    getDatabase,
-    ref,
-    get,
-    set,
-    update,
-    remove
-}
-from
+getDatabase,
+ref,
+get,
+set,
+update,
+remove
+} from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-/* =====================================================
-FIREBASE CONFIG
-===================================================== */
-
-const firebaseConfig = {
-
-    apiKey:
-    "AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
-
-    authDomain:
-    "isp-billing-system-27cf8.firebaseapp.com",
-
-    databaseURL:
-    "https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
-
-    projectId:
-    "isp-billing-system-27cf8",
-
-    storageBucket:
-    "isp-billing-system-27cf8.firebasestorage.app",
-
-    messagingSenderId:
-    "643339508063",
-
-    appId:
-    "1:643339508063:web:232e6769f7128b6e323eea",
-
-    measurementId:
-    "G-J0QK9KKPC6"
-
+const firebaseConfig={
+apiKey:"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
+authDomain:"isp-billing-system-27cf8.firebaseapp.com",
+databaseURL:"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
+projectId:"isp-billing-system-27cf8",
+storageBucket:"isp-billing-system-27cf8.firebasestorage.app",
+messagingSenderId:"643339508063",
+appId:"1:643339508063:web:232e6769f7128b6e323eea",
+measurementId:"G-J0QK9KKPC6"
 };
 
-
-const app =
-initializeApp(firebaseConfig);
-
-
-const auth =
-getAuth(app);
-
-
-const db =
-getDatabase(app);
-
-
-const provider =
-new GoogleAuthProvider();
-
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
+const provider=new GoogleAuthProvider();
 
 provider.setCustomParameters({
-    prompt:"select_account"
+prompt:"select_account"
 });
 
 
-/* =====================================================
-GLOBAL VARIABLES
-===================================================== */
-
-let currentUser = null;
-
-let currentDealer = null;
-
-let currentDealerId = null;
-
-let customers = {};
-
-let packages = {};
-
-let bills = {};
-
-let payments = {};
+let currentUser=null;
+let dealer=null;
+let customers={};
+let packages={};
+let bills={};
+let payments={};
 
 
-/* =====================================================
-LOCAL LOGIN PERSISTENCE
-===================================================== */
+/* HELPERS */
+
+const $=id=>document.getElementById(id);
+
+function today(){
+return new Date().toISOString().slice(0,10);
+}
+
+function esc(v){
+return String(v??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
+
+function normalize(v){
+return String(v||"").toLowerCase().trim();
+}
+
+function showLoginMessage(msg,type="error"){
+const box=$("loginMessage");
+box.classList.remove("hidden");
+box.className=
+"mt-5 rounded-xl p-3 text-sm "+
+(type==="success"
+?"bg-green-50 text-green-700"
+:"bg-red-50 text-red-700");
+box.innerText=msg;
+}
+
+
+/* AUTH */
+
+$("googleLogin").onclick=async()=>{
 
 try{
 
-    await setPersistence(
-        auth,
-        browserLocalPersistence
-    );
+$("googleLogin").disabled=true;
+$("googleLogin").innerText="Signing in...";
 
-}catch(error){
+await signInWithPopup(auth,provider);
 
-    console.error(
-        "Persistence error:",
-        error
-    );
+}catch(e){
+
+console.error(e);
+
+showLoginMessage(
+e.code+" : "+e.message
+);
+
+$("googleLogin").disabled=false;
+$("googleLogin").innerText=
+"Continue with Google";
+
+}
+
+};
+
+
+/*
+IMPORTANT:
+We don't show login page while Firebase
+is restoring an existing session.
+*/
+
+onAuthStateChanged(auth,async user=>{
+
+try{
+
+if(!user){
+
+currentUser=null;
+
+$("authLoading").classList.add("hidden");
+$("app").classList.add("hidden");
+$("licensePage").classList.add("hidden");
+$("loginPage").classList.remove("hidden");
+
+return;
+
+}
+
+currentUser=user;
+
+$("authLoading").classList.remove("hidden");
+$("loginPage").classList.add("hidden");
+
+
+const dealerResult=
+await findDealer(user.email);
+
+
+if(!dealerResult){
+
+$("authLoading").classList.add("hidden");
+$("licensePage").classList.remove("hidden");
+
+$("licenseMessage").innerHTML=
+'<span class="text-orange-600">No dealer license found. Enter your license key.</span>';
+
+return;
+
+}
+
+dealer=dealerResult;
+
+if(!licenseIsValid()){
+
+$("authLoading").classList.add("hidden");
+$("app").classList.add("hidden");
+$("licensePage").classList.remove("hidden");
+
+showLicenseStatus();
+
+return;
 
 }
 
 
-/* =====================================================
-GOOGLE LOGIN
-===================================================== */
+/* VALIDATED DEALER */
 
-document
-.getElementById("googleBtn")
-.addEventListener(
-"click",
-async()=>{
+$("licensePage").classList.add("hidden");
+$("loginPage").classList.add("hidden");
+$("app").classList.remove("hidden");
+$("authLoading").classList.add("hidden");
 
-    const button =
-    document.getElementById(
-        "googleBtn"
-    );
+await loadAll();
+renderAll();
 
-    const error =
-    document.getElementById(
-        "loginError"
-    );
+}catch(e){
 
-    error.innerText = "";
+console.error(e);
 
-    button.disabled = true;
+$("authLoading").classList.add("hidden");
 
-    button.innerText =
-    "Signing in...";
+alert(
+"Firebase error: "+
+(e.message||e)
+);
 
-
-    try{
-
-        await signInWithPopup(
-            auth,
-            provider
-        );
-
-    }catch(e){
-
-        console.error(e);
-
-        error.innerText =
-        e.code+
-        " : "+
-        e.message;
-
-        button.disabled = false;
-
-        button.innerText =
-        "Continue with Google";
-
-    }
+}
 
 });
 
 
-/* =====================================================
-AUTH STATE
-===================================================== */
+/*
+Find dealer by email.
 
-onAuthStateChanged(
-auth,
-async(user)=>{
+This supports both:
+dealers/DEALER-ID/email
+and a legacy structure where
+email may be elsewhere.
+*/
 
-    if(!user){
+async function findDealer(email){
 
-        currentUser = null;
+const snap=await get(ref(db,"dealers"));
 
-        showLogin();
+if(!snap.exists()) return null;
 
-        return;
+const data=snap.val()||{};
 
-    }
+for(const [id,value] of Object.entries(data)){
 
+if(!value||typeof value!=="object") continue;
 
-    currentUser = user;
+if(
+normalize(value.email)===normalize(email)
+){
 
+return {
+...value,
+__id:id
+};
 
-    document
-    .getElementById("userEmail")
-    .innerText =
-    user.email || "";
+}
 
+}
 
-    try{
+return null;
+}
 
-        /*
-        Load dealers.
-        */
 
-        const dealerSnap =
-        await get(
-            ref(db,"dealers")
-        );
+/*
+If dealer was previously verified,
+store only verification state locally.
 
+The license itself is still checked
+against Firebase every session.
+*/
 
-        if(
-            !dealerSnap.exists()
-        ){
+function licenseIsValid(){
 
-            showLicense();
+if(!dealer) return false;
 
-            return;
+if(
+normalize(dealer.email)!==
+normalize(currentUser.email)
+){
+return false;
+}
 
-        }
+if(
+dealer.status &&
+normalize(dealer.status)!=="active"
+){
+return false;
+}
 
+if(!dealer.licenseKey){
+return false;
+}
 
-        const allDealers =
-        dealerSnap.val();
+if(!dealer.licenseExpiry){
+return false;
+}
 
+const expiry=
+new Date(dealer.licenseExpiry+"T23:59:59");
 
-        /*
-        Find dealer by Gmail.
-        */
+if(expiry<new Date()){
+return false;
+}
 
-        let foundDealer = null;
+const verified=
+localStorage.getItem(
+"isp_license_verified_"+dealer.__id
+);
 
-        let foundId = null;
-
-
-        Object
-        .entries(
-            allDealers || {}
-        )
-        .forEach(
-        ([id,d])=>{
-
-            if(
-                foundDealer
-            ){
-                return;
-            }
-
-
-            const dealerEmail =
-            String(
-                d.email ||
-                d.Email ||
-                ""
-            )
-            .trim()
-            .toLowerCase();
-
-
-            const googleEmail =
-            String(
-                user.email ||
-                ""
-            )
-            .trim()
-            .toLowerCase();
-
-
-            if(
-                dealerEmail &&
-                dealerEmail === googleEmail
-            ){
-
-                foundDealer = d;
-
-                foundId = id;
-
-            }
-
-        });
-
-
-        /*
-        Dealer found.
-        */
-
-        if(
-            foundDealer
-        ){
-
-            currentDealer =
-            foundDealer;
-
-            currentDealerId =
-            foundId;
-
-
-            /*
-            Check browser license verification.
-            */
-
-            const verified =
-            localStorage.getItem(
-                "isp_license_verified"
-            );
-
-
-            const savedUID =
-            localStorage.getItem(
-                "isp_license_uid"
-            );
-
-
-            const savedDealer =
-            localStorage.getItem(
-                "isp_license_dealer"
-            );
-
-
-            if(
-                verified === "true" &&
-                savedUID === user.uid &&
-                savedDealer === foundId
-            ){
-
-                await startDashboard();
-
-                return;
-
-            }
-
-
-            showLicense();
-
-            return;
-
-        }
-
-
-        /*
-        No dealer for Gmail.
-        */
-
-        showLicense();
-
-
-    }catch(error){
-
-        console.error(
-            "Firebase error:",
-            error
-        );
-
-
-        document
-        .getElementById(
-            "loginError"
-        )
-        .innerText =
-        "Firebase error: "+
-        error.message;
-
-
-        showLogin();
-
-    }
-
-});
-
-
-/* =====================================================
-SHOW LOGIN
-===================================================== */
-
-function showLogin(){
-
-    document
-    .getElementById("loginPage")
-    .classList
-    .remove("hidden");
-
-
-    document
-    .getElementById("licensePage")
-    .classList
-    .add("hidden");
-
-
-    document
-    .getElementById("app")
-    .classList
-    .add("hidden");
+return verified===dealer.licenseKey;
 
 }
 
 
-/* =====================================================
-SHOW LICENSE
-===================================================== */
+/* LICENSE VERIFY */
 
-function showLicense(){
+$("verifyLicense").onclick=async()=>{
 
-    document
-    .getElementById("loginPage")
-    .classList
-    .add("hidden");
+const key=
+$("licenseInput")
+.value
+.trim()
+.toUpperCase();
+
+$("licenseMessage").innerText=
+"Checking...";
+
+if(!key){
+
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">Enter license key.</span>';
+
+return;
+
+}
+
+try{
+
+/*
+Re-read dealer from Firebase.
+This prevents an old local license from
+remaining active after Super Admin suspends it.
+*/
+
+const fresh=
+await findDealer(currentUser.email);
+
+if(!fresh){
+
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">Dealer account not found.</span>';
+
+return;
+
+}
+
+dealer=fresh;
 
 
-    document
-    .getElementById("licensePage")
-    .classList
-    .remove("hidden");
+if(
+normalize(dealer.email)!==
+normalize(currentUser.email)
+){
 
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ This license belongs to another Gmail.</span>';
 
-    document
-    .getElementById("app")
-    .classList
-    .add("hidden");
-
-
-    if(currentUser){
-
-        document
-        .getElementById(
-            "licenseAccount"
-        )
-        .innerText =
-        "Signed in as "+
-        currentUser.email;
-
-    }
+return;
 
 }
 
 
-/* =====================================================
-VERIFY LICENSE
-===================================================== */
+if(
+dealer.status &&
+normalize(dealer.status)!=="active"
+){
 
-document
-.getElementById("verifyBtn")
-.addEventListener(
-"click",
-verifyLicense
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ License is suspended by Super Admin.</span>';
+
+return;
+
+}
+
+
+if(
+normalize(dealer.licenseKey)!==
+normalize(key)
+){
+
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ Invalid license key.</span>';
+
+return;
+
+}
+
+
+if(
+!dealer.licenseExpiry ||
+new Date(dealer.licenseExpiry+"T23:59:59")<new Date()
+){
+
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ License has expired.</span>';
+
+return;
+
+}
+
+
+localStorage.setItem(
+"isp_license_verified_"+dealer.__id,
+dealer.licenseKey
 );
 
 
-async function verifyLicense(){
+$("licensePage").classList.add("hidden");
+$("app").classList.remove("hidden");
 
-    if(!currentUser){
+await loadAll();
+renderAll();
 
-        showLogin();
+}catch(e){
 
-        return;
+console.error(e);
 
-    }
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">Firebase error: '+
+esc(e.message)+
+'</span>';
 
+}
 
-    const key =
-    document
-    .getElementById(
-        "licenseInput"
-    )
-    .value
-    .trim()
-    .toUpperCase();
+};
 
 
-    const error =
-    document
-    .getElementById(
-        "licenseError"
-    );
+function showLicenseStatus(){
 
+if(!dealer)return;
 
-    const button =
-    document
-    .getElementById(
-        "verifyBtn"
-    );
+if(
+dealer.status &&
+normalize(dealer.status)!=="active"
+){
 
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ Your license is suspended by Super Admin.</span>';
 
-    error.innerText = "";
+return;
 
+}
 
-    if(!key){
+if(
+dealer.licenseExpiry &&
+new Date(dealer.licenseExpiry+"T23:59:59")<new Date()
+){
 
-        error.innerText =
-        "❌ Enter License Key.";
+$("licenseMessage").innerHTML=
+'<span class="text-red-600">❌ Your license has expired.</span>';
 
-        return;
+return;
 
-    }
+}
 
-
-    button.disabled = true;
-
-    button.innerText =
-    "Verifying...";
-
-
-    try{
-
-        /*
-        Always load fresh dealer data.
-        */
-
-        const snap =
-        await get(
-            ref(db,"dealers")
-        );
-
-
-        if(
-            !snap.exists()
-        ){
-
-            error.innerText =
-            "❌ Dealer database not found.";
-
-            return;
-
-        }
-
-
-        const all =
-        snap.val();
-
-
-        let dealer = null;
-
-        let dealerId = null;
-
-
-        Object
-        .entries(
-            all || {}
-        )
-        .forEach(
-        ([id,d])=>{
-
-            if(dealer){
-                return;
-            }
-
-
-            const dealerKey =
-            String(
-                d.LicenseKey ||
-                d.licenseKey ||
-                ""
-            )
-            .trim()
-            .toUpperCase();
-
-
-            if(
-                dealerKey === key
-            ){
-
-                dealer = d;
-
-                dealerId = id;
-
-            }
-
-        });
-
-
-        if(!dealer){
-
-            error.innerText =
-            "❌ Invalid License Key.";
-
-            return;
-
-        }
-
-
-        /*
-        Gmail ownership.
-        */
-
-        const dealerEmail =
-        String(
-            dealer.email ||
-            dealer.Email ||
-            ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-        const googleEmail =
-        String(
-            currentUser.email ||
-            ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-        if(
-            dealerEmail &&
-            dealerEmail !== googleEmail
-        ){
-
-            error.innerText =
-            "❌ This license belongs to another Gmail.";
-
-            return;
-
-        }
-
-
-        /*
-        Status.
-        */
-
-        const status =
-        String(
-            dealer.status ||
-            dealer.Status ||
-            "active"
-        )
-        .toLowerCase();
-
-
-        if(
-            status === "suspended" ||
-            status === "inactive"
-        ){
-
-            error.innerText =
-            "❌ Dealer account is suspended.";
-
-            return;
-
-        }
-
-
-        /*
-        Expiry.
-        */
-
-        const expiry =
-        dealer.LicenseExpiry ||
-        dealer.licenseExpiry ||
-        "";
-
-
-        if(expiry){
-
-            const expiryDate =
-            new Date(
-                expiry+"T23:59:59"
-            );
-
-
-            if(
-                expiryDate < new Date()
-            ){
-
-                error.innerText =
-                "❌ License expired.";
-
-                return;
-
-            }
-
-        }
-
-
-        /*
-        SAVE SESSION
-        */
-
-        localStorage.setItem(
-            "isp_license_verified",
-            "true"
-        );
-
-
-        localStorage.setItem(
-            "isp_license_uid",
-            currentUser.uid
-        );
-
-
-        localStorage.setItem(
-            "isp_license_dealer",
-            dealerId
-        );
-
-
-        currentDealer =
-        dealer;
-
-        currentDealerId =
-        dealerId;
-
-
-        /*
-        Start.
-        */
-
-        await startDashboard();
-
-
-    }catch(e){
-
-        console.error(e);
-
-        error.innerText =
-        "❌ Firebase error: "+
-        e.message;
-
-    }finally{
-
-        button.disabled = false;
-
-        button.innerText =
-        "Verify License";
-
-    }
+$("licenseMessage").innerHTML=
+'<span class="text-blue-600">Please verify your license key.</span>';
 
 }
 
 
-/* =====================================================
-START DASHBOARD
-===================================================== */
+/*
+Check license every 30 seconds.
 
-async function startDashboard(){
+If Super Admin suspends dealer,
+dashboard is locked without logout.
+*/
 
-    document
-    .getElementById("loginPage")
-    .classList
-    .add("hidden");
+setInterval(async()=>{
+
+if(!currentUser||!dealer)return;
+
+try{
+
+const fresh=
+await findDealer(currentUser.email);
+
+if(!fresh)return;
+
+dealer=fresh;
+
+if(!licenseIsValid()){
+
+lockDealer();
+
+}
+
+}catch(e){
+
+console.warn(e);
+
+}
+
+},30000);
 
 
-    document
-    .getElementById("licensePage")
-    .classList
-    .add("hidden");
+function lockDealer(){
 
+localStorage.removeItem(
+"isp_license_verified_"+dealer.__id
+);
 
-    document
-    .getElementById("app")
-    .classList
-    .remove("hidden");
+$("app").classList.add("hidden");
+$("licensePage").classList.remove("hidden");
 
-
-    await loadAll();
+showLicenseStatus();
 
 }
 
 
-/* =====================================================
-LOAD ALL
-===================================================== */
+/* LOGOUT */
+
+$("logoutBtn").onclick=async()=>{
+localStorage.removeItem(
+"isp_license_verified_"+(dealer?.__id||"")
+);
+await signOut(auth);
+};
+
+$("licenseLogout").onclick=async()=>{
+localStorage.removeItem(
+"isp_license_verified_"+(dealer?.__id||"")
+);
+await signOut(auth);
+};
+
+
+/* LOAD DATA */
+
+async function safeObject(path){
+
+const snap=await get(ref(db,path));
+
+if(!snap.exists()) return {};
+
+const value=snap.val();
+
+return value && typeof value==="object"
+?value:{};
+
+}
+
 
 async function loadAll(){
 
-    try{
+/*
+Only use data under the current dealer
+where possible.
+*/
 
-        const customerSnap =
-        await get(
-            ref(db,"customers")
-        );
+customers=
+await safeObject("customers");
 
+packages=
+await safeObject("packages");
 
-        const packageSnap =
-        await get(
-            ref(db,"packages")
-        );
+bills=
+await safeObject("bills");
 
-
-        const billSnap =
-        await get(
-            ref(db,"bills")
-        );
-
-
-        const paymentSnap =
-        await get(
-            ref(db,"payments")
-        );
-
-
-        customers =
-        customerSnap.exists()
-        ? customerSnap.val()
-        : {};
-
-
-        packages =
-        packageSnap.exists()
-        ? packageSnap.val()
-        : {};
-
-
-        bills =
-        billSnap.exists()
-        ? billSnap.val()
-        : {};
-
-
-        payments =
-        paymentSnap.exists()
-        ? paymentSnap.val()
-        : {};
-
-
-        renderEverything();
-
-        checkExpiryToday();
-
-
-    }catch(error){
-
-        console.error(
-            "Firebase error:",
-            error
-        );
-
-
-        alert(
-            "Firebase error: "+
-            error.message
-        );
-
-    }
+payments=
+await safeObject("payments");
 
 }
 
 
-/* =====================================================
-OWNERSHIP
-===================================================== */
-
-function belongsToDealer(data){
-
-    if(!data){
-        return false;
-    }
-
-
-    /*
-    Existing old records without
-    dealerId are allowed.
-    */
-
-    if(
-        !data.dealerId
-    ){
-
-        return true;
-
-    }
-
-
-    return (
-        data.dealerId ===
-        currentDealerId
-    );
-
-}
-
-
-/* =====================================================
-RENDER
-===================================================== */
-
-function renderEverything(){
-
-    renderStats();
-
-    renderDealerInfo();
-
-    renderCustomers();
-
-    renderPackages();
-
-    renderBills();
-
-    renderPayments();
-
-    renderPackageOptions();
-
-}
-
-
-/* =====================================================
-NAVIGATION
-===================================================== */
-
-window.openPage =
-function(name){
-
-    const pages = [
-        "dashboard",
-        "customers",
-        "packages",
-        "bills",
-        "payments"
-    ];
-
-
-    pages.forEach(
-    page=>{
-
-        document
-        .getElementById(page)
-        .classList
-        .add("hidden");
-
-    });
-
-
-    document
-    .getElementById(name)
-    .classList
-    .remove("hidden");
-
-
-    const titles = {
-
-        dashboard:"Dashboard",
-        customers:"Customers",
-        packages:"Packages",
-        bills:"Bills",
-        payments:"Payments"
-
-    };
-
-
-    document
-    .getElementById(
-        "pageTitle"
-    )
-    .innerText =
-    titles[name] || "Dashboard";
-
-
-    document
-    .querySelectorAll(".nav")
-    .forEach(
-    button=>{
-
-        button.classList.toggle(
-            "active",
-            button.dataset.page === name
-        );
-
-    });
-
-};
-
-
-/* =====================================================
-STATS
-===================================================== */
-
-function renderStats(){
-
-    const customerList =
-    Object
-    .values(customers || {})
-    .filter(
-        customer =>
-        belongsToDealer(customer)
-    );
-
-
-    const billList =
-    Object
-    .values(bills || {})
-    .filter(
-        bill =>
-        belongsToDealer(bill)
-    );
-
-
-    const paymentList =
-    Object
-    .values(payments || {})
-    .filter(
-        payment =>
-        belongsToDealer(payment)
-    );
-
-
-    const active =
-    customerList
-    .filter(
-    customer=>{
-
-        return String(
-            customer.Status ||
-            customer.status ||
-            "Active"
-        )
-        .toLowerCase()
-        ===
-        "active";
-
-    }).length;
-
-
-    const unpaid =
-    billList
-    .filter(
-    bill=>{
-
-        return String(
-            bill.Status ||
-            bill.status ||
-            "Unpaid"
-        )
-        .toLowerCase()
-        ===
-        "unpaid";
-
-    }).length;
-
-
-    const totalPayments =
-    paymentList
-    .reduce(
-    (sum,payment)=>{
-
-        return sum+
-        Number(
-            payment.amount ||
-            payment.Amount ||
-            0
-        );
-
-    },0);
-
-
-    document
-    .getElementById(
-        "statCustomers"
-    )
-    .innerText =
-    customerList.length;
-
-
-    document
-    .getElementById(
-        "statActive"
-    )
-    .innerText =
-    active;
-
-
-    document
-    .getElementById(
-        "statUnpaid"
-    )
-    .innerText =
-    unpaid;
-
-
-    document
-    .getElementById(
-        "statPayments"
-    )
-    .innerText =
-    "Rs "+
-    totalPayments.toLocaleString();
-
-}
-
-
-/* =====================================================
-DEALER INFO
-===================================================== */
-
-function renderDealerInfo(){
-
-    if(!currentDealer){
-        return;
-    }
-
-
-    const license =
-    currentDealer.LicenseKey ||
-    currentDealer.licenseKey ||
-    "-";
-
-
-    const expiry =
-    currentDealer.LicenseExpiry ||
-    currentDealer.licenseExpiry ||
-    "-";
-
-
-    document
-    .getElementById(
-        "dealerInfo"
-    )
-    .innerHTML = `
-
-        <div class="card p-4">
-
-            <p class="text-xs text-slate-500">
-                DEALER
-            </p>
-
-            <b>
-                ${esc(
-                    currentDealer.name ||
-                    currentDealer.Name ||
-                    "Dealer"
-                )}
-            </b>
-
-        </div>
-
-
-        <div class="card p-4">
-
-            <p class="text-xs text-slate-500">
-                EMAIL
-            </p>
-
-            <b>
-                ${esc(
-                    currentDealer.email ||
-                    currentUser?.email ||
-                    "-"
-                )}
-            </b>
-
-        </div>
-
-
-        <div class="card p-4">
-
-            <p class="text-xs text-slate-500">
-                LICENSE
-            </p>
-
-            <b class="text-indigo-400">
-                ${esc(license)}
-            </b>
-
-        </div>
-
-
-        <div class="card p-4">
-
-            <p class="text-xs text-slate-500">
-                LICENSE EXPIRY
-            </p>
-
-            <b>
-                ${esc(expiry)}
-            </b>
-
-        </div>
-
-    `;
-
-}
-
-
-/* =====================================================
-CUSTOMERS
-===================================================== */
-
-function renderCustomers(){
-
-    const search =
-    String(
-        document
-        .getElementById(
-            "customerSearch"
-        )
-        ?.value ||
-        ""
-    )
-    .toLowerCase();
-
-
-    let html = "";
-
-
-    Object
-    .entries(
-        customers || {}
-    )
-    .forEach(
-    ([id,c])=>{
-
-        if(
-            !belongsToDealer(c)
-        ){
-            return;
-        }
-
-
-        const searchable =
-        (
-            c.name || ""
-        )+
-        " "+
-        (
-            c.phone || ""
-        )+
-        " "+
-        (
-            c.username || ""
-        )+
-        " "+
-        (
-            c.email || ""
-        )+
-        " "+
-        (
-            c.package || ""
-        );
-
-
-        if(
-            !searchable
-            .toLowerCase()
-            .includes(search)
-        ){
-
-            return;
-
-        }
-
-
-        const fee =
-        Number(
-            c["Monthly fee"] ||
-            c.monthlyFee ||
-            0
-        );
-
-
-        const expiry =
-        c["Expiry Date"] ||
-        c.expiryDate ||
-        "-";
-
-
-        const status =
-        c.Status ||
-        c.status ||
-        "Active";
-
-
-        const active =
-        String(status)
-        .toLowerCase()
-        ===
-        "active";
-
-
-        html += `
-
-        <div class="card p-5">
-
-            <div
-            class="flex justify-between
-            gap-3 flex-wrap">
-
-                <div>
-
-                    <h3
-                    class="text-lg font-black">
-
-                        ${esc(
-                            c.name || "-"
-                        )}
-
-                    </h3>
-
-                    <p
-                    class="text-xs text-slate-500">
-
-                        ${esc(
-                            c.username || "-"
-                        )}
-
-                        •
-
-                        ${esc(
-                            c.phone || "-"
-                        )}
-
-                    </p>
-
-                </div>
-
-
-                <span
-                class="${
-                    active
-                    ?"status-active"
-                    :"status-expired"
-                }">
-
-                    ● ${esc(status)}
-
-                </span>
-
-            </div>
-
-
-            <div
-            class="grid md:grid-cols-4
-            gap-4 mt-5 text-sm">
-
-                <div>
-
-                    <p class="text-slate-500">
-                        Package
-                    </p>
-
-                    <b>
-                        ${esc(
-                            c.package || "-"
-                        )}
-                    </b>
-
-                </div>
-
-
-                <div>
-
-                    <p class="text-slate-500">
-                        Monthly Fee
-                    </p>
-
-                    <b>
-                        Rs ${fee.toLocaleString()}
-                    </b>
-
-                </div>
-
-
-                <div>
-
-                    <p class="text-slate-500">
-                        Expiry
-                    </p>
-
-                    <b>
-                        ${esc(expiry)}
-                    </b>
-
-                </div>
-
-
-                <div>
-
-                    <button
-                    onclick="sendWhatsApp('${id}')"
-                    class="w-full bg-green-600
-                    text-white">
-
-                        📱 Send Bill
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div
-            class="flex gap-2 flex-wrap mt-5">
-
-                <button
-                onclick="editCustomer('${id}')"
-                class="bg-blue-600 text-white">
-
-                    Edit
-
-                </button>
-
-
-                <button
-                onclick="toggleCustomer('${id}')"
-                class="bg-yellow-600 text-white">
-
-                    ${
-                        active
-                        ?"Suspend"
-                        :"Activate"
-                    }
-
-                </button>
-
-
-                <button
-                onclick="deleteCustomer('${id}')"
-                class="bg-red-600 text-white">
-
-                    Delete
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-
-    document
-    .getElementById(
-        "customerList"
-    )
-    .innerHTML =
-    html ||
-    `
-        <div
-        class="text-center
-        text-slate-500 p-8">
-
-            No customers found.
-
-        </div>
-    `;
-
-}
-
-
-/* =====================================================
-CUSTOMER MODAL
-===================================================== */
-
-window.openCustomerModal =
-function(){
-
-    renderPackageOptions();
-
-    document
-    .getElementById(
-        "customerModal"
-    )
-    .classList
-    .remove("hidden");
-
-};
-
-
-window.closeCustomerModal =
-function(){
-
-    document
-    .getElementById(
-        "customerModal"
-    )
-    .classList
-    .add("hidden");
-
-};
-
-
-/* =====================================================
-PACKAGE OPTIONS
-===================================================== */
-
-function renderPackageOptions(){
-
-    const select =
-    document
-    .getElementById(
-        "cPackage"
-    );
-
-
-    select.innerHTML =
-    `
-        <option value="">
-            Select Package
-        </option>
-    `;
-
-
-    Object
-    .entries(
-        packages || {}
-    )
-    .forEach(
-    ([id,p])=>{
-
-        if(
-            !belongsToDealer(p)
-        ){
-            return;
-        }
-
-
-        const status =
-        String(
-            p.Status ||
-            p.status ||
-            "Active"
-        )
-        .toLowerCase();
-
-
-        if(
-            status !== "active"
-        ){
-            return;
-        }
-
-
-        const name =
-        p.name ||
-        p.Name ||
-        id;
-
-
-        const price =
-        Number(
-            p.Price ||
-            p.price ||
-            0
-        );
-
-
-        select.innerHTML += `
-
-            <option
-            value="${esc(name)}"
-            data-price="${price}">
-
-                ${esc(name)}
-                -
-                Rs ${price.toLocaleString()}
-
-            </option>
-
-        `;
-
-    });
-
-}
-
-
-/* =====================================================
-PACKAGE AUTO PRICE
-===================================================== */
-
-document
-.getElementById(
-    "cPackage"
-)
-.addEventListener(
-"change",
-function(){
-
-    const option =
-    this.options[
-        this.selectedIndex
-    ];
-
-
-    if(
-        option &&
-        option.dataset.price
-    ){
-
-        document
-        .getElementById(
-            "cFee"
-        )
-        .value =
-        option.dataset.price;
-
-    }
+function ownRecord(obj){
+
+return Object.entries(obj).filter(
+([id,item])=>{
+
+if(!item||typeof item!=="object")
+return false;
+
+/*
+Support multiple possible dealer fields.
+*/
+
+const owner=
+item.dealerId||
+item.dealerID||
+item.dealer||
+item.ownerId||
+"";
+
+return (
+String(owner)===String(dealer.__id) ||
+normalize(item.dealerEmail)===normalize(dealer.email) ||
+normalize(item.email)===normalize(dealer.email)
+);
 
 });
 
-
-/* =====================================================
-SAVE CUSTOMER
-===================================================== */
-
-window.saveCustomer =
-async function(){
-
-    const name =
-    document
-    .getElementById(
-        "cName"
-    )
-    .value
-    .trim();
+}
 
 
-    const phone =
-    document
-    .getElementById(
-        "cPhone"
-    )
-    .value
-    .trim();
+/* RENDER */
 
+function renderAll(){
 
-    const address =
-    document
-    .getElementById(
-        "cAddress"
-    )
-    .value
-    .trim();
-
-
-    const username =
-    document
-    .getElementById(
-        "cUsername"
-    )
-    .value
-    .trim();
-
-
-    const email =
-    document
-    .getElementById(
-        "cEmail"
-    )
-    .value
-    .trim();
-
-
-    const packageName =
-    document
-    .getElementById(
-        "cPackage"
-    )
-    .value;
-
-
-    const fee =
-    Number(
-        document
-        .getElementById(
-            "cFee"
-        )
-        .value ||
-        0
-    );
-
-
-    const expiry =
-    document
-    .getElementById(
-        "cExpiry"
-    )
-    .value;
-
-
-    if(
-        !name ||
-        !phone ||
-        !username
-    ){
-
-        alert(
-            "Name, Phone and Username required."
-        );
-
-        return;
-
-    }
-
-
-    const id =
-    "CUST-"+Date.now();
-
-
-    await set(
-        ref(
-            db,
-            "customers/"+id
-        ),
-        {
-
-            name:name,
-
-            phone:phone,
-
-            address:address,
-
-            username:username,
-
-            email:email,
-
-            package:packageName,
-
-            "Monthly fee":fee,
-
-            "Start Date":today(),
-
-            "Expiry Date":expiry,
-
-            Status:"Active",
-
-            dealerId:currentDealerId,
-
-            createdAt:
-            new Date().toISOString()
-
-        }
-    );
-
-
-    alert(
-        "✅ Customer added."
-    );
-
-
-    clearCustomerForm();
-
-    closeCustomerModal();
-
-    await loadAll();
-
-};
-
-
-/* =====================================================
-CLEAR CUSTOMER
-===================================================== */
-
-function clearCustomerForm(){
-
-    [
-        "cName",
-        "cPhone",
-        "cAddress",
-        "cUsername",
-        "cEmail",
-        "cFee",
-        "cExpiry"
-    ]
-    .forEach(
-    id=>{
-
-        document
-        .getElementById(id)
-        .value = "";
-
-    });
-
-
-    document
-    .getElementById(
-        "cPackage"
-    )
-    .value = "";
+renderDealerInfo();
+renderStats();
+renderCustomers();
+renderPackages();
+renderBills();
+renderPayments();
+renderExpiryAlert();
 
 }
 
 
-/* =====================================================
-EDIT CUSTOMER
-===================================================== */
+function renderDealerInfo(){
 
-window.editCustomer =
-async function(id){
+$("sideDealerName").innerText=
+dealer.name||"Dealer";
 
-    const c =
-    customers[id];
+$("sideDealerEmail").innerText=
+dealer.email||currentUser.email;
 
+$("topDealerName").innerText=
+dealer.name||"Dealer";
 
-    if(
-        !c ||
-        !belongsToDealer(c)
-    ){
-        return;
-    }
+$("dealerStatusText").innerText=
+"Status: "+(dealer.status||"Active");
 
+$("licenseExpiryText").innerText=
+"License expiry: "+
+(dealer.licenseExpiry||"-");
 
-    const name =
-    prompt(
-        "Customer Name",
-        c.name || ""
-    );
+$("infoName").innerText=
+dealer.name||"-";
 
+$("infoCompany").innerText=
+dealer.company||"-";
 
-    if(name === null){
-        return;
-    }
+$("infoEmail").innerText=
+dealer.email||"-";
 
+$("infoLicense").innerText=
+dealer.licenseKey||"-";
 
-    const phone =
-    prompt(
-        "Phone",
-        c.phone || ""
-    );
+$("infoExpiry").innerText=
+dealer.licenseExpiry||"-";
 
+$("profileName").innerText=
+dealer.name||"-";
 
-    if(phone === null){
-        return;
-    }
+$("profileCompany").innerText=
+dealer.company||"-";
 
+$("profileEmail").innerText=
+dealer.email||"-";
 
-    const address =
-    prompt(
-        "Address",
-        c.address || ""
-    );
+$("profilePhone").innerText=
+dealer.phone||"-";
 
+$("profileLicense").innerText=
+dealer.licenseKey||"-";
 
-    if(address === null){
-        return;
-    }
+$("profileExpiry").innerText=
+dealer.licenseExpiry||"-";
 
-
-    const username =
-    prompt(
-        "Username",
-        c.username || ""
-    );
+}
 
 
-    if(username === null){
-        return;
-    }
+function renderStats(){
+
+const myCustomers=
+ownRecord(customers);
+
+const myPackages=
+ownRecord(packages);
+
+const myBills=
+ownRecord(bills);
+
+const activePackages=
+myPackages.filter(
+([id,p])=>
+normalize(p.status||"active")===
+"active"
+);
+
+const unpaid=
+myBills.filter(
+([id,b])=>
+normalize(b.status)==="unpaid"
+);
+
+$("statCustomers").innerText=
+myCustomers.length;
+
+$("statLimit").innerText=
+dealer.customerLimit||100;
+
+$("statUnpaid").innerText=
+unpaid.length;
+
+$("statPackages").innerText=
+activePackages.length;
+
+}
 
 
-    const packageName =
-    prompt(
-        "Package",
-        c.package || ""
-    );
+function renderExpiryAlert(){
+
+if(!dealer.licenseExpiry)return;
+
+const exp=
+new Date(dealer.licenseExpiry+"T23:59:59");
+
+const now=new Date();
+
+const diff=
+Math.ceil(
+(exp-now)/86400000
+);
+
+if(diff<=7){
+
+$("expiryAlert").classList.remove("hidden");
+
+if(diff<0){
+
+$("expiryAlertText").innerText=
+"Your license has expired.";
+
+}else if(diff===0){
+
+$("expiryAlertText").innerText=
+"Your license expires today.";
+
+}else{
+
+$("expiryAlertText").innerText=
+"Your license expires in "+
+diff+" day(s).";
+
+}
+
+}
+
+}
 
 
-    if(packageName === null){
-        return;
-    }
+/* PAGE NAVIGATION */
+
+const titles={
+dashboard:"Dashboard",
+customers:"Customers",
+packages:"Packages",
+bills:"Bills",
+payments:"Payments",
+recovery:"Account Recovery",
+profile:"Profile"
+};
+
+window.showPage=function(page){
+
+document.querySelectorAll(".page")
+.forEach(x=>x.classList.add("hidden"));
+
+$("page-"+page)
+.classList.remove("hidden");
+
+document.querySelectorAll(".navbtn")
+.forEach(x=>{
+x.classList.toggle(
+"active",
+x.dataset.page===page
+);
+});
+
+$("pageTitle").innerText=
+titles[page]||"Dashboard";
+
+window.scrollTo(0,0);
+
+};
+
+document.querySelectorAll(".navbtn")
+.forEach(btn=>{
+btn.onclick=()=>showPage(btn.dataset.page);
+});
 
 
-    const fee =
-    prompt(
-        "Monthly Fee",
-        c["Monthly fee"] ||
-        c.monthlyFee ||
-        "0"
-    );
+/* CUSTOMERS */
+
+function renderCustomers(){
+
+const search=
+normalize($("customerSearch").value);
+
+const rows=
+ownRecord(customers);
+
+let html="";
+
+for(const [id,c] of rows){
+
+const text=normalize(
+(c.name||"")+" "+
+(c.phone||"")+" "+
+(c.username||"")
+);
+
+if(search&&!text.includes(search))
+continue;
+
+const pkg=
+packages[c.packageId]||
+packages[c.package]||
+null;
+
+const pkgName=
+pkg?.name||
+c.package||
+"-";
+
+html+=`
+
+<tr class="border-b">
+
+<td class="p-3">
+<b>${esc(c.name||"-")}</b>
+<br>
+<span class="text-xs text-gray-500">
+${esc(c.address||"")}
+</span>
+</td>
+
+<td class="p-3">${esc(c.phone||"-")}</td>
+
+<td class="p-3">${esc(c.username||"-")}</td>
+
+<td class="p-3">${esc(pkgName)}</td>
+
+<td class="p-3">${esc(c.expiryDate||"-")}</td>
+
+<td class="p-3">
+<span class="badge ${
+normalize(c.status)==="active"
+?"green":"red"
+}">
+${esc(c.status||"Active")}
+</span>
+</td>
+
+<td class="p-3">
+
+<div class="flex gap-2">
+
+<button
+class="btn btn-success text-xs"
+onclick="sendCustomerWhatsApp('${id}')">
+WhatsApp
+</button>
+
+<button
+class="btn btn-danger text-xs"
+onclick="deleteCustomer('${id}')">
+Delete
+</button>
+
+</div>
+
+</td>
+
+</tr>
+`;
+
+}
+
+$("customerTable").innerHTML=
+html||
+`<tr><td colspan="7"
+class="p-6 text-center text-gray-500">
+No customers found.
+</td></tr>`;
+
+}
+
+$("customerSearch").oninput=
+renderCustomers;
 
 
-    if(fee === null){
-        return;
-    }
+window.openCustomerModal=function(){
+
+const count=
+ownRecord(customers).length;
+
+const limit=
+Number(dealer.customerLimit||100);
+
+if(count>=limit){
+
+alert(
+"Customer limit reached: "+
+limit
+);
+
+return;
+
+}
+
+populatePackageSelect();
+
+$("customerModalError").innerText="";
+$("customerModal").classList.remove("hidden");
+
+};
+
+window.closeCustomerModal=function(){
+$("customerModal").classList.add("hidden");
+};
 
 
-    const expiry =
-    prompt(
-        "Expiry YYYY-MM-DD",
-        c["Expiry Date"] ||
-        c.expiryDate ||
-        ""
-    );
+function populatePackageSelect(){
+
+const select=$("cPackage");
+
+select.innerHTML=
+'<option value="">Select Package</option>';
+
+for(const [id,p] of ownRecord(packages)){
+
+if(
+normalize(p.status||"active")!=="active"
+)continue;
+
+select.innerHTML+=`
+<option value="${esc(id)}">
+${esc(p.name||"Package")}
+ — ${esc(p.price||0)}
+</option>
+`;
+
+}
+
+}
 
 
-    if(expiry === null){
-        return;
-    }
+window.saveCustomer=async function(){
 
+const name=$("cName").value.trim();
+const phone=$("cPhone").value.trim();
+const username=$("cUsername").value.trim();
+const address=$("cAddress").value.trim();
+const packageId=$("cPackage").value;
+const status=$("cStatus").value;
 
-    await update(
-        ref(
-            db,
-            "customers/"+id
-        ),
-        {
+if(!name||!phone||!username||!packageId){
 
-            name:name,
+$("customerModalError").innerText=
+"Name, phone, username and package are required.";
 
-            phone:phone,
+return;
 
-            address:address,
+}
 
-            username:username,
+const count=
+ownRecord(customers).length;
 
-            package:packageName,
+const limit=
+Number(dealer.customerLimit||100);
 
-            "Monthly fee":
-            Number(fee),
+if(count>=limit){
 
-            "Expiry Date":
-            expiry
+$("customerModalError").innerText=
+"Customer limit reached.";
 
-        }
-    );
+return;
 
+}
 
-    await loadAll();
+const pkg=packages[packageId];
+
+if(!pkg){
+
+$("customerModalError").innerText=
+"Selected package not found.";
+
+return;
+
+}
+
+const id=
+"CUST-"+Date.now();
+
+const start=
+today();
+
+const expiry=
+new Date();
+
+expiry.setMonth(
+expiry.getMonth()+1
+);
+
+const customer={
+
+id,
+
+dealerId:dealer.__id,
+dealerEmail:dealer.email,
+
+name,
+phone,
+username,
+address,
+
+packageId,
+
+package:pkg.name||"",
+monthlyFee:Number(pkg.price||0),
+
+startDate:start,
+
+expiryDate:
+expiry.toISOString().slice(0,10),
+
+status,
+
+lastPayment:0,
+lastMessage:false,
+
+createdAt:
+new Date().toISOString()
+
+};
+
+try{
+
+await set(
+ref(db,"customers/"+id),
+customer
+);
+
+alert("✅ Customer added.");
+
+closeCustomerModal();
+
+["cName","cPhone","cUsername","cAddress"]
+.forEach(id=>$(id).value="");
+
+$("cPackage").value="";
+
+await loadAll();
+renderAll();
+
+}catch(e){
+
+console.error(e);
+
+$("customerModalError").innerText=
+"Firebase error: "+e.message;
+
+}
 
 };
 
 
-/* =====================================================
-TOGGLE CUSTOMER
-===================================================== */
+window.deleteCustomer=async function(id){
 
-window.toggleCustomer =
-async function(id){
+if(!customers[id])return;
 
-    const c =
-    customers[id];
+if(!confirm("Delete this customer?"))return;
 
+try{
 
-    if(
-        !c ||
-        !belongsToDealer(c)
-    ){
-        return;
-    }
+await remove(
+ref(db,"customers/"+id)
+);
 
+await loadAll();
+renderAll();
 
-    const current =
-    String(
-        c.Status ||
-        c.status ||
-        "Active"
-    )
-    .toLowerCase();
+}catch(e){
 
+alert("Firebase error: "+e.message);
 
-    await update(
-        ref(
-            db,
-            "customers/"+id
-        ),
-        {
-
-            Status:
-            current === "active"
-            ? "Suspended"
-            : "Active"
-
-        }
-    );
-
-
-    await loadAll();
+}
 
 };
 
 
-/* =====================================================
-DELETE CUSTOMER
-===================================================== */
+window.sendCustomerWhatsApp=function(id){
 
-window.deleteCustomer =
-async function(id){
+const c=customers[id];
 
-    const c =
-    customers[id];
+if(!c)return;
 
+const message=
+`Hello ${c.name||"Customer"},
 
-    if(
-        !c ||
-        !belongsToDealer(c)
-    ){
-        return;
-    }
+Your ISP bill/account details:
 
+Package: ${c.package||"-"}
+Monthly Fee: ${c.monthlyFee||0}
+Expiry Date: ${c.expiryDate||"-"}
+Status: ${c.status||"-"}
 
-    if(
-        !confirm(
-            "Delete "+
-            (c.name || "customer")+
-            "?"
-        )
-    ){
+Thank you.`;
 
-        return;
+const phone=
+String(c.phone||"")
+.replace(/\D/g,"");
 
-    }
+if(!phone){
 
+alert("Customer phone number missing.");
 
-    await remove(
-        ref(
-            db,
-            "customers/"+id
-        )
-    );
+return;
 
+}
 
-    await loadAll();
+/*
+Pakistan numbers:
+03001234567 -> 923001234567
+*/
 
-};
+let finalPhone=phone;
 
+if(
+phone.startsWith("0")&&
+phone.length>=10
+){
 
-/* =====================================================
-PACKAGE MODAL
-===================================================== */
+finalPhone=
+"92"+phone.substring(1);
 
-window.openPackageModal =
-function(){
+}
 
-    document
-    .getElementById(
-        "packageModal"
-    )
-    .classList
-    .remove("hidden");
+window.open(
+"https://wa.me/"+
+finalPhone+
+"?text="+
+encodeURIComponent(message),
+"_blank"
+);
 
 };
 
 
-window.closePackageModal =
-function(){
-
-    document
-    .getElementById(
-        "packageModal"
-    )
-    .classList
-    .add("hidden");
-
-};
-
-
-/* =====================================================
-SAVE PACKAGE
-===================================================== */
-
-window.savePackage =
-async function(){
-
-    const name =
-    document
-    .getElementById(
-        "pName"
-    )
-    .value
-    .trim();
-
-
-    const speed =
-    document
-    .getElementById(
-        "pSpeed"
-    )
-    .value
-    .trim();
-
-
-    const price =
-    Number(
-        document
-        .getElementById(
-            "pPrice"
-        )
-        .value ||
-        0
-    );
-
-
-    if(
-        !name ||
-        !speed ||
-        !price
-    ){
-
-        alert(
-            "Package name, speed and price required."
-        );
-
-        return;
-
-    }
-
-
-    const id =
-    "PKG-"+Date.now();
-
-
-    await set(
-        ref(
-            db,
-            "packages/"+id
-        ),
-        {
-
-            name:name,
-
-            speed:speed,
-
-            Price:price,
-
-            Status:"Active",
-
-            dealerId:currentDealerId,
-
-            createdAt:
-            new Date().toISOString()
-
-        }
-    );
-
-
-    document
-    .getElementById(
-        "pName"
-    )
-    .value = "";
-
-
-    document
-    .getElementById(
-        "pSpeed"
-    )
-    .value = "";
-
-
-    document
-    .getElementById(
-        "pPrice"
-    )
-    .value = "";
-
-
-    closePackageModal();
-
-    alert(
-        "✅ Package created."
-    );
-
-
-    await loadAll();
-
-};
-
-
-/* =====================================================
-RENDER PACKAGES
-===================================================== */
+/* PACKAGES */
 
 function renderPackages(){
 
-    let html = "";
+const grid=$("packageGrid");
 
+let html="";
 
-    Object
-    .entries(
-        packages || {}
-    )
-    .forEach(
-    ([id,p])=>{
+for(const [id,p] of ownRecord(packages)){
 
-        if(
-            !belongsToDealer(p)
-        ){
-            return;
-        }
+html+=`
 
+<div class="card p-5">
 
-        const name =
-        p.name ||
-        p.Name ||
-        id;
+<div class="flex justify-between">
+<div>
+<h3 class="font-black text-lg">
+${esc(p.name||"Package")}
+</h3>
 
+<div class="text-blue-600 font-bold mt-1">
+${esc(p.speed||"-")}
+</div>
+</div>
 
-        const speed =
-        p.speed ||
-        p.Speed ||
-        "-";
+<span class="badge ${
+normalize(p.status)==="active"
+?"green":"red"
+}">
+${esc(p.status||"Active")}
+</span>
+</div>
 
+<div class="text-3xl font-black mt-4">
+Rs ${Number(p.price||0).toLocaleString()}
+</div>
 
-        const price =
-        Number(
-            p.Price ||
-            p.price ||
-            0
-        );
+<div class="text-gray-500 text-sm">
+Monthly
+</div>
 
+<div class="flex gap-2 mt-4">
 
-        html += `
+<button
+class="btn btn-danger text-xs"
+onclick="deletePackage('${id}')">
+Delete
+</button>
 
-        <div class="card p-5">
+</div>
 
-            <div class="text-4xl">
-                📦
-            </div>
+</div>
+`;
 
-            <h3
-            class="font-black text-lg mt-3">
+}
 
-                ${esc(name)}
-
-            </h3>
-
-            <p
-            class="text-slate-400">
-
-                ${esc(speed)}
-
-            </p>
-
-            <div
-            class="text-2xl font-black
-            text-indigo-400 mt-3">
-
-                Rs ${price.toLocaleString()}
-
-            </div>
-
-            <div
-            class="flex gap-2 mt-4">
-
-                <button
-                onclick="editPackage('${id}')"
-                class="bg-blue-600 text-white">
-
-                    Edit
-
-                </button>
-
-                <button
-                onclick="deletePackage('${id}')"
-                class="bg-red-600 text-white">
-
-                    Delete
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-
-    document
-    .getElementById(
-        "packageList"
-    )
-    .innerHTML =
-    html ||
-    `
-        <div class="text-slate-500">
-            No packages found.
-        </div>
-    `;
+grid.innerHTML=
+html||
+`<div class="card p-6 text-gray-500">
+No packages created yet.
+</div>`;
 
 }
 
 
-/* =====================================================
-EDIT PACKAGE
-===================================================== */
+window.openPackageModal=function(){
 
-window.editPackage =
-async function(id){
+$("packageModalError").innerText="";
+$("packageModal").classList.remove("hidden");
 
-    const p =
-    packages[id];
+};
 
-
-    if(
-        !p ||
-        !belongsToDealer(p)
-    ){
-        return;
-    }
+window.closePackageModal=function(){
+$("packageModal").classList.add("hidden");
+};
 
 
-    const name =
-    prompt(
-        "Package Name",
-        p.name || ""
-    );
+window.savePackage=async function(){
 
+const name=$("pName").value.trim();
+const speed=$("pSpeed").value.trim();
+const price=Number($("pPrice").value||0);
+const status=$("pStatus").value;
 
-    if(name === null){
-        return;
-    }
+if(!name||!speed||price<=0){
 
+$("packageModalError").innerText=
+"Package name, speed and valid price required.";
 
-    const speed =
-    prompt(
-        "Speed",
-        p.speed || ""
-    );
+return;
 
+}
 
-    if(speed === null){
-        return;
-    }
+const id="PKG-"+Date.now();
 
+const pkg={
 
-    const price =
-    prompt(
-        "Price",
-        p.Price ||
-        p.price ||
-        "0"
-    );
+id,
 
+dealerId:dealer.__id,
+dealerEmail:dealer.email,
 
-    if(price === null){
-        return;
-    }
+name,
+speed,
+price,
+status,
 
+createdAt:
+new Date().toISOString()
 
-    await update(
-        ref(
-            db,
-            "packages/"+id
-        ),
-        {
+};
 
-            name:name,
+try{
 
-            speed:speed,
+await set(
+ref(db,"packages/"+id),
+pkg
+);
 
-            Price:Number(price)
+alert("✅ Package created.");
 
-        }
-    );
+closePackageModal();
 
+$("pName").value="";
+$("pSpeed").value="";
+$("pPrice").value="";
 
-    await loadAll();
+await loadAll();
+renderAll();
+
+}catch(e){
+
+$("packageModalError").innerText=
+"Firebase error: "+e.message;
+
+}
 
 };
 
 
-/* =====================================================
-DELETE PACKAGE
-===================================================== */
+window.deletePackage=async function(id){
 
-window.deletePackage =
-async function(id){
+if(!packages[id])return;
 
-    const p =
-    packages[id];
+if(!confirm(
+"Delete this package? Customers already using it may keep old package data."
+))return;
 
+try{
 
-    if(
-        !p ||
-        !belongsToDealer(p)
-    ){
-        return;
-    }
+await remove(
+ref(db,"packages/"+id)
+);
 
+await loadAll();
+renderAll();
 
-    if(
-        !confirm(
-            "Delete this package?"
-        )
-    ){
+}catch(e){
 
-        return;
+alert("Firebase error: "+e.message);
 
-    }
-
-
-    await remove(
-        ref(
-            db,
-            "packages/"+id
-        )
-    );
-
-
-    await loadAll();
+}
 
 };
 
 
-/* =====================================================
-BILLS
-===================================================== */
+/* BILLS */
 
 function renderBills(){
 
-    let html = "";
+let html="";
 
+for(const [id,b] of ownRecord(bills)){
 
-    Object
-    .entries(
-        bills || {}
-    )
-    .forEach(
-    ([id,b])=>{
+const customer=
+customers[b.customerId]||{};
 
-        if(
-            !belongsToDealer(b)
-        ){
-            return;
-        }
+html+=`
 
+<tr class="border-b">
 
-        const amount =
-        Number(
-            b.Amount ||
-            b.amount ||
-            0
-        );
+<td class="p-3">
+<b>${esc(b.id||id)}</b>
+<br>
+<span class="text-xs text-gray-500">
+${esc(b.month||"")}
+</span>
+</td>
 
+<td class="p-3">
+${esc(customer.name||b.customerId||"-")}
+</td>
 
-        const due =
-        b.Duedate ||
-        b.DueDate ||
-        b.duedate ||
-        "-";
+<td class="p-3">
+Rs ${Number(b.amount||0).toLocaleString()}
+</td>
 
+<td class="p-3">
+${esc(b.dueDate||"-")}
+</td>
 
-        const status =
-        b.Status ||
-        b.status ||
-        "Unpaid";
+<td class="p-3">
+<span class="badge ${
+normalize(b.status)==="paid"
+?"green":"orange"
+}">
+${esc(b.status||"Unpaid")}
+</span>
+</td>
 
+<td class="p-3">
 
-        html += `
+<button
+class="btn btn-success text-xs"
+onclick="sendBillWhatsApp('${id}')">
+Send WhatsApp
+</button>
 
-        <div
-        class="card p-5
-        flex justify-between
-        gap-4 flex-wrap">
+</td>
 
-            <div>
+</tr>
+`;
 
-                <b>
-                    ${esc(
-                        b.customerId ||
-                        "-"
-                    )}
-                </b>
+}
 
-                <p
-                class="text-xs text-slate-500">
-
-                    Due:
-                    ${esc(due)}
-
-                </p>
-
-                <p
-                class="text-xs text-slate-500">
-
-                    Month:
-                    ${esc(
-                        b.Month ||
-                        b.month ||
-                        "-"
-                    )}
-
-                </p>
-
-            </div>
-
-
-            <div class="text-right">
-
-                <b>
-                    Rs ${amount.toLocaleString()}
-                </b>
-
-                <p
-                class="${
-                    String(status)
-                    .toLowerCase()
-                    === "paid"
-                    ?"text-green-400"
-                    :"text-red-400"
-                } text-xs">
-
-                    ${esc(status)}
-
-                </p>
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-
-    document
-    .getElementById(
-        "billList"
-    )
-    .innerHTML =
-    html ||
-    `
-        <div class="text-slate-500">
-            No bills found.
-        </div>
-    `;
+$("billTable").innerHTML=
+html||
+`<tr><td colspan="6"
+class="p-6 text-center text-gray-500">
+No bills found.
+</td></tr>`;
 
 }
 
 
-/* =====================================================
-GENERATE BILLS
-===================================================== */
+window.sendBillWhatsApp=function(id){
 
-window.generateBills =
-async function(){
+const b=bills[id];
 
-    const month =
-    today().slice(0,7);
+if(!b)return;
 
+const c=
+customers[b.customerId]||{};
 
-    let count = 0;
+const phone=
+String(c.phone||b.phone||"")
+.replace(/\D/g,"");
 
+if(!phone){
 
-    for(
-        const [customerId,c]
-        of Object.entries(
-            customers || {}
-        )
-    ){
+alert("Customer phone number missing.");
 
-        if(
-            !belongsToDealer(c)
-        ){
-            continue;
-        }
+return;
 
+}
 
-        const amount =
-        Number(
-            c["Monthly fee"] ||
-            c.monthlyFee ||
-            0
-        );
+let finalPhone=phone;
 
+if(
+phone.startsWith("0")&&
+phone.length>=10
+){
 
-        if(!amount){
-            continue;
-        }
+finalPhone=
+"92"+phone.substring(1);
 
+}
 
-        const already =
-        Object
-        .values(
-            bills || {}
-        )
-        .some(
-        bill=>{
+const message=
+`ISP BILL
 
-            return (
-                bill.customerId ===
-                customerId
-            )
-            &&
-            String(
-                bill.Month ||
-                bill.month ||
-                ""
-            ) === month;
+Customer: ${c.name||"-"}
+Bill: ${b.id||id}
+Amount: Rs ${b.amount||0}
+Due Date: ${b.dueDate||"-"}
+Month: ${b.month||"-"}
+Status: ${b.status||"Unpaid"}
 
-        });
+Please pay before the due date.
+Thank you.`;
 
-
-        if(already){
-            continue;
-        }
-
-
-        const id =
-        "BILL-"+
-        Date.now()+
-        "-"+
-        count;
-
-
-        await set(
-            ref(
-                db,
-                "bills/"+id
-            ),
-            {
-
-                customerId:
-                customerId,
-
-                dealerId:
-                currentDealerId,
-
-                Amount:
-                amount,
-
-                Duedate:
-                c["Expiry Date"] ||
-                c.expiryDate ||
-                today(),
-
-                Month:
-                month,
-
-                Status:
-                "Unpaid",
-
-                createdAt:
-                new Date().toISOString()
-
-            }
-        );
-
-
-        count++;
-
-    }
-
-
-    alert(
-        "✅ "+
-        count+
-        " bill(s) generated."
-    );
-
-
-    await loadAll();
+window.open(
+"https://wa.me/"+
+finalPhone+
+"?text="+
+encodeURIComponent(message),
+"_blank"
+);
 
 };
 
 
-/* =====================================================
-PAYMENTS
-===================================================== */
+/* PAYMENTS */
 
 function renderPayments(){
 
-    let html = "";
+let html="";
 
+for(const [id,p] of ownRecord(payments)){
 
-    Object
-    .entries(
-        payments || {}
-    )
-    .forEach(
-    ([id,p])=>{
+html+=`
 
-        if(
-            !belongsToDealer(p)
-        ){
-            return;
-        }
+<tr class="border-b">
 
+<td class="p-3">
+${esc(p.id||id)}
+</td>
 
-        const amount =
-        Number(
-            p.amount ||
-            p.Amount ||
-            0
-        );
+<td class="p-3">
+${esc(p.phone||"-")}
+</td>
 
+<td class="p-3">
+Rs ${Number(p.amount||p.lastPayment||0).toLocaleString()}
+</td>
 
-        html += `
+<td class="p-3">
+<span class="badge green">
+${esc(p.status||"active")}
+</span>
+</td>
 
-        <div
-        class="card p-5
-        flex justify-between">
+</tr>
+`;
 
-            <div>
+}
 
-                <b>
-                    ${esc(
-                        p.customerId ||
-                        "Payment"
-                    )}
-                </b>
-
-                <p
-                class="text-xs text-slate-500">
-
-                    ${esc(
-                        p.phone || ""
-                    )}
-
-                </p>
-
-            </div>
-
-
-            <div
-            class="text-right">
-
-                <b
-                class="text-green-400">
-
-                    Rs ${amount.toLocaleString()}
-
-                </b>
-
-                <p class="text-xs">
-
-                    ${esc(
-                        p.status ||
-                        p.Status ||
-                        "active"
-                    )}
-
-                </p>
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-
-    document
-    .getElementById(
-        "paymentList"
-    )
-    .innerHTML =
-    html ||
-    `
-        <div class="text-slate-500">
-            No payments found.
-        </div>
-    `;
+$("paymentTable").innerHTML=
+html||
+`<tr><td colspan="4"
+class="p-6 text-center text-gray-500">
+No payments found.
+</td></tr>`;
 
 }
 
 
-/* =====================================================
-WHATSAPP BILL
-===================================================== */
+/* RECOVERY */
 
-window.sendWhatsApp =
-function(id){
+$("submitRecovery").onclick=async()=>{
 
-    const c =
-    customers[id];
+const method=
+$("recoveryMethod").value;
 
+const phone=
+$("recoveryPhone").value.trim();
 
-    if(!c){
-        return;
-    }
+const message=
+$("recoveryMessage").value.trim();
 
+if(!phone||!message){
 
-    let phone =
-    String(
-        c.phone || ""
-    )
-    .replace(
-        /\D/g,
-        ""
-    );
+$("recoveryResult").innerHTML=
+'<span class="text-red-600">Registered number and message are required.</span>';
 
+return;
 
-    if(
-        phone.startsWith("0")
-    ){
-
-        phone =
-        "92"+
-        phone.substring(1);
-
-    }
-
-
-    if(!phone){
-
-        alert(
-            "Customer phone number missing."
-        );
-
-        return;
-
-    }
-
-
-    const fee =
-    Number(
-        c["Monthly fee"] ||
-        c.monthlyFee ||
-        0
-    );
-
-
-    const message =
-`🌐 ISP BILL
-
-Customer: ${c.name || "-"}
-Username: ${c.username || "-"}
-Package: ${c.package || "-"}
-Monthly Fee: Rs ${fee.toLocaleString()}
-Expiry Date: ${
-    c["Expiry Date"] ||
-    c.expiryDate ||
-    "-"
 }
 
-Status: ${
-    c.Status ||
-    c.status ||
-    "Active"
-}
+const id=
+"REC-"+Date.now();
 
-Thank you for using our internet service.`;
+const request={
 
+id,
 
-    window.open(
-        "https://wa.me/"+
-        phone+
-        "?text="+
-        encodeURIComponent(message),
-        "_blank"
-    );
+dealerId:dealer.__id,
+dealerEmail:dealer.email,
+
+method,
+registeredPhone:phone,
+message,
+
+screenshotUpload:false,
+
+status:"Pending",
+
+createdAt:
+new Date().toISOString()
 
 };
 
+try{
 
-/* =====================================================
-EXPIRY TODAY ALERT
-===================================================== */
-
-function checkExpiryToday(){
-
-    const currentDate =
-    today();
-
-
-    const expiring = [];
-
-
-    Object
-    .entries(
-        customers || {}
-    )
-    .forEach(
-    ([id,c])=>{
-
-        if(
-            !belongsToDealer(c)
-        ){
-            return;
-        }
-
-
-        const expiry =
-        c["Expiry Date"] ||
-        c.expiryDate ||
-        "";
-
-
-        if(
-            expiry ===
-            currentDate
-        ){
-
-            expiring.push(
-                c.name ||
-                id
-            );
-
-        }
-
-    });
-
-
-    if(
-        expiring.length
-    ){
-
-        setTimeout(
-        ()=>{
-
-            alert(
-                "⚠️ EXPIRY TODAY\n\n"+
-                expiring.join("\n")
-            );
-
-        },700);
-
-    }
-
-}
-
-
-/* =====================================================
-TODAY
-===================================================== */
-
-function today(){
-
-    const d =
-    new Date();
-
-
-    return (
-        d.getFullYear()+
-        "-"+
-        String(
-            d.getMonth()+1
-        ).padStart(2,"0")+
-        "-"+
-        String(
-            d.getDate()
-        ).padStart(2,"0")
-    );
-
-}
-
-
-/* =====================================================
-LOGOUT
-===================================================== */
-
-window.logoutDealer =
-async function(){
-
-    /*
-    Clear license verification only
-    when user explicitly logs out.
-    */
-
-    localStorage.removeItem(
-        "isp_license_verified"
-    );
-
-
-    localStorage.removeItem(
-        "isp_license_uid"
-    );
-
-
-    localStorage.removeItem(
-        "isp_license_dealer"
-    );
-
-
-    currentDealer = null;
-
-    currentDealerId = null;
-
-
-    await signOut(auth);
-
-
-    showLogin();
-
-};
-
-
-/* =====================================================
-LICENSE LOGOUT
-===================================================== */
-
-document
-.getElementById(
-    "licenseLogout"
-)
-.addEventListener(
-"click",
-logoutDealer
+await set(
+ref(db,"recoveryRequests/"+id),
+request
 );
 
+$("recoveryResult").innerHTML=
+'<span class="text-green-600">✅ Recovery request sent successfully.</span>';
 
-/* =====================================================
-ESCAPE HTML
-===================================================== */
+$("recoveryPhone").value="";
+$("recoveryMessage").value="";
 
-function esc(value){
+}catch(e){
 
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+$("recoveryResult").innerHTML=
+'<span class="text-red-600">Firebase error: '+
+esc(e.message)+
+'</span>';
 
 }
+
+};
+
+
+/* TODAY EXPIRY ALERT FOR CUSTOMERS */
+
+function customerExpiryAlert(){
+
+const todayDate=today();
+
+const expiring=
+ownRecord(customers)
+.filter(([id,c])=>
+c.expiryDate===todayDate
+);
+
+if(expiring.length){
+
+alert(
+"⚠️ "+
+expiring.length+
+" customer(s) expire today."
+);
+
+}
+
+}
+
+
+/* START */
+
+setTimeout(()=>{
+
+try{
+
+customerExpiryAlert();
+
+}catch(e){}
+
+},3000);
 
 </script>
 
