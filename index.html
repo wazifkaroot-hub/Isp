@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>ISP Billing - Dealer Panel</title>
+<title>ISP Billing Dealer Panel</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -28,20 +28,22 @@ input,select{
     width:100%;
     padding:12px;
     background:#080f1c;
-    color:white;
+    color:#fff;
     border:1px solid #26354d;
     border-radius:10px;
     outline:none;
 }
 
-input:focus,select:focus{
+input:focus,
+select:focus{
     border-color:#6366f1;
 }
 
 button{
     border-radius:10px;
     padding:10px 15px;
-    font-weight:bold;
+    font-weight:700;
+    cursor:pointer;
 }
 
 .hidden{
@@ -55,23 +57,32 @@ button{
     border-radius:10px;
     color:#94a3b8;
     margin-bottom:5px;
+    background:transparent;
 }
 
 .nav:hover,
 .nav.active{
     background:#3730a3;
-    color:white;
+    color:#fff;
 }
 
 .modal{
     position:fixed;
     inset:0;
     background:#000b;
-    z-index:99;
+    z-index:999;
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
     padding:20px;
+}
+
+.status-active{
+    color:#4ade80;
+}
+
+.status-expired{
+    color:#f87171;
 }
 
 .mobile-nav{
@@ -83,3419 +94,3661 @@ button{
     display:inline-block;
     margin-right:5px;
 }
+
+::-webkit-scrollbar{
+    width:7px;
+    height:7px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#334155;
+    border-radius:20px;
+}
 </style>
 </head>
 
 <body>
 
 <!-- =====================================================
-     GOOGLE LOGIN
+LOGIN
 ===================================================== -->
 
 <div id="loginPage"
 class="min-h-screen flex items-center justify-center p-5">
 
-<div class="card p-8 w-full max-w-md text-center">
+    <div class="card p-8 w-full max-w-md text-center">
 
-<div class="text-6xl mb-4">🌐</div>
+        <div class="text-6xl mb-4">🌐</div>
 
-<h1 class="text-3xl font-black">
-ISP BILLING
-</h1>
+        <h1 class="text-3xl font-black">
+            ISP BILLING
+        </h1>
 
-<p class="text-slate-400 mt-2">
-Dealer Management Panel
-</p>
+        <p class="text-slate-400 mt-2">
+            Dealer Management System
+        </p>
 
-<button
-id="googleBtn"
-class="w-full bg-white text-black mt-7">
+        <button
+        id="googleBtn"
+        class="w-full bg-white text-black mt-7">
 
-Continue with Google
+            Continue with Google
 
-</button>
+        </button>
 
-<p
-id="loginError"
-class="text-red-400 text-sm mt-4">
-</p>
+        <p
+        id="loginError"
+        class="text-red-400 text-sm mt-4">
+        </p>
 
-</div>
+    </div>
+
 </div>
 
 
 <!-- =====================================================
-     LICENSE
+LICENSE
 ===================================================== -->
 
 <div id="licensePage"
 class="hidden min-h-screen flex items-center justify-center p-5">
 
-<div class="card p-8 w-full max-w-md">
+    <div class="card p-8 w-full max-w-md">
 
-<div class="text-center">
+        <div class="text-center">
 
-<div class="text-6xl">🔐</div>
+            <div class="text-6xl">
+                🔐
+            </div>
 
-<h1 class="text-2xl font-black mt-3">
-Dealer License
-</h1>
+            <h1 class="text-2xl font-black mt-3">
+                License Verification
+            </h1>
 
-<p
-id="licenseAccount"
-class="text-slate-400 text-sm mt-2">
-</p>
+            <p
+            id="licenseAccount"
+            class="text-slate-400 text-sm mt-2">
+            </p>
 
-</div>
+        </div>
 
-<input
-id="licenseInput"
-class="mt-6"
-placeholder="ISP-001-DEMO">
+        <input
+        id="licenseInput"
+        class="mt-6"
+        placeholder="ISP-001-DEMO">
 
-<button
-id="verifyBtn"
-class="w-full bg-indigo-600 text-white mt-4">
+        <button
+        id="verifyBtn"
+        class="w-full bg-indigo-600 text-white mt-4">
 
-Verify License
+            Verify License
 
-</button>
+        </button>
 
-<p
-id="licenseError"
-class="text-center text-sm mt-4">
-</p>
+        <p
+        id="licenseError"
+        class="text-red-400 text-sm text-center mt-4">
+        </p>
 
-<button
-id="licenseLogout"
-class="w-full bg-red-600/20 text-red-400 mt-5">
+        <button
+        id="licenseLogout"
+        class="w-full bg-red-600/20 text-red-400 mt-5">
 
-Logout
+            Logout
 
-</button>
+        </button>
 
-</div>
+    </div>
+
 </div>
 
 
 <!-- =====================================================
-     APPLICATION
+APP
 ===================================================== -->
 
-<div id="app"
-class="hidden">
+<div id="app" class="hidden">
 
+    <!-- SIDEBAR -->
 
-<!-- DESKTOP SIDEBAR -->
+    <aside
+    class="hidden md:block fixed left-0 top-0 bottom-0 w-64
+    bg-[#090e18] border-r border-slate-800 p-4">
 
-<aside
-class="hidden md:block fixed left-0 top-0 bottom-0 w-64
-bg-[#090e18] border-r border-slate-800 p-4">
+        <div class="text-xl font-black mb-8">
 
-<div class="text-xl font-black mb-8">
+            🌐 ISP BILLING
 
-🌐 ISP BILLING
+            <div class="text-xs text-green-400 mt-1">
+                DEALER PANEL
+            </div>
 
-<div class="text-xs text-green-400 mt-1">
-DEALER PANEL
-</div>
+        </div>
 
-</div>
+        <button
+        class="nav active"
+        data-page="dashboard"
+        onclick="openPage('dashboard')">
 
-<button
-class="nav active"
-data-page="dashboard"
-onclick="openPage('dashboard')">
+            📊 Dashboard
 
-📊 Dashboard
+        </button>
 
-</button>
+        <button
+        class="nav"
+        data-page="customers"
+        onclick="openPage('customers')">
 
-<button
-class="nav"
-data-page="customers"
-onclick="openPage('customers')">
+            👥 Customers
 
-👥 Customers
+        </button>
 
-</button>
+        <button
+        class="nav"
+        data-page="packages"
+        onclick="openPage('packages')">
 
-<button
-class="nav"
-data-page="packages"
-onclick="openPage('packages')">
+            📦 Packages
 
-📦 Packages
+        </button>
 
-</button>
+        <button
+        class="nav"
+        data-page="bills"
+        onclick="openPage('bills')">
 
-<button
-class="nav"
-data-page="bills"
-onclick="openPage('bills')">
+            🧾 Bills
 
-🧾 Bills
+        </button>
 
-</button>
+        <button
+        class="nav"
+        data-page="payments"
+        onclick="openPage('payments')">
 
-<button
-class="nav"
-data-page="payments"
-onclick="openPage('payments')">
+            💰 Payments
 
-💰 Payments
+        </button>
 
-</button>
+        <button
+        onclick="logoutDealer()"
+        class="absolute bottom-5 left-4 right-4
+        bg-red-500/20 text-red-400">
 
-<button
-onclick="logoutDealer()"
-class="absolute bottom-5 left-4 right-4
-bg-red-500/20 text-red-400">
+            Logout
 
-Logout
+        </button>
 
-</button>
+    </aside>
 
-</aside>
 
+    <!-- MAIN -->
 
-<!-- MAIN -->
+    <main class="md:ml-64 p-4 lg:p-8">
 
-<main
-class="md:ml-64 p-4 lg:p-8">
+        <!-- MOBILE NAV -->
 
-<!-- MOBILE NAV -->
+        <div class="mobile-nav md:hidden mb-5">
 
-<div
-class="mobile-nav md:hidden mb-5">
+            <button
+            class="bg-indigo-600"
+            onclick="openPage('dashboard')">
 
-<button
-class="bg-indigo-600"
-onclick="openPage('dashboard')">
+                📊 Dashboard
 
-📊 Dashboard
+            </button>
 
-</button>
+            <button
+            class="bg-slate-800"
+            onclick="openPage('customers')">
 
-<button
-class="bg-slate-800"
-onclick="openPage('customers')">
+                👥 Customers
 
-👥 Customers
+            </button>
 
-</button>
+            <button
+            class="bg-slate-800"
+            onclick="openPage('packages')">
 
-<button
-class="bg-slate-800"
-onclick="openPage('packages')">
+                📦 Packages
 
-📦 Packages
+            </button>
 
-</button>
+            <button
+            class="bg-slate-800"
+            onclick="openPage('bills')">
 
-<button
-class="bg-slate-800"
-onclick="openPage('bills')">
+                🧾 Bills
 
-🧾 Bills
+            </button>
 
-</button>
+            <button
+            class="bg-slate-800"
+            onclick="openPage('payments')">
 
-<button
-class="bg-slate-800"
-onclick="openPage('payments')">
+                💰 Payments
 
-💰 Payments
+            </button>
 
-</button>
+            <button
+            class="bg-red-600/30"
+            onclick="logoutDealer()">
 
-<button
-class="bg-red-600/30"
-onclick="logoutDealer()">
+                Logout
 
-Logout
+            </button>
 
-</button>
+        </div>
 
-</div>
 
+        <!-- HEADER -->
 
-<div
-class="flex justify-between items-center mb-6">
+        <div
+        class="flex justify-between items-center mb-6">
 
-<div>
+            <div>
 
-<h1
-id="pageTitle"
-class="text-2xl font-black">
+                <h1
+                id="pageTitle"
+                class="text-2xl font-black">
 
-Dashboard
+                    Dashboard
 
-</h1>
+                </h1>
 
-<p
-id="userEmail"
-class="text-xs text-slate-500">
-</p>
+                <p
+                id="userEmail"
+                class="text-xs text-slate-500">
+                </p>
 
-</div>
+            </div>
 
-<div class="text-green-400 text-xs">
-● ONLINE
-</div>
+            <div class="text-green-400 text-xs">
+                ● ONLINE
+            </div>
 
-</div>
+        </div>
 
 
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
+        <!-- =================================================
+        DASHBOARD
+        ================================================= -->
 
-<section id="dashboard">
+        <section id="dashboard">
 
-<div
-class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div
+            class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-<div class="card p-5">
+                <div class="card p-5">
 
-<p class="text-slate-500 text-xs">
-CUSTOMERS
-</p>
+                    <p class="text-slate-500 text-xs">
+                        CUSTOMERS
+                    </p>
 
-<h2
-id="statCustomers"
-class="text-3xl font-black mt-2">
-0
-</h2>
+                    <h2
+                    id="statCustomers"
+                    class="text-3xl font-black mt-2">
+                        0
+                    </h2>
 
-</div>
+                </div>
 
 
-<div class="card p-5">
+                <div class="card p-5">
 
-<p class="text-slate-500 text-xs">
-ACTIVE
-</p>
+                    <p class="text-slate-500 text-xs">
+                        ACTIVE
+                    </p>
 
-<h2
-id="statActive"
-class="text-3xl font-black
-text-green-400 mt-2">
-0
-</h2>
+                    <h2
+                    id="statActive"
+                    class="text-3xl font-black text-green-400 mt-2">
+                        0
+                    </h2>
 
-</div>
+                </div>
 
 
-<div class="card p-5">
+                <div class="card p-5">
 
-<p class="text-slate-500 text-xs">
-UNPAID
-</p>
+                    <p class="text-slate-500 text-xs">
+                        UNPAID
+                    </p>
 
-<h2
-id="statUnpaid"
-class="text-3xl font-black
-text-red-400 mt-2">
-0
-</h2>
+                    <h2
+                    id="statUnpaid"
+                    class="text-3xl font-black text-red-400 mt-2">
+                        0
+                    </h2>
 
-</div>
+                </div>
 
 
-<div class="card p-5">
+                <div class="card p-5">
 
-<p class="text-slate-500 text-xs">
-PAYMENTS
-</p>
+                    <p class="text-slate-500 text-xs">
+                        PAYMENTS
+                    </p>
 
-<h2
-id="statPayments"
-class="text-xl font-black
-text-indigo-400 mt-2">
-Rs 0
-</h2>
+                    <h2
+                    id="statPayments"
+                    class="text-xl font-black text-indigo-400 mt-2">
+                        Rs 0
+                    </h2>
 
-</div>
+                </div>
 
-</div>
+            </div>
 
 
-<div class="card p-6 mt-5">
+            <div class="card p-6 mt-5">
 
-<h2 class="text-xl font-black">
-🏢 Dealer Information
-</h2>
+                <h2 class="text-xl font-black">
+                    🏢 Dealer Information
+                </h2>
 
-<div
-id="dealerInfo"
-class="grid md:grid-cols-2 gap-4 mt-5">
-</div>
+                <div
+                id="dealerInfo"
+                class="grid md:grid-cols-2 gap-4 mt-5">
+                </div>
 
-</div>
+            </div>
 
-</section>
+        </section>
 
 
-<!-- =====================================================
-     CUSTOMERS
-===================================================== -->
+        <!-- =================================================
+        CUSTOMERS
+        ================================================= -->
 
-<section
-id="customers"
-class="hidden">
+        <section id="customers" class="hidden">
 
-<div class="card p-5">
+            <div class="card p-5">
 
-<div
-class="flex justify-between
-items-center gap-3 flex-wrap">
+                <div
+                class="flex justify-between items-center
+                gap-3 flex-wrap">
 
-<h2 class="text-xl font-black">
-👥 Customers
-</h2>
+                    <h2 class="text-xl font-black">
+                        👥 Customers
+                    </h2>
 
-<button
-onclick="openCustomerModal()"
-class="bg-indigo-600 text-white">
+                    <button
+                    onclick="openCustomerModal()"
+                    class="bg-indigo-600 text-white">
 
-+ Add Customer
+                        + Add Customer
 
-</button>
+                    </button>
 
-</div>
+                </div>
 
 
-<input
-id="customerSearch"
-oninput="renderCustomers()"
-class="mt-5"
-placeholder="Search name, phone, username...">
+                <input
+                id="customerSearch"
+                oninput="renderCustomers()"
+                class="mt-5"
+                placeholder="Search customer...">
 
 
-<div
-id="customerList"
-class="space-y-4 mt-5">
-</div>
+                <div
+                id="customerList"
+                class="space-y-4 mt-5">
+                </div>
 
-</div>
+            </div>
 
-</section>
+        </section>
 
 
-<!-- =====================================================
-     PACKAGES
-===================================================== -->
+        <!-- =================================================
+        PACKAGES
+        ================================================= -->
 
-<section
-id="packages"
-class="hidden">
+        <section id="packages" class="hidden">
 
-<div class="card p-5">
+            <div class="card p-5">
 
-<div
-class="flex justify-between items-center">
+                <div
+                class="flex justify-between items-center">
 
-<h2 class="text-xl font-black">
-📦 Packages
-</h2>
+                    <h2 class="text-xl font-black">
+                        📦 Packages
+                    </h2>
 
-<button
-onclick="openPackageModal()"
-class="bg-indigo-600 text-white">
+                    <button
+                    onclick="openPackageModal()"
+                    class="bg-indigo-600 text-white">
 
-+ Add Package
+                        + Add Package
 
-</button>
+                    </button>
 
-</div>
+                </div>
 
 
-<div
-id="packageList"
-class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
-</div>
+                <div
+                id="packageList"
+                class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
+                </div>
 
-</div>
+            </div>
 
-</section>
+        </section>
 
 
-<!-- =====================================================
-     BILLS
-===================================================== -->
+        <!-- =================================================
+        BILLS
+        ================================================= -->
 
-<section
-id="bills"
-class="hidden">
+        <section id="bills" class="hidden">
 
-<div class="card p-5">
+            <div class="card p-5">
 
-<div
-class="flex justify-between
-items-center flex-wrap gap-3">
+                <div
+                class="flex justify-between items-center
+                gap-3 flex-wrap">
 
-<h2 class="text-xl font-black">
-🧾 Bills
-</h2>
+                    <h2 class="text-xl font-black">
+                        🧾 Bills
+                    </h2>
 
-<button
-onclick="generateBills()"
-class="bg-indigo-600 text-white">
+                    <button
+                    onclick="generateBills()"
+                    class="bg-indigo-600 text-white">
 
-Generate Bills
+                        Generate Bills
 
-</button>
+                    </button>
 
-</div>
+                </div>
 
 
-<div
-id="billList"
-class="space-y-3 mt-5">
-</div>
+                <div
+                id="billList"
+                class="space-y-3 mt-5">
+                </div>
 
-</div>
+            </div>
 
-</section>
+        </section>
 
 
-<!-- =====================================================
-     PAYMENTS
-===================================================== -->
+        <!-- =================================================
+        PAYMENTS
+        ================================================= -->
 
-<section
-id="payments"
-class="hidden">
+        <section id="payments" class="hidden">
 
-<div class="card p-5">
+            <div class="card p-5">
 
-<h2 class="text-xl font-black">
-💰 Payments
-</h2>
+                <h2 class="text-xl font-black">
+                    💰 Payments
+                </h2>
 
-<div
-id="paymentList"
-class="space-y-3 mt-5">
-</div>
+                <div
+                id="paymentList"
+                class="space-y-3 mt-5">
+                </div>
 
-</div>
+            </div>
 
-</section>
+        </section>
 
-</main>
+    </main>
+
 </div>
 
 
 <!-- =====================================================
-     CUSTOMER MODAL
+CUSTOMER MODAL
 ===================================================== -->
 
 <div
 id="customerModal"
 class="modal hidden">
 
-<div
-class="card p-6 w-full max-w-lg">
+    <div class="card p-6 w-full max-w-lg">
 
-<div class="flex justify-between">
+        <div class="flex justify-between">
 
-<h2 class="text-xl font-black">
-Add Customer
-</h2>
+            <h2 class="text-xl font-black">
+                Add Customer
+            </h2>
 
-<button
-onclick="closeCustomerModal()">
+            <button onclick="closeCustomerModal()">
+                ✕
+            </button>
 
-✕
-
-</button>
-
-</div>
+        </div>
 
 
-<div class="space-y-3 mt-5">
+        <div class="space-y-3 mt-5">
 
-<input
-id="cName"
-placeholder="Customer Name">
+            <input
+            id="cName"
+            placeholder="Customer Name">
 
+            <input
+            id="cPhone"
+            placeholder="Phone 03001234567">
 
-<input
-id="cPhone"
-placeholder="Phone e.g. 03001234567">
+            <input
+            id="cAddress"
+            placeholder="Address">
 
+            <input
+            id="cUsername"
+            placeholder="Username">
 
-<input
-id="cAddress"
-placeholder="Address">
+            <input
+            id="cEmail"
+            placeholder="Email">
 
+            <select id="cPackage">
 
-<input
-id="cUsername"
-placeholder="Username">
+                <option value="">
+                    Select Package
+                </option>
 
+            </select>
 
-<input
-id="cEmail"
-placeholder="Email">
+            <input
+            id="cFee"
+            type="number"
+            placeholder="Monthly Fee">
 
+            <input
+            id="cExpiry"
+            type="date">
 
-<select id="cPackage">
-
-<option value="">
-Select Package
-</option>
-
-</select>
-
-
-<input
-id="cFee"
-type="number"
-placeholder="Monthly Fee">
-
-
-<input
-id="cExpiry"
-type="date">
-
-</div>
+        </div>
 
 
-<button
-onclick="saveCustomer()"
-class="w-full bg-indigo-600
-text-white mt-5">
+        <button
+        onclick="saveCustomer()"
+        class="w-full bg-indigo-600 text-white mt-5">
 
-Save Customer
+            Save Customer
 
-</button>
+        </button>
 
-</div>
+    </div>
+
 </div>
 
 
 <!-- =====================================================
-     PACKAGE MODAL
+PACKAGE MODAL
 ===================================================== -->
 
 <div
 id="packageModal"
 class="modal hidden">
 
-<div
-class="card p-6 w-full max-w-md">
+    <div class="card p-6 w-full max-w-md">
 
-<div class="flex justify-between">
+        <div class="flex justify-between">
 
-<h2 class="text-xl font-black">
-Create Package
-</h2>
+            <h2 class="text-xl font-black">
+                Create Package
+            </h2>
 
-<button
-onclick="closePackageModal()">
+            <button onclick="closePackageModal()">
+                ✕
+            </button>
 
-✕
-
-</button>
-
-</div>
+        </div>
 
 
-<div class="space-y-3 mt-5">
+        <div class="space-y-3 mt-5">
 
-<input
-id="pName"
-placeholder="Package Name">
+            <input
+            id="pName"
+            placeholder="Package Name">
 
+            <input
+            id="pSpeed"
+            placeholder="Speed e.g. 10 Mbps">
 
-<input
-id="pSpeed"
-placeholder="Speed e.g. 10 Mbps">
+            <input
+            id="pPrice"
+            type="number"
+            placeholder="Monthly Price">
 
-
-<input
-id="pPrice"
-type="number"
-placeholder="Monthly Price">
-
-</div>
+        </div>
 
 
-<button
-onclick="savePackage()"
-class="w-full bg-indigo-600
-text-white mt-5">
+        <button
+        onclick="savePackage()"
+        class="w-full bg-indigo-600 text-white mt-5">
 
-Create Package
+            Create Package
 
-</button>
+        </button>
 
-</div>
+    </div>
+
 </div>
 
 
 <!-- =====================================================
-     FIREBASE
+FIREBASE
 ===================================================== -->
 
 <script type="module">
 
 import {
-initializeApp
+    initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
-getAuth,
-setPersistence,
-browserLocalPersistence,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-signOut
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
+    signOut,
+    setPersistence,
+    browserLocalPersistence
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
-getDatabase,
-ref,
-get,
-set,
-update,
-remove
+    getDatabase,
+    ref,
+    get,
+    set,
+    update,
+    remove
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-/* CONFIG */
+/* =====================================================
+FIREBASE CONFIG
+===================================================== */
 
-const firebaseConfig={
+const firebaseConfig = {
 
-apiKey:
-"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
+    apiKey:
+    "AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",
 
-authDomain:
-"isp-billing-system-27cf8.firebaseapp.com",
+    authDomain:
+    "isp-billing-system-27cf8.firebaseapp.com",
 
-databaseURL:
-"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
+    databaseURL:
+    "https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",
 
-projectId:
-"isp-billing-system-27cf8",
+    projectId:
+    "isp-billing-system-27cf8",
 
-storageBucket:
-"isp-billing-system-27cf8.firebasestorage.app",
+    storageBucket:
+    "isp-billing-system-27cf8.firebasestorage.app",
 
-messagingSenderId:
-"643339508063",
+    messagingSenderId:
+    "643339508063",
 
-appId:
-"1:643339508063:web:232e6769f7128b6e323eea"
+    appId:
+    "1:643339508063:web:232e6769f7128b6e323eea",
+
+    measurementId:
+    "G-J0QK9KKPC6"
 
 };
 
 
-const app=
+const app =
 initializeApp(firebaseConfig);
 
 
-const auth=
+const auth =
 getAuth(app);
 
 
-const db=
+const db =
 getDatabase(app);
 
 
-const provider=
+const provider =
 new GoogleAuthProvider();
 
 
 provider.setCustomParameters({
-prompt:"select_account"
+    prompt:"select_account"
 });
 
 
-/* GLOBAL DATA */
-
-let currentUser=null;
-let currentDealer=null;
-let currentDealerId=null;
-
-let customers={};
-let packages={};
-let bills={};
-let payments={};
-
-
 /* =====================================================
-   PERSISTENT LOGIN
+GLOBAL VARIABLES
 ===================================================== */
 
-await setPersistence(
-auth,
-browserLocalPersistence
-);
+let currentUser = null;
+
+let currentDealer = null;
+
+let currentDealerId = null;
+
+let customers = {};
+
+let packages = {};
+
+let bills = {};
+
+let payments = {};
 
 
 /* =====================================================
-   GOOGLE LOGIN
+LOCAL LOGIN PERSISTENCE
+===================================================== */
+
+try{
+
+    await setPersistence(
+        auth,
+        browserLocalPersistence
+    );
+
+}catch(error){
+
+    console.error(
+        "Persistence error:",
+        error
+    );
+
+}
+
+
+/* =====================================================
+GOOGLE LOGIN
 ===================================================== */
 
 document
 .getElementById("googleBtn")
-.onclick=async()=>{
+.addEventListener(
+"click",
+async()=>{
 
-const btn=
-document.getElementById("googleBtn");
+    const button =
+    document.getElementById(
+        "googleBtn"
+    );
 
-const error=
-document.getElementById("loginError");
+    const error =
+    document.getElementById(
+        "loginError"
+    );
 
-error.innerText="";
+    error.innerText = "";
 
-btn.disabled=true;
+    button.disabled = true;
 
-btn.innerText=
-"Signing in...";
+    button.innerText =
+    "Signing in...";
 
-try{
 
-await signInWithPopup(
-auth,
-provider
-);
+    try{
 
-}catch(e){
+        await signInWithPopup(
+            auth,
+            provider
+        );
 
-console.error(e);
+    }catch(e){
 
-error.innerText=
-e.code+
-" : "+
-e.message;
+        console.error(e);
 
-btn.disabled=false;
+        error.innerText =
+        e.code+
+        " : "+
+        e.message;
 
-btn.innerText=
-"Continue with Google";
+        button.disabled = false;
 
-}
+        button.innerText =
+        "Continue with Google";
 
-};
+    }
+
+});
 
 
 /* =====================================================
-   AUTH STATE
+AUTH STATE
 ===================================================== */
 
 onAuthStateChanged(
 auth,
-async user=>{
+async(user)=>{
 
-if(!user){
+    if(!user){
 
-currentUser=null;
+        currentUser = null;
 
-showLogin();
+        showLogin();
 
-return;
+        return;
 
-}
-
-
-currentUser=user;
+    }
 
 
-document
-.getElementById("userEmail")
-.innerText=
-user.email;
+    currentUser = user;
 
 
-/*
-Firebase already remembers
-Google login.
-
-Now find dealer.
-*/
-
-try{
-
-const dealerSnap=
-await get(
-ref(db,"dealers")
-);
+    document
+    .getElementById("userEmail")
+    .innerText =
+    user.email || "";
 
 
-if(!dealerSnap.exists()){
+    try{
 
-showLicense();
+        /*
+        Load dealers.
+        */
 
-return;
-
-}
-
-
-const allDealers=
-dealerSnap.val();
-
-
-let found=null;
-let foundId=null;
+        const dealerSnap =
+        await get(
+            ref(db,"dealers")
+        );
 
 
-for(
-const [id,d]
-of Object.entries(allDealers)
-){
+        if(
+            !dealerSnap.exists()
+        ){
 
-const email=
-String(
-d.email||
-d.Email||
-""
-)
-.trim()
-.toLowerCase();
+            showLicense();
+
+            return;
+
+        }
 
 
-if(
-email===
-String(user.email)
-.trim()
-.toLowerCase()
-){
-
-found=d;
-foundId=id;
-
-break;
-
-}
-
-}
+        const allDealers =
+        dealerSnap.val();
 
 
-/*
-Dealer found by Gmail.
-*/
+        /*
+        Find dealer by Gmail.
+        */
 
-if(found){
+        let foundDealer = null;
 
-currentDealer=found;
-currentDealerId=foundId;
-
-
-/*
-Check local verification.
-*/
-
-const verified=
-localStorage.getItem(
-"isp_license_verified"
-);
-
-const savedUid=
-localStorage.getItem(
-"isp_license_uid"
-);
-
-const savedDealer=
-localStorage.getItem(
-"isp_license_dealer"
-);
+        let foundId = null;
 
 
-if(
-verified==="true" &&
-savedUid===user.uid &&
-savedDealer===foundId
-){
+        Object
+        .entries(
+            allDealers || {}
+        )
+        .forEach(
+        ([id,d])=>{
 
-await startDashboard();
-
-return;
-
-}
-
-
-/*
-Not verified.
-*/
-
-showLicense();
-
-return;
-
-}
+            if(
+                foundDealer
+            ){
+                return;
+            }
 
 
-/*
-No matching Gmail.
-*/
+            const dealerEmail =
+            String(
+                d.email ||
+                d.Email ||
+                ""
+            )
+            .trim()
+            .toLowerCase();
 
-showLicense();
 
-}catch(e){
+            const googleEmail =
+            String(
+                user.email ||
+                ""
+            )
+            .trim()
+            .toLowerCase();
 
-console.error(e);
 
-document
-.getElementById("loginError")
-.innerText=
-"Firebase: "+e.message;
+            if(
+                dealerEmail &&
+                dealerEmail === googleEmail
+            ){
 
-showLogin();
+                foundDealer = d;
 
-}
+                foundId = id;
+
+            }
+
+        });
+
+
+        /*
+        Dealer found.
+        */
+
+        if(
+            foundDealer
+        ){
+
+            currentDealer =
+            foundDealer;
+
+            currentDealerId =
+            foundId;
+
+
+            /*
+            Check browser license verification.
+            */
+
+            const verified =
+            localStorage.getItem(
+                "isp_license_verified"
+            );
+
+
+            const savedUID =
+            localStorage.getItem(
+                "isp_license_uid"
+            );
+
+
+            const savedDealer =
+            localStorage.getItem(
+                "isp_license_dealer"
+            );
+
+
+            if(
+                verified === "true" &&
+                savedUID === user.uid &&
+                savedDealer === foundId
+            ){
+
+                await startDashboard();
+
+                return;
+
+            }
+
+
+            showLicense();
+
+            return;
+
+        }
+
+
+        /*
+        No dealer for Gmail.
+        */
+
+        showLicense();
+
+
+    }catch(error){
+
+        console.error(
+            "Firebase error:",
+            error
+        );
+
+
+        document
+        .getElementById(
+            "loginError"
+        )
+        .innerText =
+        "Firebase error: "+
+        error.message;
+
+
+        showLogin();
+
+    }
 
 });
 
 
 /* =====================================================
-   SHOW LOGIN
+SHOW LOGIN
 ===================================================== */
 
 function showLogin(){
 
-document
-.getElementById("loginPage")
-.classList
-.remove("hidden");
+    document
+    .getElementById("loginPage")
+    .classList
+    .remove("hidden");
 
 
-document
-.getElementById("licensePage")
-.classList
-.add("hidden");
+    document
+    .getElementById("licensePage")
+    .classList
+    .add("hidden");
 
 
-document
-.getElementById("app")
-.classList
-.add("hidden");
+    document
+    .getElementById("app")
+    .classList
+    .add("hidden");
 
 }
 
 
 /* =====================================================
-   SHOW LICENSE
+SHOW LICENSE
 ===================================================== */
 
 function showLicense(){
 
-document
-.getElementById("loginPage")
-.classList
-.add("hidden");
+    document
+    .getElementById("loginPage")
+    .classList
+    .add("hidden");
 
 
-document
-.getElementById("licensePage")
-.classList
-.remove("hidden");
+    document
+    .getElementById("licensePage")
+    .classList
+    .remove("hidden");
 
 
-document
-.getElementById("app")
-.classList
-.add("hidden");
+    document
+    .getElementById("app")
+    .classList
+    .add("hidden");
 
 
-if(currentUser){
+    if(currentUser){
 
-document
-.getElementById("licenseAccount")
-.innerText=
-"Signed in as "+
-currentUser.email;
+        document
+        .getElementById(
+            "licenseAccount"
+        )
+        .innerText =
+        "Signed in as "+
+        currentUser.email;
 
-}
+    }
 
 }
 
 
 /* =====================================================
-   LICENSE VERIFY
+VERIFY LICENSE
 ===================================================== */
 
 document
 .getElementById("verifyBtn")
-.onclick=
-verifyLicense;
+.addEventListener(
+"click",
+verifyLicense
+);
 
 
 async function verifyLicense(){
 
-if(!currentUser){
+    if(!currentUser){
 
-showLogin();
+        showLogin();
 
-return;
+        return;
 
-}
+    }
 
 
-const key=
-document
-.getElementById("licenseInput")
-.value
-.trim()
-.toUpperCase();
+    const key =
+    document
+    .getElementById(
+        "licenseInput"
+    )
+    .value
+    .trim()
+    .toUpperCase();
 
 
-const error=
-document
-.getElementById("licenseError");
+    const error =
+    document
+    .getElementById(
+        "licenseError"
+    );
 
 
-const btn=
-document
-.getElementById("verifyBtn");
+    const button =
+    document
+    .getElementById(
+        "verifyBtn"
+    );
 
 
-error.innerText="";
+    error.innerText = "";
 
 
-if(!key){
+    if(!key){
 
-error.innerText=
-"❌ Enter License Key.";
+        error.innerText =
+        "❌ Enter License Key.";
 
-return;
+        return;
 
-}
+    }
 
 
-btn.disabled=true;
+    button.disabled = true;
 
-btn.innerText=
-"Verifying...";
+    button.innerText =
+    "Verifying...";
 
 
-try{
+    try{
 
-/*
-If current dealer was found
-by Gmail, check its key directly.
-*/
+        /*
+        Always load fresh dealer data.
+        */
 
-let dealer=null;
-let dealerId=null;
+        const snap =
+        await get(
+            ref(db,"dealers")
+        );
 
 
-/*
-First check current dealer.
-*/
+        if(
+            !snap.exists()
+        ){
 
-if(currentDealer){
+            error.innerText =
+            "❌ Dealer database not found.";
 
-const savedKey=
-String(
-currentDealer.LicenseKey||
-currentDealer.licenseKey||
-""
-)
-.trim()
-.toUpperCase();
+            return;
 
+        }
 
-if(
-savedKey===key
-){
 
-dealer=currentDealer;
-dealerId=currentDealerId;
+        const all =
+        snap.val();
 
-}
 
-}
+        let dealer = null;
 
+        let dealerId = null;
 
-/*
-Fallback: search all dealers.
-*/
 
-if(!dealer){
+        Object
+        .entries(
+            all || {}
+        )
+        .forEach(
+        ([id,d])=>{
 
-const snap=
-await get(
-ref(db,"dealers")
-);
+            if(dealer){
+                return;
+            }
 
 
-if(snap.exists()){
+            const dealerKey =
+            String(
+                d.LicenseKey ||
+                d.licenseKey ||
+                ""
+            )
+            .trim()
+            .toUpperCase();
 
-const all=
-snap.val();
 
+            if(
+                dealerKey === key
+            ){
 
-for(
-const [id,d]
-of Object.entries(all)
-){
+                dealer = d;
 
-const savedKey=
-String(
-d.LicenseKey||
-d.licenseKey||
-""
-)
-.trim()
-.toUpperCase();
+                dealerId = id;
 
+            }
 
-if(
-savedKey===key
-){
+        });
 
-dealer=d;
-dealerId=id;
 
-break;
+        if(!dealer){
 
-}
+            error.innerText =
+            "❌ Invalid License Key.";
 
-}
+            return;
 
-}
+        }
 
-}
 
+        /*
+        Gmail ownership.
+        */
 
-/*
-Invalid key.
-*/
+        const dealerEmail =
+        String(
+            dealer.email ||
+            dealer.Email ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
 
-if(!dealer){
 
-error.innerText=
-"❌ Invalid License Key.";
+        const googleEmail =
+        String(
+            currentUser.email ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
 
-return;
 
-}
+        if(
+            dealerEmail &&
+            dealerEmail !== googleEmail
+        ){
 
+            error.innerText =
+            "❌ This license belongs to another Gmail.";
 
-/*
-Check Gmail ownership.
-*/
+            return;
 
-const dealerEmail=
-String(
-dealer.email||
-dealer.Email||
-""
-)
-.trim()
-.toLowerCase();
+        }
 
 
-const googleEmail=
-String(
-currentUser.email||
-""
-)
-.trim()
-.toLowerCase();
+        /*
+        Status.
+        */
 
+        const status =
+        String(
+            dealer.status ||
+            dealer.Status ||
+            "active"
+        )
+        .toLowerCase();
 
-if(
-dealerEmail &&
-dealerEmail!==googleEmail
-){
 
-error.innerText=
-"❌ This license belongs to another Gmail.";
+        if(
+            status === "suspended" ||
+            status === "inactive"
+        ){
 
-return;
+            error.innerText =
+            "❌ Dealer account is suspended.";
 
-}
+            return;
 
+        }
 
-/*
-Check status.
-*/
 
-const status=
-String(
-dealer.status||
-dealer.Status||
-"active"
-)
-.toLowerCase();
+        /*
+        Expiry.
+        */
 
+        const expiry =
+        dealer.LicenseExpiry ||
+        dealer.licenseExpiry ||
+        "";
 
-if(
-status==="suspended"||
-status==="inactive"
-){
 
-error.innerText=
-"❌ Dealer account is suspended.";
+        if(expiry){
 
-return;
+            const expiryDate =
+            new Date(
+                expiry+"T23:59:59"
+            );
 
-}
 
+            if(
+                expiryDate < new Date()
+            ){
 
-/*
-Check expiry.
-*/
+                error.innerText =
+                "❌ License expired.";
 
-const expiry=
-dealer.LicenseExpiry||
-dealer.licenseExpiry;
+                return;
 
+            }
 
-if(expiry){
+        }
 
-const expiryDate=
-new Date(
-expiry+"T23:59:59"
-);
 
+        /*
+        SAVE SESSION
+        */
 
-if(
-expiryDate<new Date()
-){
+        localStorage.setItem(
+            "isp_license_verified",
+            "true"
+        );
 
-error.innerText=
-"❌ License expired.";
 
-return;
+        localStorage.setItem(
+            "isp_license_uid",
+            currentUser.uid
+        );
 
-}
 
-}
+        localStorage.setItem(
+            "isp_license_dealer",
+            dealerId
+        );
 
 
-/*
-SUCCESS
+        currentDealer =
+        dealer;
 
-Save browser session.
-Google Firebase persistence is
-already enabled above.
-*/
+        currentDealerId =
+        dealerId;
 
-localStorage.setItem(
-"isp_license_verified",
-"true"
-);
 
-localStorage.setItem(
-"isp_license_uid",
-currentUser.uid
-);
+        /*
+        Start.
+        */
 
-localStorage.setItem(
-"isp_license_dealer",
-dealerId
-);
+        await startDashboard();
 
 
-currentDealer=dealer;
-currentDealerId=dealerId;
+    }catch(e){
 
+        console.error(e);
 
-/*
-Start dashboard.
-*/
+        error.innerText =
+        "❌ Firebase error: "+
+        e.message;
 
-await startDashboard();
+    }finally{
 
+        button.disabled = false;
 
-}catch(e){
+        button.innerText =
+        "Verify License";
 
-console.error(e);
-
-error.innerText=
-"❌ "+e.message;
-
-}finally{
-
-btn.disabled=false;
-
-btn.innerText=
-"Verify License";
-
-}
+    }
 
 }
 
 
 /* =====================================================
-   START DASHBOARD
+START DASHBOARD
 ===================================================== */
 
 async function startDashboard(){
 
-showApp();
-
-await loadAll();
-
-}
-
-
-/* =====================================================
-   SHOW APP
-===================================================== */
-
-function showApp(){
-
-document
-.getElementById("loginPage")
-.classList
-.add("hidden");
+    document
+    .getElementById("loginPage")
+    .classList
+    .add("hidden");
 
 
-document
-.getElementById("licensePage")
-.classList
-.add("hidden");
+    document
+    .getElementById("licensePage")
+    .classList
+    .add("hidden");
 
 
-document
-.getElementById("app")
-.classList
-.remove("hidden");
+    document
+    .getElementById("app")
+    .classList
+    .remove("hidden");
 
+
+    await loadAll();
 
 }
 
 
 /* =====================================================
-   LOAD FIREBASE DATA
+LOAD ALL
 ===================================================== */
 
 async function loadAll(){
 
-try{
+    try{
 
-const [
-customerSnap,
-packageSnap,
-billSnap,
-paymentSnap
-]=await Promise.all([
-
-get(ref(db,"customers")),
-
-get(ref(db,"packages")),
-
-get(ref(db,"bills")),
-
-get(ref(db,"payments"))
-
-]);
+        const customerSnap =
+        await get(
+            ref(db,"customers")
+        );
 
 
-customers=
-customerSnap.exists()
-?customerSnap.val()
-:{};
+        const packageSnap =
+        await get(
+            ref(db,"packages")
+        );
 
 
-packages=
-packageSnap.exists()
-?packageSnap.val()
-:{};
+        const billSnap =
+        await get(
+            ref(db,"bills")
+        );
 
 
-bills=
-billSnap.exists()
-?billSnap.val()
-:{};
+        const paymentSnap =
+        await get(
+            ref(db,"payments")
+        );
 
 
-payments=
-paymentSnap.exists()
-?paymentSnap.val()
-:{};
+        customers =
+        customerSnap.exists()
+        ? customerSnap.val()
+        : {};
 
 
-renderEverything();
+        packages =
+        packageSnap.exists()
+        ? packageSnap.val()
+        : {};
 
-checkExpiryToday();
+
+        bills =
+        billSnap.exists()
+        ? billSnap.val()
+        : {};
 
 
-}catch(e){
+        payments =
+        paymentSnap.exists()
+        ? paymentSnap.val()
+        : {};
 
-console.error(e);
 
-alert(
-"Firebase error: "+
-e.message
-);
+        renderEverything();
 
-}
+        checkExpiryToday();
+
+
+    }catch(error){
+
+        console.error(
+            "Firebase error:",
+            error
+        );
+
+
+        alert(
+            "Firebase error: "+
+            error.message
+        );
+
+    }
 
 }
 
 
 /* =====================================================
-   NAVIGATION
+OWNERSHIP
 ===================================================== */
 
-window.openPage=function(name){
+function belongsToDealer(data){
 
-const pages=[
-"dashboard",
-"customers",
-"packages",
-"bills",
-"payments"
-];
+    if(!data){
+        return false;
+    }
 
 
-pages.forEach(p=>{
+    /*
+    Existing old records without
+    dealerId are allowed.
+    */
 
-document
-.getElementById(p)
-.classList
-.add("hidden");
+    if(
+        !data.dealerId
+    ){
 
-});
+        return true;
 
-
-document
-.getElementById(name)
-.classList
-.remove("hidden");
+    }
 
 
-const titles={
+    return (
+        data.dealerId ===
+        currentDealerId
+    );
 
-dashboard:"Dashboard",
-customers:"Customers",
-packages:"Packages",
-bills:"Bills",
-payments:"Payments"
-
-};
-
-
-document
-.getElementById("pageTitle")
-.innerText=
-titles[name];
-
-
-/*
-Desktop nav active.
-*/
-
-document
-.querySelectorAll(".nav")
-.forEach(btn=>{
-
-btn.classList.toggle(
-"active",
-btn.dataset.page===name
-);
-
-});
-
-};
+}
 
 
 /* =====================================================
-   RENDER EVERYTHING
+RENDER
 ===================================================== */
 
 function renderEverything(){
 
-renderStats();
+    renderStats();
 
-renderDealerInfo();
+    renderDealerInfo();
 
-renderCustomers();
+    renderCustomers();
 
-renderPackages();
+    renderPackages();
 
-renderBills();
+    renderBills();
 
-renderPayments();
+    renderPayments();
 
-renderPackageOptions();
+    renderPackageOptions();
 
 }
 
 
 /* =====================================================
-   DEALER INFO
+NAVIGATION
 ===================================================== */
 
-function renderDealerInfo(){
+window.openPage =
+function(name){
 
-if(!currentDealer)return;
-
-
-const license=
-currentDealer.LicenseKey||
-currentDealer.licenseKey||
-"-";
-
-
-const expiry=
-currentDealer.LicenseExpiry||
-currentDealer.licenseExpiry||
-"-";
+    const pages = [
+        "dashboard",
+        "customers",
+        "packages",
+        "bills",
+        "payments"
+    ];
 
 
-document
-.getElementById("dealerInfo")
-.innerHTML=`
+    pages.forEach(
+    page=>{
 
-<div class="card p-4">
+        document
+        .getElementById(page)
+        .classList
+        .add("hidden");
 
-<p class="text-xs text-slate-500">
-DEALER
-</p>
-
-<b>
-${esc(
-currentDealer.name||
-"Dealer"
-)}
-</b>
-
-</div>
+    });
 
 
-<div class="card p-4">
-
-<p class="text-xs text-slate-500">
-EMAIL
-</p>
-
-<b>
-${esc(
-currentDealer.email||
-currentUser.email
-)}
-</b>
-
-</div>
+    document
+    .getElementById(name)
+    .classList
+    .remove("hidden");
 
 
-<div class="card p-4">
+    const titles = {
 
-<p class="text-xs text-slate-500">
-LICENSE
-</p>
+        dashboard:"Dashboard",
+        customers:"Customers",
+        packages:"Packages",
+        bills:"Bills",
+        payments:"Payments"
 
-<b class="text-indigo-400">
-${esc(license)}
-</b>
-
-</div>
+    };
 
 
-<div class="card p-4">
+    document
+    .getElementById(
+        "pageTitle"
+    )
+    .innerText =
+    titles[name] || "Dashboard";
 
-<p class="text-xs text-slate-500">
-LICENSE EXPIRY
-</p>
 
-<b>
-${esc(expiry)}
-</b>
+    document
+    .querySelectorAll(".nav")
+    .forEach(
+    button=>{
 
-</div>
+        button.classList.toggle(
+            "active",
+            button.dataset.page === name
+        );
 
-`;
+    });
 
-}
+};
 
 
 /* =====================================================
-   STATS
+STATS
 ===================================================== */
 
 function renderStats(){
 
-const customerList=
-Object.values(customers)
-.filter(isMyRecord);
+    const customerList =
+    Object
+    .values(customers || {})
+    .filter(
+        customer =>
+        belongsToDealer(customer)
+    );
 
 
-const active=
-customerList.filter(c=>
-String(
-c.Status||
-c.status||
-"Active"
-).toLowerCase()==="active"
-).length;
+    const billList =
+    Object
+    .values(bills || {})
+    .filter(
+        bill =>
+        belongsToDealer(bill)
+    );
 
 
-const unpaid=
-Object.values(bills)
-.filter(isMyRecord)
-.filter(b=>
-String(
-b.Status||
-b.status||
-"Unpaid"
-).toLowerCase()==="unpaid"
-).length;
+    const paymentList =
+    Object
+    .values(payments || {})
+    .filter(
+        payment =>
+        belongsToDealer(payment)
+    );
 
 
-const totalPayments=
-Object.values(payments)
-.filter(isMyRecord)
-.reduce(
-(sum,p)=>
-sum+
-Number(
-p.amount||
-p.Amount||
-0
-),0
-);
+    const active =
+    customerList
+    .filter(
+    customer=>{
+
+        return String(
+            customer.Status ||
+            customer.status ||
+            "Active"
+        )
+        .toLowerCase()
+        ===
+        "active";
+
+    }).length;
 
 
-document
-.getElementById("statCustomers")
-.innerText=
-customerList.length;
+    const unpaid =
+    billList
+    .filter(
+    bill=>{
+
+        return String(
+            bill.Status ||
+            bill.status ||
+            "Unpaid"
+        )
+        .toLowerCase()
+        ===
+        "unpaid";
+
+    }).length;
 
 
-document
-.getElementById("statActive")
-.innerText=
-active;
+    const totalPayments =
+    paymentList
+    .reduce(
+    (sum,payment)=>{
+
+        return sum+
+        Number(
+            payment.amount ||
+            payment.Amount ||
+            0
+        );
+
+    },0);
 
 
-document
-.getElementById("statUnpaid")
-.innerText=
-unpaid;
+    document
+    .getElementById(
+        "statCustomers"
+    )
+    .innerText =
+    customerList.length;
 
 
-document
-.getElementById("statPayments")
-.innerText=
-"Rs "+
-totalPayments.toLocaleString();
+    document
+    .getElementById(
+        "statActive"
+    )
+    .innerText =
+    active;
+
+
+    document
+    .getElementById(
+        "statUnpaid"
+    )
+    .innerText =
+    unpaid;
+
+
+    document
+    .getElementById(
+        "statPayments"
+    )
+    .innerText =
+    "Rs "+
+    totalPayments.toLocaleString();
 
 }
 
 
 /* =====================================================
-   RECORD OWNERSHIP
+DEALER INFO
 ===================================================== */
 
-function isMyRecord([id,data]){
+function renderDealerInfo(){
 
-if(!data)return false;
-
-
-/*
-Old existing records without
-dealerId are visible so your
-existing data doesn't disappear.
-*/
-
-if(!data.dealerId){
-
-return true;
-
-}
+    if(!currentDealer){
+        return;
+    }
 
 
-return data.dealerId===
-currentDealerId;
+    const license =
+    currentDealer.LicenseKey ||
+    currentDealer.licenseKey ||
+    "-";
+
+
+    const expiry =
+    currentDealer.LicenseExpiry ||
+    currentDealer.licenseExpiry ||
+    "-";
+
+
+    document
+    .getElementById(
+        "dealerInfo"
+    )
+    .innerHTML = `
+
+        <div class="card p-4">
+
+            <p class="text-xs text-slate-500">
+                DEALER
+            </p>
+
+            <b>
+                ${esc(
+                    currentDealer.name ||
+                    currentDealer.Name ||
+                    "Dealer"
+                )}
+            </b>
+
+        </div>
+
+
+        <div class="card p-4">
+
+            <p class="text-xs text-slate-500">
+                EMAIL
+            </p>
+
+            <b>
+                ${esc(
+                    currentDealer.email ||
+                    currentUser?.email ||
+                    "-"
+                )}
+            </b>
+
+        </div>
+
+
+        <div class="card p-4">
+
+            <p class="text-xs text-slate-500">
+                LICENSE
+            </p>
+
+            <b class="text-indigo-400">
+                ${esc(license)}
+            </b>
+
+        </div>
+
+
+        <div class="card p-4">
+
+            <p class="text-xs text-slate-500">
+                LICENSE EXPIRY
+            </p>
+
+            <b>
+                ${esc(expiry)}
+            </b>
+
+        </div>
+
+    `;
 
 }
 
 
 /* =====================================================
-   CUSTOMERS
+CUSTOMERS
 ===================================================== */
 
 function renderCustomers(){
 
-const search=
-(
-document
-.getElementById("customerSearch")
-?.value||
-""
-)
-.toLowerCase();
+    const search =
+    String(
+        document
+        .getElementById(
+            "customerSearch"
+        )
+        ?.value ||
+        ""
+    )
+    .toLowerCase();
 
 
-let html="";
+    let html = "";
 
 
-Object
-.entries(customers)
-.forEach(([id,c])=>{
+    Object
+    .entries(
+        customers || {}
+    )
+    .forEach(
+    ([id,c])=>{
 
-if(
-c.dealerId &&
-c.dealerId!==currentDealerId
-)return;
+        if(
+            !belongsToDealer(c)
+        ){
+            return;
+        }
 
 
-const text=
-(
-(c.name||"")+
-" "+
-(c.phone||"")+
-" "+
-(c.username||"")+
-" "+
-(c.email||"")+
-" "+
-(c.package||"")
-)
-.toLowerCase();
+        const searchable =
+        (
+            c.name || ""
+        )+
+        " "+
+        (
+            c.phone || ""
+        )+
+        " "+
+        (
+            c.username || ""
+        )+
+        " "+
+        (
+            c.email || ""
+        )+
+        " "+
+        (
+            c.package || ""
+        );
 
 
-if(
-!text.includes(search)
-)return;
+        if(
+            !searchable
+            .toLowerCase()
+            .includes(search)
+        ){
 
+            return;
 
-const fee=
-Number(
-c["Monthly fee"]||
-c.monthlyFee||
-0
-);
+        }
 
 
-const expiry=
-c["Expiry Date"]||
-c.expiryDate||
-"-";
+        const fee =
+        Number(
+            c["Monthly fee"] ||
+            c.monthlyFee ||
+            0
+        );
 
 
-const status=
-c.Status||
-c.status||
-"Active";
+        const expiry =
+        c["Expiry Date"] ||
+        c.expiryDate ||
+        "-";
 
 
-const statusLower=
-String(status)
-.toLowerCase();
+        const status =
+        c.Status ||
+        c.status ||
+        "Active";
 
 
-html+=`
+        const active =
+        String(status)
+        .toLowerCase()
+        ===
+        "active";
 
-<div class="card p-5">
 
-<div
-class="flex justify-between
-gap-3 flex-wrap">
+        html += `
 
-<div>
+        <div class="card p-5">
 
-<h3
-class="text-lg font-black">
+            <div
+            class="flex justify-between
+            gap-3 flex-wrap">
 
-${esc(
-c.name||
-"-"
-)}
+                <div>
 
-</h3>
+                    <h3
+                    class="text-lg font-black">
 
-<p
-class="text-xs text-slate-500">
+                        ${esc(
+                            c.name || "-"
+                        )}
 
-${esc(
-c.username||
-"-"
-)}
+                    </h3>
 
-•
-${esc(
-c.phone||
-"-"
-)}
+                    <p
+                    class="text-xs text-slate-500">
 
-</p>
+                        ${esc(
+                            c.username || "-"
+                        )}
 
-</div>
+                        •
 
+                        ${esc(
+                            c.phone || "-"
+                        )}
 
-<span
-class="${
-statusLower==="active"
-?"text-green-400"
-:"text-red-400"
-}">
+                    </p>
 
-● ${esc(status)}
+                </div>
 
-</span>
 
-</div>
+                <span
+                class="${
+                    active
+                    ?"status-active"
+                    :"status-expired"
+                }">
 
+                    ● ${esc(status)}
 
-<div
-class="grid md:grid-cols-4
-gap-4 mt-5 text-sm">
+                </span>
 
+            </div>
 
-<div>
 
-<p
-class="text-slate-500">
+            <div
+            class="grid md:grid-cols-4
+            gap-4 mt-5 text-sm">
 
-Package
+                <div>
 
-</p>
+                    <p class="text-slate-500">
+                        Package
+                    </p>
 
-<b>
-${esc(
-c.package||
-"-"
-)}
-</b>
+                    <b>
+                        ${esc(
+                            c.package || "-"
+                        )}
+                    </b>
 
-</div>
+                </div>
 
 
-<div>
+                <div>
 
-<p
-class="text-slate-500">
+                    <p class="text-slate-500">
+                        Monthly Fee
+                    </p>
 
-Monthly Fee
+                    <b>
+                        Rs ${fee.toLocaleString()}
+                    </b>
 
-</p>
+                </div>
 
-<b>
-Rs ${fee.toLocaleString()}
-</b>
 
-</div>
+                <div>
 
+                    <p class="text-slate-500">
+                        Expiry
+                    </p>
 
-<div>
+                    <b>
+                        ${esc(expiry)}
+                    </b>
 
-<p
-class="text-slate-500">
+                </div>
 
-Expiry
 
-</p>
+                <div>
 
-<b>
-${esc(expiry)}
-</b>
+                    <button
+                    onclick="sendWhatsApp('${id}')"
+                    class="w-full bg-green-600
+                    text-white">
 
-</div>
+                        📱 Send Bill
 
+                    </button>
 
-<div>
+                </div>
 
-<button
-onclick="sendWhatsApp('${id}')"
-class="w-full bg-green-600
-text-white">
+            </div>
 
-📱 Send Bill
 
-</button>
+            <div
+            class="flex gap-2 flex-wrap mt-5">
 
-</div>
+                <button
+                onclick="editCustomer('${id}')"
+                class="bg-blue-600 text-white">
 
-</div>
+                    Edit
 
+                </button>
 
-<div
-class="flex gap-2 flex-wrap mt-5">
 
+                <button
+                onclick="toggleCustomer('${id}')"
+                class="bg-yellow-600 text-white">
 
-<button
-onclick="editCustomer('${id}')"
-class="bg-blue-600 text-white">
+                    ${
+                        active
+                        ?"Suspend"
+                        :"Activate"
+                    }
 
-Edit
+                </button>
 
-</button>
 
+                <button
+                onclick="deleteCustomer('${id}')"
+                class="bg-red-600 text-white">
 
-<button
-onclick="toggleCustomer('${id}')"
-class="bg-yellow-600 text-white">
+                    Delete
 
-${
-statusLower==="active"
-?"Suspend"
-:"Activate"
-}
+                </button>
 
-</button>
+            </div>
 
+        </div>
 
-<button
-onclick="deleteCustomer('${id}')"
-class="bg-red-600 text-white">
+        `;
 
-Delete
+    });
 
-</button>
 
-</div>
+    document
+    .getElementById(
+        "customerList"
+    )
+    .innerHTML =
+    html ||
+    `
+        <div
+        class="text-center
+        text-slate-500 p-8">
 
-</div>
+            No customers found.
 
-`;
-
-});
-
-
-document
-.getElementById("customerList")
-.innerHTML=
-html||
-`
-<div
-class="text-center
-text-slate-500 p-8">
-
-No customers found.
-
-</div>
-`;
+        </div>
+    `;
 
 }
 
 
 /* =====================================================
-   CUSTOMER MODAL
+CUSTOMER MODAL
 ===================================================== */
 
-window.openCustomerModal=function(){
+window.openCustomerModal =
+function(){
 
-renderPackageOptions();
+    renderPackageOptions();
 
-document
-.getElementById("customerModal")
-.classList
-.remove("hidden");
+    document
+    .getElementById(
+        "customerModal"
+    )
+    .classList
+    .remove("hidden");
 
 };
 
 
-window.closeCustomerModal=function(){
+window.closeCustomerModal =
+function(){
 
-document
-.getElementById("customerModal")
-.classList
-.add("hidden");
+    document
+    .getElementById(
+        "customerModal"
+    )
+    .classList
+    .add("hidden");
 
 };
 
 
 /* =====================================================
-   PACKAGE OPTIONS
+PACKAGE OPTIONS
 ===================================================== */
 
 function renderPackageOptions(){
 
-const select=
+    const select =
+    document
+    .getElementById(
+        "cPackage"
+    );
+
+
+    select.innerHTML =
+    `
+        <option value="">
+            Select Package
+        </option>
+    `;
+
+
+    Object
+    .entries(
+        packages || {}
+    )
+    .forEach(
+    ([id,p])=>{
+
+        if(
+            !belongsToDealer(p)
+        ){
+            return;
+        }
+
+
+        const status =
+        String(
+            p.Status ||
+            p.status ||
+            "Active"
+        )
+        .toLowerCase();
+
+
+        if(
+            status !== "active"
+        ){
+            return;
+        }
+
+
+        const name =
+        p.name ||
+        p.Name ||
+        id;
+
+
+        const price =
+        Number(
+            p.Price ||
+            p.price ||
+            0
+        );
+
+
+        select.innerHTML += `
+
+            <option
+            value="${esc(name)}"
+            data-price="${price}">
+
+                ${esc(name)}
+                -
+                Rs ${price.toLocaleString()}
+
+            </option>
+
+        `;
+
+    });
+
+}
+
+
+/* =====================================================
+PACKAGE AUTO PRICE
+===================================================== */
+
 document
-.getElementById("cPackage");
-
-
-select.innerHTML=
-`
-<option value="">
-Select Package
-</option>
-`;
-
-
-Object
-.entries(packages)
-.forEach(([id,p])=>{
-
-if(
-p.dealerId &&
-p.dealerId!==currentDealerId
-)return;
-
-
-const status=
-String(
-p.Status||
-p.status||
-"Active"
+.getElementById(
+    "cPackage"
 )
-.toLowerCase();
+.addEventListener(
+"change",
+function(){
+
+    const option =
+    this.options[
+        this.selectedIndex
+    ];
 
 
-if(
-status!=="active"
-)return;
+    if(
+        option &&
+        option.dataset.price
+    ){
 
+        document
+        .getElementById(
+            "cFee"
+        )
+        .value =
+        option.dataset.price;
 
-const name=
-p.name||
-p.Name||
-id;
-
-
-const price=
-Number(
-p.Price||
-p.price||
-0
-);
-
-
-select.innerHTML+=`
-
-<option
-value="${esc(name)}"
-data-price="${price}">
-
-${esc(name)}
--
-Rs ${price.toLocaleString()}
-
-</option>
-
-`;
+    }
 
 });
 
-}
-
 
 /* =====================================================
-   PACKAGE AUTO PRICE
+SAVE CUSTOMER
 ===================================================== */
 
-document
-.getElementById("cPackage")
-.onchange=function(){
+window.saveCustomer =
+async function(){
 
-const option=
-this.options[
-this.selectedIndex
-];
-
-
-const price=
-option?.dataset?.price;
+    const name =
+    document
+    .getElementById(
+        "cName"
+    )
+    .value
+    .trim();
 
 
-if(price){
+    const phone =
+    document
+    .getElementById(
+        "cPhone"
+    )
+    .value
+    .trim();
 
-document
-.getElementById("cFee")
-.value=price;
 
-}
+    const address =
+    document
+    .getElementById(
+        "cAddress"
+    )
+    .value
+    .trim();
+
+
+    const username =
+    document
+    .getElementById(
+        "cUsername"
+    )
+    .value
+    .trim();
+
+
+    const email =
+    document
+    .getElementById(
+        "cEmail"
+    )
+    .value
+    .trim();
+
+
+    const packageName =
+    document
+    .getElementById(
+        "cPackage"
+    )
+    .value;
+
+
+    const fee =
+    Number(
+        document
+        .getElementById(
+            "cFee"
+        )
+        .value ||
+        0
+    );
+
+
+    const expiry =
+    document
+    .getElementById(
+        "cExpiry"
+    )
+    .value;
+
+
+    if(
+        !name ||
+        !phone ||
+        !username
+    ){
+
+        alert(
+            "Name, Phone and Username required."
+        );
+
+        return;
+
+    }
+
+
+    const id =
+    "CUST-"+Date.now();
+
+
+    await set(
+        ref(
+            db,
+            "customers/"+id
+        ),
+        {
+
+            name:name,
+
+            phone:phone,
+
+            address:address,
+
+            username:username,
+
+            email:email,
+
+            package:packageName,
+
+            "Monthly fee":fee,
+
+            "Start Date":today(),
+
+            "Expiry Date":expiry,
+
+            Status:"Active",
+
+            dealerId:currentDealerId,
+
+            createdAt:
+            new Date().toISOString()
+
+        }
+    );
+
+
+    alert(
+        "✅ Customer added."
+    );
+
+
+    clearCustomerForm();
+
+    closeCustomerModal();
+
+    await loadAll();
 
 };
 
 
 /* =====================================================
-   SAVE CUSTOMER
-===================================================== */
-
-window.saveCustomer=async function(){
-
-const name=
-document
-.getElementById("cName")
-.value
-.trim();
-
-
-const phone=
-document
-.getElementById("cPhone")
-.value
-.trim();
-
-
-const address=
-document
-.getElementById("cAddress")
-.value
-.trim();
-
-
-const username=
-document
-.getElementById("cUsername")
-.value
-.trim();
-
-
-const email=
-document
-.getElementById("cEmail")
-.value
-.trim();
-
-
-const packageName=
-document
-.getElementById("cPackage")
-.value;
-
-
-const fee=
-Number(
-document
-.getElementById("cFee")
-.value||
-0
-);
-
-
-const expiry=
-document
-.getElementById("cExpiry")
-.value;
-
-
-if(
-!name||
-!phone||
-!username
-){
-
-alert(
-"Name, Phone and Username required."
-);
-
-return;
-
-}
-
-
-const id=
-"CUST-"+Date.now();
-
-
-await set(
-ref(
-db,
-"customers/"+id
-),
-{
-
-name:name,
-
-phone:phone,
-
-address:address,
-
-username:username,
-
-email:email,
-
-package:packageName,
-
-"Monthly fee":fee,
-
-"Start Date":today(),
-
-"Expiry Date":expiry,
-
-Status:"Active",
-
-dealerId:currentDealerId,
-
-createdAt:
-new Date().toISOString()
-
-}
-);
-
-
-alert(
-"✅ Customer added successfully."
-);
-
-
-clearCustomerForm();
-
-closeCustomerModal();
-
-await loadAll();
-
-};
-
-
-/* =====================================================
-   CLEAR CUSTOMER
+CLEAR CUSTOMER
 ===================================================== */
 
 function clearCustomerForm(){
 
-[
-"cName",
-"cPhone",
-"cAddress",
-"cUsername",
-"cEmail",
-"cFee",
-"cExpiry"
-]
-.forEach(id=>{
+    [
+        "cName",
+        "cPhone",
+        "cAddress",
+        "cUsername",
+        "cEmail",
+        "cFee",
+        "cExpiry"
+    ]
+    .forEach(
+    id=>{
 
-document
-.getElementById(id)
-.value="";
+        document
+        .getElementById(id)
+        .value = "";
 
-});
+    });
 
 
-document
-.getElementById("cPackage")
-.value="";
+    document
+    .getElementById(
+        "cPackage"
+    )
+    .value = "";
 
 }
 
 
 /* =====================================================
-   EDIT CUSTOMER
+EDIT CUSTOMER
 ===================================================== */
 
-window.editCustomer=async function(id){
+window.editCustomer =
+async function(id){
 
-const c=
-customers[id];
-
-
-if(!c)return;
+    const c =
+    customers[id];
 
 
-if(
-c.dealerId &&
-c.dealerId!==currentDealerId
-){
-
-return;
-
-}
+    if(
+        !c ||
+        !belongsToDealer(c)
+    ){
+        return;
+    }
 
 
-const name=
-prompt(
-"Customer Name",
-c.name||""
-);
+    const name =
+    prompt(
+        "Customer Name",
+        c.name || ""
+    );
 
 
-if(name===null)return;
+    if(name === null){
+        return;
+    }
 
 
-const phone=
-prompt(
-"Phone",
-c.phone||""
-);
+    const phone =
+    prompt(
+        "Phone",
+        c.phone || ""
+    );
 
 
-if(phone===null)return;
+    if(phone === null){
+        return;
+    }
 
 
-const address=
-prompt(
-"Address",
-c.address||""
-);
+    const address =
+    prompt(
+        "Address",
+        c.address || ""
+    );
 
 
-if(address===null)return;
+    if(address === null){
+        return;
+    }
 
 
-const username=
-prompt(
-"Username",
-c.username||""
-);
+    const username =
+    prompt(
+        "Username",
+        c.username || ""
+    );
 
 
-if(username===null)return;
+    if(username === null){
+        return;
+    }
 
 
-const packageName=
-prompt(
-"Package",
-c.package||""
-);
+    const packageName =
+    prompt(
+        "Package",
+        c.package || ""
+    );
 
 
-if(packageName===null)return;
+    if(packageName === null){
+        return;
+    }
 
 
-const fee=
-prompt(
-"Monthly Fee",
-c["Monthly fee"]||
-c.monthlyFee||
-"0"
-);
+    const fee =
+    prompt(
+        "Monthly Fee",
+        c["Monthly fee"] ||
+        c.monthlyFee ||
+        "0"
+    );
 
 
-if(fee===null)return;
+    if(fee === null){
+        return;
+    }
 
 
-const expiry=
-prompt(
-"Expiry YYYY-MM-DD",
-c["Expiry Date"]||
-c.expiryDate||
-""
-);
+    const expiry =
+    prompt(
+        "Expiry YYYY-MM-DD",
+        c["Expiry Date"] ||
+        c.expiryDate ||
+        ""
+    );
 
 
-if(expiry===null)return;
+    if(expiry === null){
+        return;
+    }
 
 
-await update(
-ref(
-db,
-"customers/"+id
-),
-{
+    await update(
+        ref(
+            db,
+            "customers/"+id
+        ),
+        {
 
-name:name,
+            name:name,
 
-phone:phone,
+            phone:phone,
 
-address:address,
+            address:address,
 
-username:username,
+            username:username,
 
-package:packageName,
+            package:packageName,
 
-"Monthly fee":
-Number(fee),
+            "Monthly fee":
+            Number(fee),
 
-"Expiry Date":
-expiry
+            "Expiry Date":
+            expiry
 
-}
-);
+        }
+    );
 
 
-await loadAll();
+    await loadAll();
 
 };
 
 
 /* =====================================================
-   CUSTOMER STATUS
+TOGGLE CUSTOMER
 ===================================================== */
 
-window.toggleCustomer=async function(id){
+window.toggleCustomer =
+async function(id){
 
-const c=
-customers[id];
-
-
-if(!c)return;
+    const c =
+    customers[id];
 
 
-const old=
-String(
-c.Status||
-c.status||
-"Active"
-)
-.toLowerCase();
+    if(
+        !c ||
+        !belongsToDealer(c)
+    ){
+        return;
+    }
 
 
-await update(
-ref(
-db,
-"customers/"+id
-),
-{
-
-Status:
-old==="active"
-?"Suspended"
-:"Active"
-
-}
-);
+    const current =
+    String(
+        c.Status ||
+        c.status ||
+        "Active"
+    )
+    .toLowerCase();
 
 
-await loadAll();
+    await update(
+        ref(
+            db,
+            "customers/"+id
+        ),
+        {
+
+            Status:
+            current === "active"
+            ? "Suspended"
+            : "Active"
+
+        }
+    );
+
+
+    await loadAll();
 
 };
 
 
 /* =====================================================
-   DELETE CUSTOMER
+DELETE CUSTOMER
 ===================================================== */
 
-window.deleteCustomer=async function(id){
+window.deleteCustomer =
+async function(id){
 
-const c=
-customers[id];
-
-
-if(!c)return;
+    const c =
+    customers[id];
 
 
-if(
-!confirm(
-"Delete "+(c.name||"customer")+"?"
-)
-){
-
-return;
-
-}
+    if(
+        !c ||
+        !belongsToDealer(c)
+    ){
+        return;
+    }
 
 
-await remove(
-ref(
-db,
-"customers/"+id
-)
-);
+    if(
+        !confirm(
+            "Delete "+
+            (c.name || "customer")+
+            "?"
+        )
+    ){
+
+        return;
+
+    }
 
 
-await loadAll();
+    await remove(
+        ref(
+            db,
+            "customers/"+id
+        )
+    );
+
+
+    await loadAll();
 
 };
 
 
 /* =====================================================
-   PACKAGES
+PACKAGE MODAL
 ===================================================== */
 
-window.openPackageModal=function(){
+window.openPackageModal =
+function(){
 
-document
-.getElementById("packageModal")
-.classList
-.remove("hidden");
-
-};
-
-
-window.closePackageModal=function(){
-
-document
-.getElementById("packageModal")
-.classList
-.add("hidden");
+    document
+    .getElementById(
+        "packageModal"
+    )
+    .classList
+    .remove("hidden");
 
 };
 
 
-window.savePackage=async function(){
+window.closePackageModal =
+function(){
 
-const name=
-document
-.getElementById("pName")
-.value
-.trim();
-
-
-const speed=
-document
-.getElementById("pSpeed")
-.value
-.trim();
-
-
-const price=
-Number(
-document
-.getElementById("pPrice")
-.value||
-0
-);
-
-
-if(
-!name||
-!speed||
-!price
-){
-
-alert(
-"Package name, speed and price required."
-);
-
-return;
-
-}
-
-
-const id=
-"PKG-"+Date.now();
-
-
-await set(
-ref(
-db,
-"packages/"+id
-),
-{
-
-name:name,
-
-speed:speed,
-
-Price:price,
-
-Status:"Active",
-
-dealerId:currentDealerId,
-
-createdAt:
-new Date().toISOString()
-
-}
-);
-
-
-alert(
-"✅ Package created."
-);
-
-
-document
-.getElementById("pName")
-.value="";
-
-
-document
-.getElementById("pSpeed")
-.value="";
-
-
-document
-.getElementById("pPrice")
-.value="";
-
-
-closePackageModal();
-
-await loadAll();
+    document
+    .getElementById(
+        "packageModal"
+    )
+    .classList
+    .add("hidden");
 
 };
 
 
 /* =====================================================
-   RENDER PACKAGES
+SAVE PACKAGE
+===================================================== */
+
+window.savePackage =
+async function(){
+
+    const name =
+    document
+    .getElementById(
+        "pName"
+    )
+    .value
+    .trim();
+
+
+    const speed =
+    document
+    .getElementById(
+        "pSpeed"
+    )
+    .value
+    .trim();
+
+
+    const price =
+    Number(
+        document
+        .getElementById(
+            "pPrice"
+        )
+        .value ||
+        0
+    );
+
+
+    if(
+        !name ||
+        !speed ||
+        !price
+    ){
+
+        alert(
+            "Package name, speed and price required."
+        );
+
+        return;
+
+    }
+
+
+    const id =
+    "PKG-"+Date.now();
+
+
+    await set(
+        ref(
+            db,
+            "packages/"+id
+        ),
+        {
+
+            name:name,
+
+            speed:speed,
+
+            Price:price,
+
+            Status:"Active",
+
+            dealerId:currentDealerId,
+
+            createdAt:
+            new Date().toISOString()
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "pName"
+    )
+    .value = "";
+
+
+    document
+    .getElementById(
+        "pSpeed"
+    )
+    .value = "";
+
+
+    document
+    .getElementById(
+        "pPrice"
+    )
+    .value = "";
+
+
+    closePackageModal();
+
+    alert(
+        "✅ Package created."
+    );
+
+
+    await loadAll();
+
+};
+
+
+/* =====================================================
+RENDER PACKAGES
 ===================================================== */
 
 function renderPackages(){
 
-let html="";
+    let html = "";
 
 
-Object
-.entries(packages)
-.forEach(([id,p])=>{
+    Object
+    .entries(
+        packages || {}
+    )
+    .forEach(
+    ([id,p])=>{
 
-if(
-p.dealerId &&
-p.dealerId!==currentDealerId
-)return;
-
-
-const name=
-p.name||
-p.Name||
-id;
+        if(
+            !belongsToDealer(p)
+        ){
+            return;
+        }
 
 
-const speed=
-p.speed||
-p.Speed||
-"-";
+        const name =
+        p.name ||
+        p.Name ||
+        id;
 
 
-const price=
-Number(
-p.Price||
-p.price||
-0
-);
+        const speed =
+        p.speed ||
+        p.Speed ||
+        "-";
 
 
-html+=`
-
-<div class="card p-5">
-
-<div class="text-4xl">
-📦
-</div>
-
-
-<h3
-class="font-black text-lg mt-3">
-
-${esc(name)}
-
-</h3>
+        const price =
+        Number(
+            p.Price ||
+            p.price ||
+            0
+        );
 
 
-<p class="text-slate-400">
+        html += `
 
-${esc(speed)}
+        <div class="card p-5">
 
-</p>
+            <div class="text-4xl">
+                📦
+            </div>
+
+            <h3
+            class="font-black text-lg mt-3">
+
+                ${esc(name)}
+
+            </h3>
+
+            <p
+            class="text-slate-400">
+
+                ${esc(speed)}
+
+            </p>
+
+            <div
+            class="text-2xl font-black
+            text-indigo-400 mt-3">
+
+                Rs ${price.toLocaleString()}
+
+            </div>
+
+            <div
+            class="flex gap-2 mt-4">
+
+                <button
+                onclick="editPackage('${id}')"
+                class="bg-blue-600 text-white">
+
+                    Edit
+
+                </button>
+
+                <button
+                onclick="deletePackage('${id}')"
+                class="bg-red-600 text-white">
+
+                    Delete
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
 
 
-<div
-class="text-2xl font-black
-text-indigo-400 mt-3">
-
-Rs ${price.toLocaleString()}
-
-</div>
-
-
-<div
-class="flex gap-2 mt-4">
-
-<button
-onclick="editPackage('${id}')"
-class="bg-blue-600 text-white">
-
-Edit
-
-</button>
-
-
-<button
-onclick="deletePackage('${id}')"
-class="bg-red-600 text-white">
-
-Delete
-
-</button>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-
-document
-.getElementById("packageList")
-.innerHTML=
-html||
-`
-<div class="text-slate-500">
-No packages found.
-</div>
-`;
+    document
+    .getElementById(
+        "packageList"
+    )
+    .innerHTML =
+    html ||
+    `
+        <div class="text-slate-500">
+            No packages found.
+        </div>
+    `;
 
 }
 
 
 /* =====================================================
-   EDIT PACKAGE
+EDIT PACKAGE
 ===================================================== */
 
-window.editPackage=async function(id){
+window.editPackage =
+async function(id){
 
-const p=
-packages[id];
-
-
-if(!p)return;
+    const p =
+    packages[id];
 
 
-const name=
-prompt(
-"Package Name",
-p.name||""
-);
+    if(
+        !p ||
+        !belongsToDealer(p)
+    ){
+        return;
+    }
 
 
-if(name===null)return;
+    const name =
+    prompt(
+        "Package Name",
+        p.name || ""
+    );
 
 
-const speed=
-prompt(
-"Speed",
-p.speed||""
-);
+    if(name === null){
+        return;
+    }
 
 
-if(speed===null)return;
+    const speed =
+    prompt(
+        "Speed",
+        p.speed || ""
+    );
 
 
-const price=
-prompt(
-"Price",
-p.Price||
-p.price||
-"0"
-);
+    if(speed === null){
+        return;
+    }
 
 
-if(price===null)return;
+    const price =
+    prompt(
+        "Price",
+        p.Price ||
+        p.price ||
+        "0"
+    );
 
 
-await update(
-ref(
-db,
-"packages/"+id
-),
-{
-
-name:name,
-
-speed:speed,
-
-Price:Number(price)
-
-}
-);
+    if(price === null){
+        return;
+    }
 
 
-await loadAll();
+    await update(
+        ref(
+            db,
+            "packages/"+id
+        ),
+        {
+
+            name:name,
+
+            speed:speed,
+
+            Price:Number(price)
+
+        }
+    );
+
+
+    await loadAll();
 
 };
 
 
 /* =====================================================
-   DELETE PACKAGE
+DELETE PACKAGE
 ===================================================== */
 
-window.deletePackage=async function(id){
+window.deletePackage =
+async function(id){
 
-if(
-!confirm(
-"Delete this package?"
-)
-){
-
-return;
-
-}
+    const p =
+    packages[id];
 
 
-await remove(
-ref(
-db,
-"packages/"+id
-)
-);
+    if(
+        !p ||
+        !belongsToDealer(p)
+    ){
+        return;
+    }
 
 
-await loadAll();
+    if(
+        !confirm(
+            "Delete this package?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    await remove(
+        ref(
+            db,
+            "packages/"+id
+        )
+    );
+
+
+    await loadAll();
 
 };
 
 
 /* =====================================================
-   BILLS
+BILLS
 ===================================================== */
 
 function renderBills(){
 
-let html="";
+    let html = "";
 
 
-Object
-.entries(bills)
-.forEach(([id,b])=>{
+    Object
+    .entries(
+        bills || {}
+    )
+    .forEach(
+    ([id,b])=>{
 
-if(
-b.dealerId &&
-b.dealerId!==currentDealerId
-)return;
-
-
-const amount=
-Number(
-b.Amount||
-b.amount||
-0
-);
+        if(
+            !belongsToDealer(b)
+        ){
+            return;
+        }
 
 
-const due=
-b.Duedate||
-b.DueDate||
-b.duedate||
-"-";
+        const amount =
+        Number(
+            b.Amount ||
+            b.amount ||
+            0
+        );
 
 
-const status=
-b.Status||
-b.status||
-"Unpaid";
+        const due =
+        b.Duedate ||
+        b.DueDate ||
+        b.duedate ||
+        "-";
 
 
-html+=`
-
-<div
-class="card p-5
-flex justify-between
-gap-4 flex-wrap">
+        const status =
+        b.Status ||
+        b.status ||
+        "Unpaid";
 
 
-<div>
+        html += `
 
-<b>
-${esc(
-b.customerId||
-"-"
-)}
-</b>
+        <div
+        class="card p-5
+        flex justify-between
+        gap-4 flex-wrap">
 
+            <div>
 
-<p
-class="text-xs text-slate-500">
+                <b>
+                    ${esc(
+                        b.customerId ||
+                        "-"
+                    )}
+                </b>
 
-Due:
-${esc(due)}
+                <p
+                class="text-xs text-slate-500">
 
-</p>
+                    Due:
+                    ${esc(due)}
 
+                </p>
 
-<p
-class="text-xs text-slate-500">
+                <p
+                class="text-xs text-slate-500">
 
-Month:
-${esc(
-b.Month||
-b.month||
-"-"
-)}
+                    Month:
+                    ${esc(
+                        b.Month ||
+                        b.month ||
+                        "-"
+                    )}
 
-</p>
+                </p>
 
-</div>
-
-
-<div class="text-right">
-
-<b>
-
-Rs ${amount.toLocaleString()}
-
-</b>
+            </div>
 
 
-<p
-class="${
-String(status)
-.toLowerCase()==="paid"
-?"text-green-400"
-:"text-red-400"
-} text-xs">
+            <div class="text-right">
 
-${esc(status)}
+                <b>
+                    Rs ${amount.toLocaleString()}
+                </b>
 
-</p>
+                <p
+                class="${
+                    String(status)
+                    .toLowerCase()
+                    === "paid"
+                    ?"text-green-400"
+                    :"text-red-400"
+                } text-xs">
 
-</div>
+                    ${esc(status)}
 
-</div>
+                </p>
 
-`;
+            </div>
 
-});
+        </div>
+
+        `;
+
+    });
 
 
-document
-.getElementById("billList")
-.innerHTML=
-html||
-`
-<div class="text-slate-500">
-No bills found.
-</div>
-`;
+    document
+    .getElementById(
+        "billList"
+    )
+    .innerHTML =
+    html ||
+    `
+        <div class="text-slate-500">
+            No bills found.
+        </div>
+    `;
 
 }
 
 
 /* =====================================================
-   GENERATE BILLS
+GENERATE BILLS
 ===================================================== */
 
-window.generateBills=async function(){
+window.generateBills =
+async function(){
 
-const month=
-today().slice(0,7);
-
-
-let count=0;
+    const month =
+    today().slice(0,7);
 
 
-for(
-const [customerId,c]
-of Object.entries(customers)
-){
-
-if(
-c.dealerId &&
-c.dealerId!==currentDealerId
-){
-
-continue;
-
-}
+    let count = 0;
 
 
-const amount=
-Number(
-c["Monthly fee"]||
-c.monthlyFee||
-0
-);
+    for(
+        const [customerId,c]
+        of Object.entries(
+            customers || {}
+        )
+    ){
+
+        if(
+            !belongsToDealer(c)
+        ){
+            continue;
+        }
 
 
-if(!amount){
-
-continue;
-
-}
-
-
-const already=
-Object
-.values(bills)
-.some(b=>
-
-b.customerId===
-customerId
-&&
-String(
-b.Month||
-b.month||
-""
-)===month
-
-);
+        const amount =
+        Number(
+            c["Monthly fee"] ||
+            c.monthlyFee ||
+            0
+        );
 
 
-if(already){
-
-continue;
-
-}
+        if(!amount){
+            continue;
+        }
 
 
-const id=
-"BILL-"+Date.now()+"-"+count;
+        const already =
+        Object
+        .values(
+            bills || {}
+        )
+        .some(
+        bill=>{
+
+            return (
+                bill.customerId ===
+                customerId
+            )
+            &&
+            String(
+                bill.Month ||
+                bill.month ||
+                ""
+            ) === month;
+
+        });
 
 
-await set(
-ref(
-db,
-"bills/"+id
-),
-{
-
-customerId:
-customerId,
-
-dealerId:
-currentDealerId,
-
-Amount:
-amount,
-
-Duedate:
-c["Expiry Date"]||
-today(),
-
-Month:
-month,
-
-Status:
-"Unpaid",
-
-createdAt:
-new Date().toISOString()
-
-}
-);
+        if(already){
+            continue;
+        }
 
 
-count++;
-
-}
-
-
-alert(
-"✅ "+count+
-" bill(s) generated."
-);
+        const id =
+        "BILL-"+
+        Date.now()+
+        "-"+
+        count;
 
 
-await loadAll();
+        await set(
+            ref(
+                db,
+                "bills/"+id
+            ),
+            {
+
+                customerId:
+                customerId,
+
+                dealerId:
+                currentDealerId,
+
+                Amount:
+                amount,
+
+                Duedate:
+                c["Expiry Date"] ||
+                c.expiryDate ||
+                today(),
+
+                Month:
+                month,
+
+                Status:
+                "Unpaid",
+
+                createdAt:
+                new Date().toISOString()
+
+            }
+        );
+
+
+        count++;
+
+    }
+
+
+    alert(
+        "✅ "+
+        count+
+        " bill(s) generated."
+    );
+
+
+    await loadAll();
 
 };
 
 
 /* =====================================================
-   PAYMENTS
+PAYMENTS
 ===================================================== */
 
 function renderPayments(){
 
-let html="";
+    let html = "";
 
 
-Object
-.entries(payments)
-.forEach(([id,p])=>{
+    Object
+    .entries(
+        payments || {}
+    )
+    .forEach(
+    ([id,p])=>{
 
-if(
-p.dealerId &&
-p.dealerId!==currentDealerId
-)return;
-
-
-const amount=
-Number(
-p.amount||
-p.Amount||
-0
-);
+        if(
+            !belongsToDealer(p)
+        ){
+            return;
+        }
 
 
-html+=`
-
-<div
-class="card p-5
-flex justify-between">
-
-<div>
-
-<b>
-
-${esc(
-p.customerId||
-"Payment"
-)}
-
-</b>
+        const amount =
+        Number(
+            p.amount ||
+            p.Amount ||
+            0
+        );
 
 
-<p
-class="text-xs text-slate-500">
+        html += `
 
-${esc(
-p.phone||
-""
-)}
+        <div
+        class="card p-5
+        flex justify-between">
 
-</p>
+            <div>
 
-</div>
+                <b>
+                    ${esc(
+                        p.customerId ||
+                        "Payment"
+                    )}
+                </b>
 
+                <p
+                class="text-xs text-slate-500">
 
-<div class="text-right">
+                    ${esc(
+                        p.phone || ""
+                    )}
 
-<b
-class="text-green-400">
+                </p>
 
-Rs ${amount.toLocaleString()}
-
-</b>
-
-
-<p class="text-xs">
-
-${esc(
-p.status||
-p.Status||
-"active"
-)}
-
-</p>
-
-</div>
-
-</div>
-
-`;
-
-});
+            </div>
 
 
-document
-.getElementById("paymentList")
-.innerHTML=
-html||
-`
-<div class="text-slate-500">
-No payments found.
-</div>
-`;
+            <div
+            class="text-right">
+
+                <b
+                class="text-green-400">
+
+                    Rs ${amount.toLocaleString()}
+
+                </b>
+
+                <p class="text-xs">
+
+                    ${esc(
+                        p.status ||
+                        p.Status ||
+                        "active"
+                    )}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+
+    document
+    .getElementById(
+        "paymentList"
+    )
+    .innerHTML =
+    html ||
+    `
+        <div class="text-slate-500">
+            No payments found.
+        </div>
+    `;
 
 }
 
 
 /* =====================================================
-   WHATSAPP BILL
+WHATSAPP BILL
 ===================================================== */
 
-window.sendWhatsApp=function(id){
+window.sendWhatsApp =
+function(id){
 
-const c=
-customers[id];
-
-
-if(!c)return;
+    const c =
+    customers[id];
 
 
-let phone=
-String(
-c.phone||
-""
-)
-.replace(/\D/g,"");
+    if(!c){
+        return;
+    }
 
 
-if(
-phone.startsWith("0")
-){
-
-phone=
-"92"+
-phone.substring(1);
-
-}
-
-
-if(!phone){
-
-alert(
-"Customer phone number missing."
-);
-
-return;
-
-}
+    let phone =
+    String(
+        c.phone || ""
+    )
+    .replace(
+        /\D/g,
+        ""
+    );
 
 
-const fee=
-Number(
-c["Monthly fee"]||
-c.monthlyFee||
-0
-);
+    if(
+        phone.startsWith("0")
+    ){
+
+        phone =
+        "92"+
+        phone.substring(1);
+
+    }
 
 
-const message=
+    if(!phone){
+
+        alert(
+            "Customer phone number missing."
+        );
+
+        return;
+
+    }
+
+
+    const fee =
+    Number(
+        c["Monthly fee"] ||
+        c.monthlyFee ||
+        0
+    );
+
+
+    const message =
 `🌐 ISP BILL
 
-Customer: ${c.name||"-"}
-Username: ${c.username||"-"}
-Package: ${c.package||"-"}
+Customer: ${c.name || "-"}
+Username: ${c.username || "-"}
+Package: ${c.package || "-"}
 Monthly Fee: Rs ${fee.toLocaleString()}
 Expiry Date: ${
-c["Expiry Date"]||
-c.expiryDate||
-"-"
+    c["Expiry Date"] ||
+    c.expiryDate ||
+    "-"
 }
 
 Status: ${
-c.Status||
-c.status||
-"Active"
+    c.Status ||
+    c.status ||
+    "Active"
 }
 
 Thank you for using our internet service.`;
 
 
-window.open(
-"https://wa.me/"+
-phone+
-"?text="+
-encodeURIComponent(message),
-"_blank"
-);
+    window.open(
+        "https://wa.me/"+
+        phone+
+        "?text="+
+        encodeURIComponent(message),
+        "_blank"
+    );
 
 };
 
 
 /* =====================================================
-   EXPIRY TODAY
+EXPIRY TODAY ALERT
 ===================================================== */
 
 function checkExpiryToday(){
 
-const todayDate=
-today();
+    const currentDate =
+    today();
 
 
-const expiring=[];
+    const expiring = [];
 
 
-Object
-.entries(customers)
-.forEach(([id,c])=>{
+    Object
+    .entries(
+        customers || {}
+    )
+    .forEach(
+    ([id,c])=>{
 
-if(
-c.dealerId &&
-c.dealerId!==currentDealerId
-)return;
-
-
-const expiry=
-c["Expiry Date"]||
-c.expiryDate||
-"";
+        if(
+            !belongsToDealer(c)
+        ){
+            return;
+        }
 
 
-if(
-expiry===todayDate
-){
-
-expiring.push(
-c.name||
-id
-);
-
-}
-
-});
+        const expiry =
+        c["Expiry Date"] ||
+        c.expiryDate ||
+        "";
 
 
-if(expiring.length){
+        if(
+            expiry ===
+            currentDate
+        ){
 
-setTimeout(()=>{
+            expiring.push(
+                c.name ||
+                id
+            );
 
-alert(
-"⚠️ EXPIRY TODAY\n\n"+
-expiring.join("\n")
-);
+        }
 
-},800);
+    });
 
-}
+
+    if(
+        expiring.length
+    ){
+
+        setTimeout(
+        ()=>{
+
+            alert(
+                "⚠️ EXPIRY TODAY\n\n"+
+                expiring.join("\n")
+            );
+
+        },700);
+
+    }
 
 }
 
 
 /* =====================================================
-   TODAY
+TODAY
 ===================================================== */
 
 function today(){
 
-const d=
-new Date();
+    const d =
+    new Date();
 
 
-return d.getFullYear()+
-"-"+
-String(
-d.getMonth()+1
-)
-.padStart(2,"0")+
-"-"+
-String(
-d.getDate()
-)
-.padStart(2,"0");
+    return (
+        d.getFullYear()+
+        "-"+
+        String(
+            d.getMonth()+1
+        ).padStart(2,"0")+
+        "-"+
+        String(
+            d.getDate()
+        ).padStart(2,"0")
+    );
 
 }
 
 
 /* =====================================================
-   LOGOUT
+LOGOUT
 ===================================================== */
 
-window.logoutDealer=
+window.logoutDealer =
 async function(){
 
-/*
-Only logout clears verification.
-*/
+    /*
+    Clear license verification only
+    when user explicitly logs out.
+    */
 
-localStorage.removeItem(
-"isp_license_verified"
-);
-
-localStorage.removeItem(
-"isp_license_uid"
-);
-
-localStorage.removeItem(
-"isp_license_dealer"
-);
+    localStorage.removeItem(
+        "isp_license_verified"
+    );
 
 
-currentDealer=null;
-currentDealerId=null;
+    localStorage.removeItem(
+        "isp_license_uid"
+    );
 
 
-await signOut(auth);
+    localStorage.removeItem(
+        "isp_license_dealer"
+    );
 
 
-showLogin();
+    currentDealer = null;
+
+    currentDealerId = null;
+
+
+    await signOut(auth);
+
+
+    showLogin();
 
 };
 
 
-/* License page logout */
+/* =====================================================
+LICENSE LOGOUT
+===================================================== */
 
 document
-.getElementById("licenseLogout")
-.onclick=
-logoutDealer;
+.getElementById(
+    "licenseLogout"
+)
+.addEventListener(
+"click",
+logoutDealer
+);
 
 
 /* =====================================================
-   ESCAPE HTML
+ESCAPE HTML
 ===================================================== */
 
 function esc(value){
 
-return String(
-value??""
-)
-.replace(
-/&/g,
-"&amp;"
-)
-.replace(
-/</g,
-"&lt;"
-)
-.replace(
-/>/g,
-"&gt;"
-)
-.replace(
-/"/g,
-"&quot;"
-)
-.replace(
-/'/g,
-"&#039;"
-);
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
