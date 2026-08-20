@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ISP Billing — Dealer Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f4f7fb;color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.card{background:#fff;border:1px solid #e5e7eb;border-radius:20px;box-shadow:0 10px 35px rgba(15,23,42,.07)}
+.sidebar{width:250px;min-height:100vh;position:fixed;inset:0 auto 0 0;background:#0f172a;color:#fff;z-index:50}.main{margin-left:250px;min-height:100vh}
+.navbtn{width:100%;text-align:left;border:0;background:transparent;padding:12px 14px;border-radius:12px;margin-bottom:5px;color:#cbd5e1}.navbtn:hover,.navbtn.active{background:#2563eb;color:#fff}
+.input{width:100%;border:1px solid #dbe1ea;border-radius:12px;padding:11px 13px;outline:none;background:#fff}.input:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb18}
+.btn{border:0;border-radius:12px;padding:10px 15px;font-weight:700}.btn-primary{background:#2563eb;color:#fff}.btn-success{background:#16a34a;color:#fff}.btn-danger{background:#dc2626;color:#fff}.btn-dark{background:#0f172a;color:#fff}.btn-gray{background:#eef2f7;color:#334155}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}.green{background:#dcfce7;color:#166534}.red{background:#fee2e2;color:#991b1b}.orange{background:#ffedd5;color:#9a3412}.blue{background:#dbeafe;color:#1d4ed8}
+.modal{position:fixed;inset:0;background:#020617aa;display:flex;align-items:center;justify-content:center;padding:18px;z-index:100}.hidden{display:none!important}table{min-width:900px}
+@media(max-width:800px){.sidebar{width:100%;min-height:auto;position:relative}.main{margin-left:0}.sidebar-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}.navbtn{margin:0}}
+</style>
+</head>
+<body>
+
+<div id="authLoading" class="fixed inset-0 bg-white z-[999] flex items-center justify-center">
+<div class="text-center"><div class="text-5xl mb-4">🌐</div><div class="font-bold text-xl">Checking session...</div><div class="text-gray-500 mt-2">Please wait</div></div></div>
+
+<div id="loginPage" class="hidden min-h-screen flex items-center justify-center p-5">
+<div class="card w-full max-w-md p-7">
+<div class="text-center"><div class="text-6xl mb-3">🌐</div><h1 class="text-3xl font-black">ISP Billing</h1><p class="text-gray-500 mt-2">Dealer Management System</p></div>
+<div id="loginMessage" class="hidden mt-5 rounded-xl p-3 text-sm"></div>
+<button id="googleLogin" class="btn btn-dark w-full mt-6">Continue with Google</button>
+<p class="text-xs text-gray-400 text-center mt-4">Use your registered dealer Gmail.</p>
+</div></div>
+
+<div id="licensePage" class="hidden min-h-screen flex items-center justify-center p-5">
+<div class="card w-full max-w-md p-7">
+<div class="text-center"><div class="text-5xl mb-3">🔐</div><h1 class="text-2xl font-black">License Verification</h1><p class="text-gray-500 mt-2">License is verified from Firebase.</p></div>
+<div id="licenseInfo" class="bg-blue-50 p-3 rounded-xl text-sm text-blue-700 mb-4">ℹ️ Contact Super Admin for license.</div>
+<input id="licenseInput" class="input mt-2 uppercase" placeholder="Enter license key">
+<button id="verifyLicense" class="btn btn-primary w-full mt-3">Verify License</button>
+<div id="licenseMessage" class="text-sm mt-4 text-center"></div>
+<button id="licenseLogout" class="btn btn-gray w-full mt-4">Logout</button>
+</div></div>
+
+<div id="app" class="hidden">
+<aside class="sidebar p-4">
+<div class="mb-6"><div class="text-2xl font-black">🌐 ISP Billing</div><div class="text-xs text-slate-400 mt-1">Dealer Panel</div></div>
+<div class="sidebar-nav">
+<button class="navbtn active" data-page="dashboard">📊 Dashboard</button>
+<button class="navbtn" data-page="customers">👥 Customers</button>
+<button class="navbtn" data-page="packages">📦 Packages</button>
+<button class="navbtn" data-page="bills">🧾 Bills</button>
+<button class="navbtn" data-page="payments">💰 Payments</button>
+<button class="navbtn" data-page="recovery">🔄 Recovery</button>
+<button class="navbtn" data-page="profile">⚙️ Profile</button>
+</div>
+<div class="mt-8 pt-5 border-t border-slate-700"><div id="sideDealerName" class="font-bold"></div><div id="sideDealerEmail" class="text-xs text-slate-400 mt-1"></div><button id="logoutBtn" class="btn bg-red-500 text-white w-full mt-4">Logout</button></div>
+</aside>
+
+<main class="main">
+<header class="bg-white border-b p-4 sticky top-0 z-40"><div class="flex justify-between items-center gap-3"><div><h2 id="pageTitle" class="text-xl font-black">Dashboard</h2><p id="dealerStatusText" class="text-xs text-gray-500"></p></div><div class="text-right"><div id="topDealerName" class="font-bold"></div><div id="licenseExpiryText" class="text-xs text-gray-500"></div></div></div></header>
+<div class="p-4 md:p-6">
+
+<section id="page-dashboard" class="page">
+<div id="expiryAlert" class="hidden card p-4 mb-5 border-orange-300 bg-orange-50"><div class="font-black text-orange-700">⚠️ Expiry Alert</div><div id="expiryAlertText" class="text-sm text-orange-700 mt-1"></div></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="card p-5"><div class="text-gray-500 text-sm">Customers</div><div id="statCustomers" class="text-3xl font-black mt-2">0</div></div>
+<div class="card p-5"><div class="text-gray-500 text-sm">Customer Limit</div><div id="statLimit" class="text-3xl font-black mt-2">0</div></div>
+<div class="card p-5"><div class="text-gray-500 text-sm">Unpaid Bills</div><div id="statUnpaid" class="text-3xl font-black mt-2">0</div></div>
+<div class="card p-5"><div class="text-gray-500 text-sm">Active Packages</div><div id="statPackages" class="text-3xl font-black mt-2">0</div></div>
+</div>
+<div class="grid lg:grid-cols-2 gap-5 mt-5">
+<div class="card p-5"><h3 class="font-black text-lg">Quick Actions</h3><div class="grid grid-cols-2 gap-3 mt-4">
+<button class="btn btn-primary" onclick="openCustomerModal()">➕ Customer</button><button class="btn btn-success" onclick="openPackageModal()">📦 Package</button><button class="btn btn-dark" onclick="showPage('bills')">🧾 Bills</button><button class="btn btn-gray" onclick="showPage('recovery')">🔄 Recovery</button>
+</div></div>
+<div class="card p-5"><h3 class="font-black text-lg">Dealer Information</h3><div class="mt-4 space-y-2 text-sm">
+<div><b>Name:</b> <span id="infoName"></span></div><div><b>Company:</b> <span id="infoCompany"></span></div><div><b>Email:</b> <span id="infoEmail"></span></div><div><b>License:</b> <code id="infoLicense"></code></div><div><b>Expiry:</b> <span id="infoExpiry"></span></div>
+</div></div></div>
+</section>
+
+<section id="page-customers" class="page hidden">
+<div class="flex justify-between items-center mb-5 gap-3"><div><h2 class="text-2xl font-black">Customers</h2><p class="text-gray-500 text-sm">Manage internet customers.</p></div><button class="btn btn-primary" onclick="openCustomerModal()">➕ Add Customer</button></div>
+<div class="card p-4"><input id="customerSearch" class="input mb-4" placeholder="Search name, phone or username..."><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b text-left"><th class="p-3">Customer</th><th class="p-3">Phone</th><th class="p-3">Username</th><th class="p-3">Package</th><th class="p-3">Expiry</th><th class="p-3">Status</th><th class="p-3">Action</th></tr></thead><tbody id="customerTable"></tbody></table></div></div>
+</section>
+
+<section id="page-packages" class="page hidden">
+<div class="flex justify-between items-center mb-5"><div><h2 class="text-2xl font-black">Packages</h2><p class="text-gray-500 text-sm">Create and edit packages.</p></div><button class="btn btn-primary" onclick="openPackageModal()">➕ Add Package</button></div>
+<div id="packageGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</section>
+
+<section id="page-bills" class="page hidden">
+<div class="mb-5"><h2 class="text-2xl font-black">Bills</h2><p class="text-gray-500 text-sm">Edit bills and send payment details on WhatsApp.</p></div>
+<div class="card p-4"><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b text-left"><th class="p-3">Bill</th><th class="p-3">Customer</th><th class="p-3">Amount</th><th class="p-3">Due Date</th><th class="p-3">Status</th><th class="p-3">Actions</th></tr></thead><tbody id="billTable"></tbody></table></div></div>
+</section>
+
+<section id="page-payments" class="page hidden"><div class="mb-5"><h2 class="text-2xl font-black">Payments</h2></div><div class="card p-4 overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b text-left"><th class="p-3">Payment</th><th class="p-3">Phone</th><th class="p-3">Amount</th><th class="p-3">Status</th></tr></thead><tbody id="paymentTable"></tbody></table></div></section>
+
+<section id="page-recovery" class="page hidden"><div class="max-w-2xl"><div class="mb-5"><h2 class="text-2xl font-black">Account Recovery</h2><p class="text-gray-500 text-sm">Submit recovery request to Super Admin.</p></div><div class="card p-5">
+<label class="font-bold text-sm">Recovery Method</label><select id="recoveryMethod" class="input mt-2"><option>Bank Account</option><option>Easypaisa</option><option>JazzCash</option><option>Other</option></select>
+<label class="font-bold text-sm block mt-4">Registered Mobile Number</label><input id="recoveryPhone" class="input mt-2" placeholder="03XXXXXXXXX">
+<label class="font-bold text-sm block mt-4">Message</label><textarea id="recoveryMessage" class="input mt-2" rows="5" placeholder="Explain your recovery issue..."></textarea>
+<button id="submitRecovery" class="btn btn-primary w-full mt-4">Send Recovery Request</button><div id="recoveryResult" class="text-sm text-center mt-3"></div>
+</div></div></section>
+
+<section id="page-profile" class="page hidden"><div class="max-w-2xl"><h2 class="text-2xl font-black mb-5">Dealer Profile</h2><div class="card p-5 space-y-4">
+<div><div class="text-xs text-gray-500">Name</div><div id="profileName" class="font-bold"></div></div><div><div class="text-xs text-gray-500">Company</div><div id="profileCompany" class="font-bold"></div></div><div><div class="text-xs text-gray-500">Email</div><div id="profileEmail" class="font-bold"></div></div><div><div class="text-xs text-gray-500">Phone</div><div id="profilePhone" class="font-bold"></div></div><div><div class="text-xs text-gray-500">License</div><div id="profileLicense" class="font-mono"></div></div><div><div class="text-xs text-gray-500">License Expiry</div><div id="profileExpiry" class="font-bold"></div></div>
+<hr><h3 class="font-black text-lg">🏦 Payment / Bank Account</h3>
+<input id="bankName" class="input" placeholder="Bank Name"><input id="accountTitle" class="input" placeholder="Account Title"><input id="accountNumber" class="input" placeholder="Account Number"><input id="iban" class="input" placeholder="IBAN"><input id="easypaisa" class="input" placeholder="Easypaisa Number"><input id="jazzcash" class="input" placeholder="JazzCash Number">
+<button id="saveBank" class="btn btn-success w-full">Save Payment Account</button><div id="bankResult" class="text-sm text-center"></div>
+</div></div></section>
+
+</div></main></div>
+
+<div id="customerModal" class="modal hidden"><div class="card w-full max-w-2xl p-6 max-h-[95vh] overflow-y-auto">
+<div class="flex justify-between items-center"><h2 id="customerModalTitle" class="text-xl font-black">Add Customer</h2><button class="btn btn-gray" onclick="closeCustomerModal()">✕</button></div>
+<div class="grid md:grid-cols-2 gap-3 mt-5">
+<input id="cName" class="input" placeholder="Customer Name"><input id="cPhone" class="input" placeholder="Phone">
+<input id="cUsername" class="input" placeholder="Username"><input id="cAddress" class="input" placeholder="Address">
+<select id="cPackage" class="input"><option value="">Select Package</option></select><input id="cExpiry" type="date" class="input">
+<select id="cStatus" class="input"><option>Active</option><option>Suspended</option></select>
+</div><button class="btn btn-primary w-full mt-4" onclick="saveCustomer()">Save Customer</button><div id="customerModalError" class="text-red-500 text-sm mt-3 text-center"></div>
+</div></div>
+
+<div id="packageModal" class="modal hidden"><div class="card w-full max-w-md p-6">
+<div class="flex justify-between items-center"><h2 id="packageModalTitle" class="text-xl font-black">Create Package</h2><button class="btn btn-gray" onclick="closePackageModal()">✕</button></div>
+<input id="pName" class="input mt-5" placeholder="Package Name"><input id="pSpeed" class="input mt-3" placeholder="Speed e.g. 10 Mbps"><input id="pPrice" type="number" class="input mt-3" placeholder="Monthly Price"><select id="pStatus" class="input mt-3"><option>Active</option><option>Inactive</option></select>
+<button class="btn btn-success w-full mt-4" onclick="savePackage()">Save Package</button><div id="packageModalError" class="text-red-500 text-sm mt-3 text-center"></div>
+</div></div>
+
+<div id="billModal" class="modal hidden"><div class="card w-full max-w-md p-6">
+<div class="flex justify-between items-center"><h2 class="text-xl font-black">Edit Bill</h2><button class="btn btn-gray" onclick="closeBillModal()">✕</button></div>
+<input id="bAmount" type="number" class="input mt-5" placeholder="Amount"><input id="bDue" type="date" class="input mt-3">
+<select id="bStatus" class="input mt-3"><option>Unpaid</option><option>Paid</option><option>Cancelled</option></select>
+<button class="btn btn-primary w-full mt-4" onclick="saveBill()">Save Bill</button><div id="billModalError" class="text-red-500 text-sm mt-3 text-center"></div>
+</div></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getDatabase,ref,get,set,remove,update,push}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig={apiKey:"AIzaSyBAzVYtCzLzdM9R-Lt1-8EiUpy9_dPrj6E",authDomain:"isp-billing-system-27cf8.firebaseapp.com",databaseURL:"https://isp-billing-system-27cf8-default-rtdb.firebaseio.com",projectId:"isp-billing-system-27cf8",storageBucket:"isp-billing-system-27cf8.firebasestorage.app",messagingSenderId:"643339508063",appId:"1:643339508063:web:232e6769f7128b6e323eea",measurementId:"G-J0QK9KKPC6"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app),provider=new GoogleAuthProvider();
+let currentUser=null,dealer=null,dealerId=null,customers={},packages={},bills={},payments={},currentCustomerId=null,currentPackageId=null,currentBillId=null;
+const $=id=>document.getElementById(id),today=()=>new Date().toISOString().slice(0,10),normalize=v=>String(v??"").toLowerCase().trim(),entries=o=>o&&typeof o==="object"?Object.entries(o):[],esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+function msg(id,text,cls="text-red-600"){const e=$(id);e.className="text-sm text-center "+cls;e.textContent=text}
+function showLoginMessage(m){msg("loginMessage",m,"text-red-700 bg-red-50 mt-5 rounded-xl p-3")}
+function showPage(page){document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$("page-"+page).classList.remove("hidden");document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===page));$("pageTitle").textContent=page.charAt(0).toUpperCase()+page.slice(1)}
+window.showPage=showPage;
+
+async function findDealer(email){
+ const s=await get(ref(db,"dealers"));if(!s.exists())return null;
+ for(const[id,d]of Object.entries(s.val()))if(normalize(d.email)===normalize(email))return{id,dealer:d};
+ return null;
+}
+async function getLicense(){
+ if(!dealer?.licenseKey)return null;
+ const s=await get(ref(db,"licenses/"+dealer.licenseKey.trim()));return s.exists()?s.val():null;
+}
+async function licenseIsValid(){
+ const l=await getLicense();if(!l)return false;
+ if(l.status&&normalize(l.status)!=="active")return false;
+ if(l.dealerId&&l.dealerId!==dealerId)return false;
+ if(!l.expiryDate)return false;
+ const exp=new Date(l.expiryDate+"T23:59:59");if(isNaN(exp)||exp<new Date())return false;
+ dealer.license=l;return true;
+}
+function showLicenseStatus(){let l=dealer?.license; $("licenseInfo").innerHTML=l?`<b>Status:</b> ${esc(l.status||"active")}<br><b>Expiry:</b> ${esc(l.expiryDate||"")}<br><b>Limit:</b> ${esc(l.customerLimit||0)}`:"❌ License not found.";msg("licenseMessage","License is missing, expired, suspended or assigned to another dealer.","text-red-600")}
+async function enterApp(){if(!(await licenseIsValid())){$("authLoading").classList.add("hidden");$("app").classList.add("hidden");$("licensePage").classList.remove("hidden");showLicenseStatus();return}
+ $("licensePage").classList.add("hidden");$("loginPage").classList.add("hidden");$("app").classList.remove("hidden");$("authLoading").classList.add("hidden");await loadAll();renderAll();}
+onAuthStateChanged(auth,async user=>{try{if(!user){currentUser=null;dealer=null;dealerId=null;$("authLoading").classList.add("hidden");$("app").classList.add("hidden");$("licensePage").classList.add("hidden");$("loginPage").classList.remove("hidden");return}
+ currentUser=user;$("loginPage").classList.add("hidden");const f=await findDealer(user.email);if(!f){$("authLoading").classList.add("hidden");$("licensePage").classList.remove("hidden");msg("licenseMessage","❌ No dealer record found for this Gmail.");return}
+ dealer=f.dealer;dealerId=f.id;await enterApp();
+ }catch(e){console.error(e);$("authLoading").classList.add("hidden");alert("Firebase error: "+(e.message||e))}});
+$("googleLogin").onclick=async()=>{try{$("googleLogin").disabled=true;$("googleLogin").textContent="Signing in...";await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){showLoginMessage((e.code||"Error")+": "+(e.message||"Login failed"));$("googleLogin").disabled=false;$("googleLogin").textContent="Continue with Google"}};
+$("logoutBtn").onclick=()=>signOut(auth);$("licenseLogout").onclick=()=>signOut(auth);
+$("verifyLicense").onclick=async()=>{const key=$("licenseInput").value.trim();if(!key)return msg("licenseMessage","Enter license key.");if(!dealer)return;await update(ref(db,"dealers/"+dealerId),{licenseKey:key});dealer.licenseKey=key;await enterApp()};
+document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+async function loadAll(){
+ const [c,p,b,pay]=await Promise.all([get(ref(db,"customers")),get(ref(db,"packages")),get(ref(db,"bills")),get(ref(db,"payments"))]);
+ customers=c.exists()?c.val():{};packages=p.exists()?p.val():{};bills=b.exists()?b.val():{};payments=pay.exists()?pay.val():{};
+}
+function mine(d){return !d.dealerId||d.dealerId===dealerId}
+function renderAll(){renderHeader();renderCustomers();renderPackages();renderBills();renderPayments();renderDashboard();loadBank();}
+function renderHeader(){const l=dealer.license||{};["sideDealerName","topDealerName","infoName","profileName"].forEach(x=>$(x).textContent=dealer.name||currentUser.displayName||"Dealer");$("sideDealerEmail").textContent=dealer.email||currentUser.email||"";$("infoCompany").textContent=dealer.company||"";$("infoEmail").textContent=dealer.email||currentUser.email||"";$("profileCompany").textContent=dealer.company||"";$("profileEmail").textContent=dealer.email||"";$("profilePhone").textContent=dealer.phone||"";$("infoLicense").textContent=dealer.licenseKey||"";$("profileLicense").textContent=dealer.licenseKey||"";$("infoExpiry").textContent=l.expiryDate||"";$("profileExpiry").textContent=l.expiryDate||"";$("licenseExpiryText").textContent="License expiry: "+(l.expiryDate||"");$("dealerStatusText").textContent="License: "+(l.status||"Active")}
+function renderDashboard(){let c=entries(customers).filter(([i,d])=>mine(d)),p=entries(packages).filter(([i,d])=>mine(d)&&normalize(d.status)!=="inactive"),u=entries(bills).filter(([i,d])=>mine(d)&&normalize(d.status)==="unpaid");let limit=Number(dealer.license?.customerLimit||0);$("statCustomers").textContent=c.length;$("statLimit").textContent=limit||"∞";$("statUnpaid").textContent=u.length;$("statPackages").textContent=p.length;if(limit&&c.length>=limit){$("expiryAlert").classList.remove("hidden");$("expiryAlertText").textContent=`Customer limit ${limit} reached.`}else{$("expiryAlert").classList.add("hidden")}}
+function packageOptions(selected=""){return'<option value="">Select Package</option>'+entries(packages).filter(([i,d])=>mine(d)&&normalize(d.status)!=="inactive").map(([i,d])=>`<option value="${esc(i)}" ${i===selected?"selected":""}>${esc(d.name)} — Rs. ${esc(d.price||0)}</option>`).join("")}
+function renderCustomers(filter=""){let q=normalize(filter),arr=entries(customers).filter(([i,d])=>mine(d)&&(!q||normalize(d.name).includes(q)||normalize(d.phone).includes(q)||normalize(d.username).includes(q)));$("customerTable").innerHTML=arr.map(([id,d])=>{let p=packages[d.packageId]||{};return`<tr class="border-b"><td class="p-3 font-bold">${esc(d.name)}</td><td class="p-3">${esc(d.phone)}</td><td class="p-3">${esc(d.username)}</td><td class="p-3">${esc(d.packageName||p.name||"-")}</td><td class="p-3">${esc(d.expiryDate||"-")}</td><td class="p-3"><span class="badge ${normalize(d.status)==="active"?"green":"red"}">${esc(d.status||"Active")}</span></td><td class="p-3"><button class="btn btn-primary mr-1" onclick="editCustomer('${id}')">Edit / Package</button><button class="btn btn-danger" onclick="deleteCustomer('${id}')">Delete</button></td></tr>`}).join("")||'<tr><td colspan="7" class="p-6 text-center text-gray-500">No customers</td></tr>'}
+function renderPackages(){ $("packageGrid").innerHTML=entries(packages).filter(([i,d])=>mine(d)).map(([id,d])=>`<div class="card p-5"><div class="flex justify-between"><h3 class="font-black text-lg">${esc(d.name)}</h3><span class="badge ${normalize(d.status)==="active"?"green":"red"}">${esc(d.status||"Active")}</span></div><div class="text-gray-500 mt-2">${esc(d.speed)}</div><div class="text-2xl font-black mt-3">Rs. ${esc(d.price||0)} <small class="text-sm text-gray-500">/month</small></div><div class="flex gap-2 mt-4"><button class="btn btn-primary flex-1" onclick="editPackage('${id}')">Edit</button><button class="btn btn-danger" onclick="deletePackage('${id}')">Delete</button></div></div>`).join("")||'<div class="text-gray-500">No packages.</div>'}
+function renderBills(){let arr=entries(bills).filter(([i,d])=>mine(d));$("billTable").innerHTML=arr.map(([id,d])=>`<tr class="border-b"><td class="p-3 font-bold">${esc(d.billNo||id)}</td><td class="p-3">${esc(d.customerName||"-")}</td><td class="p-3">Rs. ${esc(d.amount||0)}</td><td class="p-3">${esc(d.dueDate||"-")}</td><td class="p-3"><span class="badge ${normalize(d.status)==="paid"?"green":"orange"}">${esc(d.status||"Unpaid")}</span></td><td class="p-3"><button class="btn btn-primary mr-1" onclick="editBill('${id}')">Edit</button><button class="btn btn-success" onclick="sendWhatsApp('${id}')">WhatsApp</button></td></tr>`).join("")||'<tr><td colspan="6" class="p-6 text-center text-gray-500">No bills</td></tr>'}
+function renderPayments(){let arr=entries(payments).filter(([i,d])=>mine(d));$("paymentTable").innerHTML=arr.map(([id,d])=>`<tr class="border-b"><td class="p-3">${esc(d.paymentId||id)}</td><td class="p-3">${esc(d.phone||d.customerPhone||"-")}</td><td class="p-3">Rs. ${esc(d.amount||0)}</td><td class="p-3">${esc(d.status||"Paid")}</td></tr>`).join("")||'<tr><td colspan="4" class="p-6 text-center text-gray-500">No payments</td></tr>'}
+
+window.openCustomerModal=()=>{currentCustomerId=null;$("customerModalTitle").textContent="Add Customer";["cName","cPhone","cUsername","cAddress","cExpiry"].forEach(x=>$(x).value="");$("cPackage").innerHTML=packageOptions();$("cStatus").value="Active";msg("customerModalError","");$("customerModal").classList.remove("hidden")};
+window.closeCustomerModal=()=>$("customerModal").classList.add("hidden");
+window.editCustomer=id=>{let d=customers[id];if(!d)return;currentCustomerId=id;$("customerModalTitle").textContent="Edit Customer / Change Package";$("cName").value=d.name||"";$("cPhone").value=d.phone||"";$("cUsername").value=d.username||"";$("cAddress").value=d.address||"";$("cExpiry").value=d.expiryDate||"";$("cStatus").value=d.status||"Active";$("cPackage").innerHTML=packageOptions(d.packageId||"");msg("customerModalError","");$("customerModal").classList.remove("hidden")};
+window.saveCustomer=async()=>{try{let name=$("cName").value.trim(),phone=$("cPhone").value.trim(),pkgId=$("cPackage").value;if(!name||!phone||!pkgId)return msg("customerModalError","Name, phone and package are required.");if(!currentCustomerId){let limit=Number(dealer.license?.customerLimit||0);let count=entries(customers).filter(([i,d])=>mine(d)).length;if(limit&&count>=limit)return msg("customerModalError","❌ License customer limit reached.")}let p=packages[pkgId];let data={dealerId,name,phone,username:$("cUsername").value.trim(),address:$("cAddress").value.trim(),packageId:pkgId,packageName:p.name,packagePrice:Number(p.price||0),expiryDate:$("cExpiry").value||today(),status:$("cStatus").value,updatedAt:Date.now()};if(currentCustomerId)await update(ref(db,"customers/"+currentCustomerId),data);else{let r=push(ref(db,"customers"));await set(r,{...data,createdAt:Date.now()})}await loadAll();renderAll();closeCustomerModal()}catch(e){msg("customerModalError",e.message)}};
+window.deleteCustomer=async id=>{if(confirm("Delete customer?")){await remove(ref(db,"customers/"+id));await loadAll();renderAll()}};
+$("customerSearch").oninput=e=>renderCustomers(e.target.value);
+
+window.openPackageModal=()=>{currentPackageId=null;$("packageModalTitle").textContent="Create Package";["pName","pSpeed","pPrice"].forEach(x=>$(x).value="");$("pStatus").value="Active";msg("packageModalError","");$("packageModal").classList.remove("hidden")};
+window.closePackageModal=()=>$("packageModal").classList.add("hidden");
+window.editPackage=id=>{let d=packages[id];currentPackageId=id;$("packageModalTitle").textContent="Edit Package";$("pName").value=d.name||"";$("pSpeed").value=d.speed||"";$("pPrice").value=d.price||0;$("pStatus").value=d.status||"Active";$("packageModal").classList.remove("hidden")};
+window.savePackage=async()=>{let name=$("pName").value.trim(),speed=$("pSpeed").value.trim(),price=Number($("pPrice").value);if(!name||!speed||price<0)return msg("packageModalError","Enter package name, speed and price.");let data={dealerId,name,speed,price,status:$("pStatus").value,updatedAt:Date.now()};if(currentPackageId)await update(ref(db,"packages/"+currentPackageId),data);else{let r=push(ref(db,"packages"));await set(r,{...data,createdAt:Date.now()})}await loadAll();renderAll();closePackageModal()};
+window.deletePackage=async id=>{if(confirm("Delete package?")){await remove(ref(db,"packages/"+id));await loadAll();renderAll()}};
+
+window.editBill=id=>{let d=bills[id];if(!d)return;currentBillId=id;$("bAmount").value=d.amount||0;$("bDue").value=d.dueDate||"";$("bStatus").value=d.status||"Unpaid";msg("billModalError","");$("billModal").classList.remove("hidden")};
+window.closeBillModal=()=>$("billModal").classList.add("hidden");
+window.saveBill=async()=>{let amount=Number($("bAmount").value);if(amount<0)return msg("billModalError","Invalid amount.");await update(ref(db,"bills/"+currentBillId),{amount,dueDate:$("bDue").value,status:$("bStatus").value,updatedAt:Date.now()});await loadAll();renderAll();closeBillModal()};
+window.sendWhatsApp=id=>{let b=bills[id];if(!b)return;let phone=String(b.customerPhone||b.phone||"").replace(/\D/g,"");if(phone.startsWith("0"))phone="92"+phone.slice(1);if(!phone)return alert("Customer phone not found in this bill.");let a=dealer.paymentAccounts||{};let text=`🌐 *${dealer.company||"ISP Billing"}*%0A%0ADear ${b.customerName||"Customer"},%0A%0A🧾 Bill: ${b.billNo||id}%0A📦 Package: ${b.packageName||"-"}%0A💰 Amount: Rs. ${b.amount||0}%0A📅 Due Date: ${b.dueDate||"-"}%0A📌 Status: ${b.status||"Unpaid"}%0A%0A🏦 *Payment Details*%0ABank: ${a.bankName||"-"}%0AAccount Title: ${a.accountTitle||"-"}%0AAccount No: ${a.accountNumber||"-"}%0AIBAN: ${a.iban||"-"}%0AEasypaisa: ${a.easypaisa||"-"}%0AJazzCash: ${a.jazzcash||"-"}%0A%0AThank you.`;window.open("https://wa.me/"+phone+"?text="+text,"_blank")};
+
+async function loadBank(){let a=dealer.paymentAccounts||{};$("bankName").value=a.bankName||"";$("accountTitle").value=a.accountTitle||"";$("accountNumber").value=a.accountNumber||"";$("iban").value=a.iban||"";$("easypaisa").value=a.easypaisa||"";$("jazzcash").value=a.jazzcash||""}
+$("saveBank").onclick=async()=>{let a={bankName:$("bankName").value.trim(),accountTitle:$("accountTitle").value.trim(),accountNumber:$("accountNumber").value.trim(),iban:$("iban").value.trim(),easypaisa:$("easypaisa").value.trim(),jazzcash:$("jazzcash").value.trim()};await update(ref(db,"dealers/"+dealerId),{paymentAccounts:a});dealer.paymentAccounts=a;msg("bankResult","✅ Payment account saved.","text-green-600")};
+$("submitRecovery").onclick=async()=>{let data={dealerId,name:dealer.name||"",email:dealer.email||currentUser.email,method:$("recoveryMethod").value,phone:$("recoveryPhone").value.trim(),message:$("recoveryMessage").value.trim(),status:"pending",createdAt:Date.now()};if(!data.phone||!data.message)return msg("recoveryResult","Phone and message are required.");let r=push(ref(db,"recoveryRequests"));await set(r,data);msg("recoveryResult","✅ Recovery request sent.","text-green-600");$("recoveryMessage").value=""};
+
+</script>
+</body>
+</html>
